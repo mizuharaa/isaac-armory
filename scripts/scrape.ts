@@ -140,8 +140,16 @@ function buildItem(
   noteUnknownFields("item", infobox.fields);
   const f = infobox.fields;
 
-  const name = f.name ? stripWikitext(f.name) : page.title;
-  const slug = slugify(page.title);
+  // "Steven (Item)" etc. disambiguate against boss pages — display without suffix.
+  const baseTitle = page.title.replace(/\s*\((?:Item|Collectible|Trinket)\)\s*$/i, "");
+  // Some name fields carry DLC-conditional renames: "No. 2, r: Number Two".
+  // Take the newest name; every variant still resolves via alias keys.
+  const nameVariants = (f.name ? stripWikitext(f.name) : baseTitle)
+    .split(/,\s*(?:a\+nr|anr|a\+|nr|a|r)\s*:\s*/i)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const name = nameVariants[nameVariants.length - 1] || baseTitle;
+  const slug = slugify(baseTitle);
   const description = f.description ? stripWikitext(f.description) : "";
   const override = ctx.statOverrides[slug];
 
@@ -168,6 +176,7 @@ function buildItem(
   ];
 
   const devilPriceRaw = f["devil price"] ? parseInt(stripWikitext(f["devil price"]), 10) : NaN;
+  const shopPriceRaw = f["shop price"] ? parseInt(stripWikitext(f["shop price"]), 10) : NaN;
 
   const item: Item = {
     id: parseId(f.id, page.title),
@@ -181,6 +190,7 @@ function buildItem(
     description,
     recharge: infobox.kind === "active" ? parseRecharge(f.recharge) : undefined,
     devilPrice: Number.isNaN(devilPriceRaw) ? undefined : devilPriceRaw,
+    shopPrice: Number.isNaN(shopPriceRaw) ? undefined : shopPriceRaw,
     statModifiers,
     statModifiersSource,
     behaviorTags,
@@ -367,6 +377,9 @@ async function main() {
   for (const item of items) {
     slugByKey.set(nameKey(item.name), item.slug);
     slugByKey.set(nameKey(item.wikiTitle), item.slug);
+    // "Little Horn (Item)" must also resolve from plain "Little Horn".
+    const bare = item.wikiTitle.replace(/\s*\((?:Item|Collectible|Trinket)\)\s*$/i, "");
+    if (bare !== item.wikiTitle) slugByKey.set(nameKey(bare), item.slug);
   }
   const resolveItemName = (name: string): string | null => {
     const key = nameKey(name);

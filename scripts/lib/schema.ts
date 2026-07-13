@@ -48,6 +48,7 @@ export const ItemSchema = z.object({
     .union([z.number(), z.enum(["one_time", "timed", "unlimited"])])
     .optional(),
   devilPrice: z.number().optional(),
+  shopPrice: z.number().optional(),
   statModifiers: StatModifiersSchema,
   statModifiersSource: z.enum(["auto", "override", "none"]),
   behaviorTags: z.array(z.string()),

@@ -21,6 +21,18 @@
       "behaviorTags": ["piercing_on_kill"],
       "note": "INCOMPLETE — also a large tears-down; exact tear-delay change to be confirmed in Milestone 2."
     },
+    "brittle-bones": {
+      "source": "https://bindingofisaacrebirth.fandom.com/wiki/Brittle_Bones",
+      "statModifiers": {},
+      "behaviorTags": ["bone_hearts"],
+      "note": "INCOMPLETE — converts all hearts to bone hearts; grants a permanent tears bonus each time a bone heart breaks. Conditional, so no flat modifier; exact per-break value to be confirmed in Milestone 2."
+    },
+    "technology-2": {
+      "source": "https://bindingofisaacrebirth.fandom.com/wiki/Technology_2",
+      "statModifiers": {},
+      "behaviorTags": ["laser", "replaces_tears"],
+      "note": "INCOMPLETE — replaces tears with a continuous laser at reduced damage; exact damage multiplier to be confirmed in Milestone 2."
+    },
     "soy-milk": {
       "source": "https://bindingofisaacrebirth.fandom.com/wiki/Soy_Milk",
       "statModifiers": { "damageMult": 0.2 },

@@ -23,7 +23,7 @@ const FALLBACK_POOL_PAGES = [
   "Curse Room (Item Pool)",
   "Key Master (Item Pool)",
   "Beggar (Item Pool)",
-  "Demon Beggar (Item Pool)",
+  "Devil Beggar (Item Pool)",
   "Bomb Bum (Item Pool)",
   "Battery Bum (Item Pool)",
   "Mom's Chest (Item Pool)",

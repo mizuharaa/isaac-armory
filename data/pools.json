@@ -1,0 +1,7437 @@
+[
+  {
+    "slug": "angel-room",
+    "name": "Angel Room",
+    "wikiTitle": "Angel Room (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "the-bible"
+      },
+      {
+        "slug": "breath-of-life"
+      },
+      {
+        "slug": "dead-sea-scrolls"
+      },
+      {
+        "slug": "prayer-card"
+      },
+      {
+        "slug": "edens-soul",
+        "dlc": "a+"
+      },
+      {
+        "slug": "void",
+        "dlc": "a+"
+      },
+      {
+        "slug": "delirious",
+        "dlc": "a+"
+      },
+      {
+        "slug": "book-of-revelations",
+        "dlc": "r"
+      },
+      {
+        "slug": "genesis",
+        "dlc": "r"
+      },
+      {
+        "slug": "jar-of-wisps",
+        "dlc": "r"
+      },
+      {
+        "slug": "urn-of-souls",
+        "dlc": "r"
+      },
+      {
+        "slug": "vade-retro",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-body"
+      },
+      {
+        "slug": "celtic-cross"
+      },
+      {
+        "slug": "dead-dove"
+      },
+      {
+        "slug": "godhead"
+      },
+      {
+        "slug": "guardian-angel"
+      },
+      {
+        "slug": "habit"
+      },
+      {
+        "slug": "the-halo"
+      },
+      {
+        "slug": "holy-grail"
+      },
+      {
+        "slug": "holy-mantle"
+      },
+      {
+        "slug": "holy-water"
+      },
+      {
+        "slug": "lazarus-rags"
+      },
+      {
+        "slug": "the-mind"
+      },
+      {
+        "slug": "mitre"
+      },
+      {
+        "slug": "the-relic"
+      },
+      {
+        "slug": "rosary"
+      },
+      {
+        "slug": "sacred-heart"
+      },
+      {
+        "slug": "scapular"
+      },
+      {
+        "slug": "the-soul"
+      },
+      {
+        "slug": "trinity-shield"
+      },
+      {
+        "slug": "the-wafer"
+      },
+      {
+        "slug": "censer",
+        "dlc": "a"
+      },
+      {
+        "slug": "circle-of-protection",
+        "dlc": "a"
+      },
+      {
+        "slug": "crown-of-light",
+        "dlc": "a"
+      },
+      {
+        "slug": "holy-light",
+        "dlc": "a"
+      },
+      {
+        "slug": "immaculate-conception",
+        "dlc": "a"
+      },
+      {
+        "slug": "seraphim",
+        "dlc": "a"
+      },
+      {
+        "slug": "spear-of-destiny",
+        "dlc": "a"
+      },
+      {
+        "slug": "sworn-protector",
+        "dlc": "a"
+      },
+      {
+        "slug": "7-seals",
+        "dlc": "a+"
+      },
+      {
+        "slug": "angelic-prism",
+        "dlc": "a+"
+      },
+      {
+        "slug": "duality",
+        "dlc": "a+"
+      },
+      {
+        "slug": "eucharist",
+        "dlc": "a+"
+      },
+      {
+        "slug": "glyph-of-balance",
+        "dlc": "a+"
+      },
+      {
+        "slug": "lil-delirium",
+        "dlc": "a+"
+      },
+      {
+        "slug": "trisagion",
+        "dlc": "a+"
+      },
+      {
+        "slug": "act-of-contrition",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-of-the-martyr",
+        "dlc": "r"
+      },
+      {
+        "slug": "divine-intervention",
+        "dlc": "r"
+      },
+      {
+        "slug": "hallowed-ground",
+        "dlc": "r"
+      },
+      {
+        "slug": "immaculate-heart",
+        "dlc": "r"
+      },
+      {
+        "slug": "jesus-juice",
+        "dlc": "r"
+      },
+      {
+        "slug": "monstrance",
+        "dlc": "r"
+      },
+      {
+        "slug": "paschal-candle",
+        "dlc": "r"
+      },
+      {
+        "slug": "purgatory",
+        "dlc": "r"
+      },
+      {
+        "slug": "purity",
+        "dlc": "r"
+      },
+      {
+        "slug": "revelation",
+        "dlc": "r"
+      },
+      {
+        "slug": "salvation",
+        "dlc": "r"
+      },
+      {
+        "slug": "spirit-sword",
+        "dlc": "r"
+      },
+      {
+        "slug": "star-of-bethlehem",
+        "dlc": "r"
+      },
+      {
+        "slug": "stigmata",
+        "dlc": "r"
+      },
+      {
+        "slug": "soul-locket",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-stairway",
+        "dlc": "r"
+      },
+      {
+        "slug": "book-of-virtues",
+        "dlc": "r"
+      },
+      {
+        "slug": "sacred-orb",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "baby-shop",
+    "name": "Baby Shop",
+    "wikiTitle": "Baby Shop (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "stitches"
+      },
+      {
+        "slug": "blue-babys-only-friend"
+      },
+      {
+        "slug": "abel"
+      },
+      {
+        "slug": "acid-baby"
+      },
+      {
+        "slug": "angry-fly"
+      },
+      {
+        "slug": "ball-of-bandages"
+      },
+      {
+        "slug": "bbf"
+      },
+      {
+        "slug": "best-bud"
+      },
+      {
+        "slug": "big-chubby"
+      },
+      {
+        "slug": "big-fan"
+      },
+      {
+        "slug": "bird-cage"
+      },
+      {
+        "slug": "bloodshot-eye"
+      },
+      {
+        "slug": "bobs-brain"
+      },
+      {
+        "slug": "boiled-baby"
+      },
+      {
+        "slug": "bot-fly"
+      },
+      {
+        "slug": "brother-bobby"
+      },
+      {
+        "slug": "buddy-in-a-box"
+      },
+      {
+        "slug": "bum-friend"
+      },
+      {
+        "slug": "bumbo"
+      },
+      {
+        "slug": "charged-baby"
+      },
+      {
+        "slug": "cube-of-meat"
+      },
+      {
+        "slug": "daddy-longlegs"
+      },
+      {
+        "slug": "dark-bum"
+      },
+      {
+        "slug": "dead-bird"
+      },
+      {
+        "slug": "demon-baby"
+      },
+      {
+        "slug": "distant-admiration"
+      },
+      {
+        "slug": "dry-baby"
+      },
+      {
+        "slug": "farting-baby"
+      },
+      {
+        "slug": "fates-reward"
+      },
+      {
+        "slug": "forever-alone"
+      },
+      {
+        "slug": "freezer-baby"
+      },
+      {
+        "slug": "friend-zone"
+      },
+      {
+        "slug": "fruity-plum"
+      },
+      {
+        "slug": "ghost-baby"
+      },
+      {
+        "slug": "guardian-angel"
+      },
+      {
+        "slug": "halo-of-flies"
+      },
+      {
+        "slug": "harlequin-baby"
+      },
+      {
+        "slug": "headless-baby"
+      },
+      {
+        "slug": "hushy"
+      },
+      {
+        "slug": "incubus"
+      },
+      {
+        "slug": "juicy-sack"
+      },
+      {
+        "slug": "key-bum"
+      },
+      {
+        "slug": "king-baby"
+      },
+      {
+        "slug": "leech"
+      },
+      {
+        "slug": "lil-abaddon"
+      },
+      {
+        "slug": "lil-brimstone"
+      },
+      {
+        "slug": "lil-delirium"
+      },
+      {
+        "slug": "lil-dumpy"
+      },
+      {
+        "slug": "lil-gurdy"
+      },
+      {
+        "slug": "lil-haunt"
+      },
+      {
+        "slug": "lil-loki"
+      },
+      {
+        "slug": "lil-monstro"
+      },
+      {
+        "slug": "lil-spewer"
+      },
+      {
+        "slug": "little-c-h-a-d"
+      },
+      {
+        "slug": "little-chubby"
+      },
+      {
+        "slug": "little-gish"
+      },
+      {
+        "slug": "little-steven"
+      },
+      {
+        "slug": "lost-fly"
+      },
+      {
+        "slug": "lost-soul"
+      },
+      {
+        "slug": "mongo-baby"
+      },
+      {
+        "slug": "obsessed-fan"
+      },
+      {
+        "slug": "papa-fly"
+      },
+      {
+        "slug": "psy-fly"
+      },
+      {
+        "slug": "punching-bag"
+      },
+      {
+        "slug": "quints"
+      },
+      {
+        "slug": "rainbow-baby"
+      },
+      {
+        "slug": "robo-baby"
+      },
+      {
+        "slug": "robo-baby-2-0"
+      },
+      {
+        "slug": "rotten-baby"
+      },
+      {
+        "slug": "sacrificial-dagger"
+      },
+      {
+        "slug": "seraphim"
+      },
+      {
+        "slug": "shade"
+      },
+      {
+        "slug": "sissy-longlegs"
+      },
+      {
+        "slug": "sister-maggy"
+      },
+      {
+        "slug": "smart-fly"
+      },
+      {
+        "slug": "spider-mod"
+      },
+      {
+        "slug": "succubus"
+      },
+      {
+        "slug": "sworn-protector"
+      },
+      {
+        "slug": "the-intruder"
+      },
+      {
+        "slug": "the-peeper"
+      },
+      {
+        "slug": "tinytoma"
+      },
+      {
+        "slug": "twisted-pair"
+      },
+      {
+        "slug": "worm-friend"
+      },
+      {
+        "slug": "yo-listen"
+      }
+    ]
+  },
+  {
+    "slug": "battery-bum",
+    "name": "Battery Bum",
+    "wikiTitle": "Battery Bum (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "4-5-volt"
+      },
+      {
+        "slug": "9-volt"
+      },
+      {
+        "slug": "battery-pack"
+      },
+      {
+        "slug": "car-battery"
+      },
+      {
+        "slug": "charged-baby"
+      },
+      {
+        "slug": "jumper-cables"
+      },
+      {
+        "slug": "sharp-plug"
+      },
+      {
+        "slug": "the-battery"
+      },
+      {
+        "slug": "120-volt"
+      },
+      {
+        "slug": "jacobs-ladder"
+      }
+    ]
+  },
+  {
+    "slug": "beggar",
+    "name": "Beggar",
+    "wikiTitle": "Beggar (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "butter-bean"
+      },
+      {
+        "slug": "moms-bottle-of-pills"
+      },
+      {
+        "slug": "portable-slot"
+      },
+      {
+        "slug": "the-bean"
+      },
+      {
+        "slug": "crooked-penny",
+        "dlc": "a+"
+      },
+      {
+        "slug": "blue-map"
+      },
+      {
+        "slug": "box"
+      },
+      {
+        "slug": "breakfast"
+      },
+      {
+        "slug": "dessert"
+      },
+      {
+        "slug": "dinner"
+      },
+      {
+        "slug": "fanny-pack"
+      },
+      {
+        "slug": "lucky-foot"
+      },
+      {
+        "slug": "lunch"
+      },
+      {
+        "slug": "moms-coin-purse"
+      },
+      {
+        "slug": "mystery-sack"
+      },
+      {
+        "slug": "rotten-meat"
+      },
+      {
+        "slug": "the-black-bean"
+      },
+      {
+        "slug": "the-compass"
+      },
+      {
+        "slug": "treasure-map"
+      },
+      {
+        "slug": "bum-friend",
+        "dlc": "a"
+      },
+      {
+        "slug": "bumbo",
+        "dlc": "a"
+      },
+      {
+        "slug": "lil-chest",
+        "dlc": "a"
+      },
+      {
+        "slug": "restock",
+        "dlc": "a"
+      },
+      {
+        "slug": "dads-lost-coin",
+        "dlc": "a+"
+      },
+      {
+        "slug": "linger-bean",
+        "dlc": "a+"
+      },
+      {
+        "slug": "midnight-snack",
+        "dlc": "a+"
+      },
+      {
+        "slug": "supper",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "bomb-bum",
+    "name": "Bomb Bum",
+    "wikiTitle": "Bomb Bum (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "mr-boom"
+      },
+      {
+        "slug": "mama-mega",
+        "dlc": "a+"
+      },
+      {
+        "slug": "remote-detonator",
+        "dlc": "r"
+      },
+      {
+        "slug": "bobs-curse"
+      },
+      {
+        "slug": "bobby-bomb"
+      },
+      {
+        "slug": "bomber-boy"
+      },
+      {
+        "slug": "butt-bombs"
+      },
+      {
+        "slug": "hot-bombs"
+      },
+      {
+        "slug": "pyro"
+      },
+      {
+        "slug": "sad-bombs"
+      },
+      {
+        "slug": "scatter-bombs"
+      },
+      {
+        "slug": "sticky-bombs"
+      },
+      {
+        "slug": "bogo-bombs",
+        "dlc": "nr"
+      },
+      {
+        "slug": "bomb-bag",
+        "dlc": "nr"
+      },
+      {
+        "slug": "boom",
+        "dlc": "nr"
+      },
+      {
+        "slug": "fast-bombs",
+        "dlc": "a+"
+      },
+      {
+        "slug": "blood-bombs",
+        "dlc": "r"
+      },
+      {
+        "slug": "brimstone-bombs",
+        "dlc": "r"
+      },
+      {
+        "slug": "glitter-bombs",
+        "dlc": "r"
+      },
+      {
+        "slug": "mr-mega",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "boss",
+    "name": "Boss",
+    "wikiTitle": "Boss (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "the-belt"
+      },
+      {
+        "slug": "blood-clot"
+      },
+      {
+        "slug": "blue-cap"
+      },
+      {
+        "slug": "box"
+      },
+      {
+        "slug": "breakfast"
+      },
+      {
+        "slug": "caffeine-pill"
+      },
+      {
+        "slug": "cat-o-nine-tails"
+      },
+      {
+        "slug": "dessert"
+      },
+      {
+        "slug": "dinner"
+      },
+      {
+        "slug": "experimental-treatment"
+      },
+      {
+        "slug": "growth-hormones"
+      },
+      {
+        "slug": "jesus-juice"
+      },
+      {
+        "slug": "latch-key"
+      },
+      {
+        "slug": "lunch"
+      },
+      {
+        "slug": "meat"
+      },
+      {
+        "slug": "magic-8-ball"
+      },
+      {
+        "slug": "magic-scab"
+      },
+      {
+        "slug": "match-book"
+      },
+      {
+        "slug": "moms-coin-purse"
+      },
+      {
+        "slug": "moms-heels"
+      },
+      {
+        "slug": "moms-lipstick"
+      },
+      {
+        "slug": "moms-underwear"
+      },
+      {
+        "slug": "old-bandage"
+      },
+      {
+        "slug": "pageant-boy"
+      },
+      {
+        "slug": "pentagram"
+      },
+      {
+        "slug": "placenta"
+      },
+      {
+        "slug": "roid-rage"
+      },
+      {
+        "slug": "rotten-meat"
+      },
+      {
+        "slug": "safety-pin"
+      },
+      {
+        "slug": "screw"
+      },
+      {
+        "slug": "a-snack"
+      },
+      {
+        "slug": "speed-ball"
+      },
+      {
+        "slug": "squeezy"
+      },
+      {
+        "slug": "stem-cells"
+      },
+      {
+        "slug": "synthoil"
+      },
+      {
+        "slug": "tooth-picks"
+      },
+      {
+        "slug": "torn-photo"
+      },
+      {
+        "slug": "wire-coat-hanger"
+      },
+      {
+        "slug": "wooden-spoon"
+      },
+      {
+        "slug": "super-bandage"
+      },
+      {
+        "slug": "less-than-three",
+        "dlc": "nr"
+      },
+      {
+        "slug": "the-halo",
+        "dlc": "nr"
+      },
+      {
+        "slug": "little-steven",
+        "dlc": "nr"
+      },
+      {
+        "slug": "magic-mushroom",
+        "dlc": "nr"
+      },
+      {
+        "slug": "binky",
+        "dlc": "a"
+      },
+      {
+        "slug": "crack-jacks",
+        "dlc": "a"
+      },
+      {
+        "slug": "moms-pearls",
+        "dlc": "a"
+      },
+      {
+        "slug": "mr-dolly",
+        "dlc": "a"
+      },
+      {
+        "slug": "pjs",
+        "dlc": "a"
+      },
+      {
+        "slug": "dads-lost-coin",
+        "dlc": "a+"
+      },
+      {
+        "slug": "divorce-papers",
+        "dlc": "a+"
+      },
+      {
+        "slug": "marbles",
+        "dlc": "a+"
+      },
+      {
+        "slug": "marrow",
+        "dlc": "a+"
+      },
+      {
+        "slug": "midnight-snack",
+        "dlc": "a+"
+      },
+      {
+        "slug": "belly-button",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "polydactyly",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "a-bar-of-soap",
+        "dlc": "r"
+      },
+      {
+        "slug": "booster-pack",
+        "dlc": "r"
+      },
+      {
+        "slug": "consolation-prize",
+        "dlc": "r"
+      },
+      {
+        "slug": "eye-drops",
+        "dlc": "r"
+      },
+      {
+        "slug": "glass-eye",
+        "dlc": "r"
+      },
+      {
+        "slug": "stapler",
+        "dlc": "r"
+      },
+      {
+        "slug": "stye",
+        "dlc": "r"
+      },
+      {
+        "slug": "supper",
+        "dlc": "r"
+      },
+      {
+        "slug": "tropicamide",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "crane-game",
+    "name": "Crane Game",
+    "wikiTitle": "Crane Game (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "best-friend"
+      },
+      {
+        "slug": "the-boomerang"
+      },
+      {
+        "slug": "box-of-friends"
+      },
+      {
+        "slug": "clear-rune"
+      },
+      {
+        "slug": "d1"
+      },
+      {
+        "slug": "d4"
+      },
+      {
+        "slug": "the-d6"
+      },
+      {
+        "slug": "d7"
+      },
+      {
+        "slug": "d8"
+      },
+      {
+        "slug": "d10"
+      },
+      {
+        "slug": "d12"
+      },
+      {
+        "slug": "d20"
+      },
+      {
+        "slug": "d100"
+      },
+      {
+        "slug": "deck-of-cards"
+      },
+      {
+        "slug": "doctors-remote"
+      },
+      {
+        "slug": "eraser"
+      },
+      {
+        "slug": "eternal-d6"
+      },
+      {
+        "slug": "everything-jar"
+      },
+      {
+        "slug": "friend-finder"
+      },
+      {
+        "slug": "friendly-ball"
+      },
+      {
+        "slug": "the-gamekid"
+      },
+      {
+        "slug": "glass-cannon"
+      },
+      {
+        "slug": "glowing-hourglass"
+      },
+      {
+        "slug": "the-hourglass"
+      },
+      {
+        "slug": "metronome"
+      },
+      {
+        "slug": "mine-crafter"
+      },
+      {
+        "slug": "moms-bottle-of-pills"
+      },
+      {
+        "slug": "moms-box"
+      },
+      {
+        "slug": "moms-bracelet"
+      },
+      {
+        "slug": "mr-me"
+      },
+      {
+        "slug": "my-little-unicorn"
+      },
+      {
+        "slug": "mystery-gift"
+      },
+      {
+        "slug": "notched-axe-zh"
+      },
+      {
+        "slug": "pause"
+      },
+      {
+        "slug": "remote-detonator"
+      },
+      {
+        "slug": "shoop-da-whoop"
+      },
+      {
+        "slug": "spindown-dice"
+      },
+      {
+        "slug": "spin-to-win"
+      },
+      {
+        "slug": "sprinkler"
+      },
+      {
+        "slug": "suplex"
+      },
+      {
+        "slug": "tammys-head"
+      },
+      {
+        "slug": "tear-detonator"
+      },
+      {
+        "slug": "teleport"
+      },
+      {
+        "slug": "teleport-2-0"
+      },
+      {
+        "slug": "9-volt"
+      },
+      {
+        "slug": "analog-stick"
+      },
+      {
+        "slug": "the-battery"
+      },
+      {
+        "slug": "binky"
+      },
+      {
+        "slug": "booster-pack"
+      },
+      {
+        "slug": "bot-fly"
+      },
+      {
+        "slug": "broken-watch"
+      },
+      {
+        "slug": "buddy-in-a-box"
+      },
+      {
+        "slug": "champion-belt"
+      },
+      {
+        "slug": "the-compass"
+      },
+      {
+        "slug": "consolation-prize"
+      },
+      {
+        "slug": "crickets-head"
+      },
+      {
+        "slug": "cupids-arrow"
+      },
+      {
+        "slug": "fruity-plum"
+      },
+      {
+        "slug": "glass-eye"
+      },
+      {
+        "slug": "guppys-collar"
+      },
+      {
+        "slug": "jacobs-ladder"
+      },
+      {
+        "slug": "lead-pencil"
+      },
+      {
+        "slug": "lil-chest"
+      },
+      {
+        "slug": "lodestone"
+      },
+      {
+        "slug": "lucky-foot"
+      },
+      {
+        "slug": "magic-8-ball"
+      },
+      {
+        "slug": "marbles"
+      },
+      {
+        "slug": "mr-dolly"
+      },
+      {
+        "slug": "mutant-spider"
+      },
+      {
+        "slug": "my-reflection"
+      },
+      {
+        "slug": "night-light"
+      },
+      {
+        "slug": "pentagram"
+      },
+      {
+        "slug": "piggy-bank"
+      },
+      {
+        "slug": "poke-go"
+      },
+      {
+        "slug": "robo-baby"
+      },
+      {
+        "slug": "robo-baby-2-0"
+      },
+      {
+        "slug": "the-sad-onion"
+      },
+      {
+        "slug": "screw"
+      },
+      {
+        "slug": "the-small-rock"
+      },
+      {
+        "slug": "smb-super-fan"
+      },
+      {
+        "slug": "spelunker-hat"
+      },
+      {
+        "slug": "spider-bite"
+      },
+      {
+        "slug": "spider-mod"
+      },
+      {
+        "slug": "spoon-bender"
+      },
+      {
+        "slug": "squeezy"
+      },
+      {
+        "slug": "starter-deck"
+      },
+      {
+        "slug": "stop-watch"
+      },
+      {
+        "slug": "tarot-cloth"
+      },
+      {
+        "slug": "tech-5"
+      },
+      {
+        "slug": "technology"
+      },
+      {
+        "slug": "technology-2"
+      },
+      {
+        "slug": "technology-zero"
+      },
+      {
+        "slug": "tech-x"
+      },
+      {
+        "slug": "tractor-beam"
+      },
+      {
+        "slug": "voodoo-head"
+      },
+      {
+        "slug": "wire-coat-hanger"
+      }
+    ]
+  },
+  {
+    "slug": "curse-room",
+    "name": "Curse Room",
+    "wikiTitle": "Curse Room (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "guppys-head"
+      },
+      {
+        "slug": "guppys-paw"
+      },
+      {
+        "slug": "sacrificial-altar",
+        "dlc": "a+"
+      },
+      {
+        "slug": "plan-c",
+        "dlc": "a+"
+      },
+      {
+        "slug": "flip",
+        "dlc": "r"
+      },
+      {
+        "slug": "magic-skin",
+        "dlc": "r"
+      },
+      {
+        "slug": "razor-blade",
+        "dlc": "r"
+      },
+      {
+        "slug": "red-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "black-candle"
+      },
+      {
+        "slug": "ceremonial-robes"
+      },
+      {
+        "slug": "contract-from-below"
+      },
+      {
+        "slug": "dead-cat"
+      },
+      {
+        "slug": "gimpy"
+      },
+      {
+        "slug": "goat-head"
+      },
+      {
+        "slug": "guppys-collar"
+      },
+      {
+        "slug": "guppys-tail"
+      },
+      {
+        "slug": "the-mark"
+      },
+      {
+        "slug": "the-pact"
+      },
+      {
+        "slug": "pentagram"
+      },
+      {
+        "slug": "athame",
+        "dlc": "a"
+      },
+      {
+        "slug": "curse-of-the-tower",
+        "dlc": "a"
+      },
+      {
+        "slug": "dark-princes-crown",
+        "dlc": "a+"
+      },
+      {
+        "slug": "euthanasia",
+        "dlc": "a+"
+      },
+      {
+        "slug": "little-horn",
+        "dlc": "a+"
+      },
+      {
+        "slug": "shade",
+        "dlc": "a+"
+      },
+      {
+        "slug": "tarot-cloth",
+        "dlc": "a+"
+      },
+      {
+        "slug": "moms-razor",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "blood-oath",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-puppy",
+        "dlc": "r"
+      },
+      {
+        "slug": "guppys-eye",
+        "dlc": "r"
+      },
+      {
+        "slug": "sanguine-bond",
+        "dlc": "r"
+      },
+      {
+        "slug": "vengeful-spirit",
+        "dlc": "r"
+      },
+      {
+        "slug": "false-phd",
+        "dlc": "r"
+      },
+      {
+        "slug": "heartbreak",
+        "dlc": "r"
+      },
+      {
+        "slug": "vanishing-twin",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "devil-beggar",
+    "name": "Devil Beggar",
+    "wikiTitle": "Devil Beggar (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "moms-bottle-of-pills"
+      },
+      {
+        "slug": "potato-peeler",
+        "dlc": "a+"
+      },
+      {
+        "slug": "plan-c",
+        "dlc": "a+"
+      },
+      {
+        "slug": "the-nail",
+        "dlc": "r"
+      },
+      {
+        "slug": "razor-blade",
+        "dlc": "r"
+      },
+      {
+        "slug": "forget-me-now",
+        "dlc": "r"
+      },
+      {
+        "slug": "ceremonial-robes"
+      },
+      {
+        "slug": "contract-from-below"
+      },
+      {
+        "slug": "experimental-treatment"
+      },
+      {
+        "slug": "gimpy"
+      },
+      {
+        "slug": "growth-hormones"
+      },
+      {
+        "slug": "missing-page-2"
+      },
+      {
+        "slug": "moms-coin-purse"
+      },
+      {
+        "slug": "roid-rage"
+      },
+      {
+        "slug": "speed-ball"
+      },
+      {
+        "slug": "the-virus"
+      },
+      {
+        "slug": "caffeine-pill",
+        "dlc": "a"
+      },
+      {
+        "slug": "synthoil",
+        "dlc": "a"
+      },
+      {
+        "slug": "demon-baby",
+        "dlc": "anr"
+      },
+      {
+        "slug": "succubus",
+        "dlc": "anr"
+      },
+      {
+        "slug": "euthanasia",
+        "dlc": "a+"
+      },
+      {
+        "slug": "little-horn",
+        "dlc": "a+"
+      },
+      {
+        "slug": "acid-baby",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "adrenaline",
+        "dlc": "r"
+      },
+      {
+        "slug": "black-powder",
+        "dlc": "r"
+      },
+      {
+        "slug": "dark-bum",
+        "dlc": "r"
+      },
+      {
+        "slug": "dark-matter",
+        "dlc": "r"
+      },
+      {
+        "slug": "empty-heart",
+        "dlc": "r"
+      },
+      {
+        "slug": "empty-vessel",
+        "dlc": "r"
+      },
+      {
+        "slug": "lokis-horns",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-mark",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-pact",
+        "dlc": "r"
+      },
+      {
+        "slug": "pentagram",
+        "dlc": "r"
+      },
+      {
+        "slug": "whore-of-babylon",
+        "dlc": "r"
+      },
+      {
+        "slug": "a-pound-of-flesh",
+        "dlc": "r"
+      },
+      {
+        "slug": "abaddon",
+        "dlc": "r"
+      },
+      {
+        "slug": "lord-of-the-pit",
+        "dlc": "r"
+      },
+      {
+        "slug": "spirit-of-the-night",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "devil-room",
+    "name": "Devil Room",
+    "wikiTitle": "Devil Room (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "the-book-of-belial"
+      },
+      {
+        "slug": "the-book-of-sin"
+      },
+      {
+        "slug": "guppys-head"
+      },
+      {
+        "slug": "guppys-paw"
+      },
+      {
+        "slug": "the-nail"
+      },
+      {
+        "slug": "the-necronomicon"
+      },
+      {
+        "slug": "satanic-bible"
+      },
+      {
+        "slug": "we-need-to-go-deeper"
+      },
+      {
+        "slug": "razor-blade",
+        "dlc": "nr"
+      },
+      {
+        "slug": "mega-blast",
+        "dlc": "a"
+      },
+      {
+        "slug": "book-of-the-dead",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sacrificial-altar",
+        "dlc": "a+"
+      },
+      {
+        "slug": "void",
+        "dlc": "a+"
+      },
+      {
+        "slug": "plan-c",
+        "dlc": "a+"
+      },
+      {
+        "slug": "blood-rights",
+        "dlc": "r"
+      },
+      {
+        "slug": "damocles",
+        "dlc": "r"
+      },
+      {
+        "slug": "gello",
+        "dlc": "r"
+      },
+      {
+        "slug": "monster-manual",
+        "dlc": "r"
+      },
+      {
+        "slug": "sulfur",
+        "dlc": "r"
+      },
+      {
+        "slug": "abyss",
+        "dlc": "r"
+      },
+      {
+        "slug": "berserk",
+        "dlc": "r"
+      },
+      {
+        "slug": "dark-arts",
+        "dlc": "r"
+      },
+      {
+        "slug": "lemegeton",
+        "dlc": "r"
+      },
+      {
+        "slug": "forget-me-now",
+        "dlc": "r"
+      },
+      {
+        "slug": "abaddon"
+      },
+      {
+        "slug": "bloody-lust"
+      },
+      {
+        "slug": "brimstone"
+      },
+      {
+        "slug": "brother-bobby"
+      },
+      {
+        "slug": "ceremonial-robes"
+      },
+      {
+        "slug": "contract-from-below"
+      },
+      {
+        "slug": "dark-bum"
+      },
+      {
+        "slug": "dark-matter"
+      },
+      {
+        "slug": "dead-cat"
+      },
+      {
+        "slug": "deaths-touch"
+      },
+      {
+        "slug": "demon-baby"
+      },
+      {
+        "slug": "ghost-baby"
+      },
+      {
+        "slug": "gimpy"
+      },
+      {
+        "slug": "goat-head"
+      },
+      {
+        "slug": "guppys-collar"
+      },
+      {
+        "slug": "guppys-hairball"
+      },
+      {
+        "slug": "guppys-tail"
+      },
+      {
+        "slug": "headless-baby"
+      },
+      {
+        "slug": "judas-shadow"
+      },
+      {
+        "slug": "lil-brimstone"
+      },
+      {
+        "slug": "lord-of-the-pit"
+      },
+      {
+        "slug": "the-mark"
+      },
+      {
+        "slug": "missing-page-2"
+      },
+      {
+        "slug": "moms-knife"
+      },
+      {
+        "slug": "the-pact"
+      },
+      {
+        "slug": "pentagram"
+      },
+      {
+        "slug": "rotten-baby"
+      },
+      {
+        "slug": "sacrificial-dagger"
+      },
+      {
+        "slug": "sister-maggy"
+      },
+      {
+        "slug": "spirit-of-the-night"
+      },
+      {
+        "slug": "whore-of-babylon"
+      },
+      {
+        "slug": "athame",
+        "dlc": "a"
+      },
+      {
+        "slug": "betrayal",
+        "dlc": "a"
+      },
+      {
+        "slug": "black-powder",
+        "dlc": "a"
+      },
+      {
+        "slug": "cambion-conception",
+        "dlc": "a"
+      },
+      {
+        "slug": "empty-vessel",
+        "dlc": "a"
+      },
+      {
+        "slug": "incubus",
+        "dlc": "a"
+      },
+      {
+        "slug": "maw-of-the-void",
+        "dlc": "a"
+      },
+      {
+        "slug": "multidimensional-baby",
+        "dlc": "a"
+      },
+      {
+        "slug": "my-shadow",
+        "dlc": "a"
+      },
+      {
+        "slug": "succubus",
+        "dlc": "a"
+      },
+      {
+        "slug": "7-seals",
+        "dlc": "a+"
+      },
+      {
+        "slug": "dark-princes-crown",
+        "dlc": "a+"
+      },
+      {
+        "slug": "deaths-list",
+        "dlc": "a+"
+      },
+      {
+        "slug": "duality",
+        "dlc": "a+"
+      },
+      {
+        "slug": "eye-of-belial",
+        "dlc": "a+"
+      },
+      {
+        "slug": "lil-delirium",
+        "dlc": "a+"
+      },
+      {
+        "slug": "shade",
+        "dlc": "a+"
+      },
+      {
+        "slug": "2spooky",
+        "dlc": "r"
+      },
+      {
+        "slug": "azazels-rage",
+        "dlc": "r"
+      },
+      {
+        "slug": "backstabber",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-oath",
+        "dlc": "r"
+      },
+      {
+        "slug": "bloody-gust",
+        "dlc": "r"
+      },
+      {
+        "slug": "brimstone-bombs",
+        "dlc": "r"
+      },
+      {
+        "slug": "eye-of-the-occult",
+        "dlc": "r"
+      },
+      {
+        "slug": "false-phd",
+        "dlc": "r"
+      },
+      {
+        "slug": "guppys-eye",
+        "dlc": "r"
+      },
+      {
+        "slug": "hungry-soul",
+        "dlc": "r"
+      },
+      {
+        "slug": "lil-abaddon",
+        "dlc": "r"
+      },
+      {
+        "slug": "little-horn",
+        "dlc": "r"
+      },
+      {
+        "slug": "lusty-blood",
+        "dlc": "r"
+      },
+      {
+        "slug": "money-power",
+        "dlc": "r"
+      },
+      {
+        "slug": "ocular-rift",
+        "dlc": "r"
+      },
+      {
+        "slug": "ouija-board",
+        "dlc": "r"
+      },
+      {
+        "slug": "a-pound-of-flesh",
+        "dlc": "r"
+      },
+      {
+        "slug": "purgatory",
+        "dlc": "r"
+      },
+      {
+        "slug": "a-quarter",
+        "dlc": "r"
+      },
+      {
+        "slug": "sanguine-bond",
+        "dlc": "r"
+      },
+      {
+        "slug": "twisted-pair",
+        "dlc": "r"
+      },
+      {
+        "slug": "vengeful-spirit",
+        "dlc": "r"
+      },
+      {
+        "slug": "heartbreak",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "golden-chest",
+    "name": "Golden Chest",
+    "wikiTitle": "Golden Chest (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "guppys-head",
+        "dlc": "nr"
+      },
+      {
+        "slug": "bobs-rotten-head",
+        "dlc": "nr"
+      },
+      {
+        "slug": "tammys-head",
+        "dlc": "nr"
+      },
+      {
+        "slug": "iv-bag",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "fate"
+      },
+      {
+        "slug": "abel",
+        "dlc": "nr"
+      },
+      {
+        "slug": "bobs-brain",
+        "dlc": "nr"
+      },
+      {
+        "slug": "crickets-head",
+        "dlc": "nr"
+      },
+      {
+        "slug": "goat-head",
+        "dlc": "nr"
+      },
+      {
+        "slug": "infamy",
+        "dlc": "nr"
+      },
+      {
+        "slug": "fates-reward",
+        "dlc": "anr"
+      },
+      {
+        "slug": "head-of-the-keeper",
+        "dlc": "anr"
+      },
+      {
+        "slug": "steven",
+        "dlc": "anr"
+      },
+      {
+        "slug": "blood-bag",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "bomb-bag",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "little-baggy",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "mystery-sack",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "rune-bag",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "sack-of-pennies",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "sack-of-sacks",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "the-belt",
+        "dlc": "r"
+      },
+      {
+        "slug": "binky",
+        "dlc": "r"
+      },
+      {
+        "slug": "consolation-prize",
+        "dlc": "r"
+      },
+      {
+        "slug": "crack-jacks",
+        "dlc": "r"
+      },
+      {
+        "slug": "dads-lost-coin",
+        "dlc": "r"
+      },
+      {
+        "slug": "glass-eye",
+        "dlc": "r"
+      },
+      {
+        "slug": "latch-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "magic-8-ball",
+        "dlc": "r"
+      },
+      {
+        "slug": "match-book",
+        "dlc": "r"
+      },
+      {
+        "slug": "midnight-snack",
+        "dlc": "r"
+      },
+      {
+        "slug": "moms-pearls",
+        "dlc": "r"
+      },
+      {
+        "slug": "moms-ring",
+        "dlc": "r"
+      },
+      {
+        "slug": "moms-underwear",
+        "dlc": "r"
+      },
+      {
+        "slug": "mr-dolly",
+        "dlc": "r"
+      },
+      {
+        "slug": "a-quarter",
+        "dlc": "r"
+      },
+      {
+        "slug": "screw",
+        "dlc": "r"
+      },
+      {
+        "slug": "squeezy",
+        "dlc": "r"
+      },
+      {
+        "slug": "stapler",
+        "dlc": "r"
+      },
+      {
+        "slug": "torn-photo",
+        "dlc": "r"
+      },
+      {
+        "slug": "wire-coat-hanger",
+        "dlc": "r"
+      },
+      {
+        "slug": "pjs",
+        "dlc": "r"
+      },
+      {
+        "slug": "schoolbag",
+        "dlc": "r"
+      },
+      {
+        "slug": "lead-pencil",
+        "dlc": "r"
+      },
+      {
+        "slug": "orphan-socks",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "key-master",
+    "name": "Key Master",
+    "wikiTitle": "Key Master (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "dads-key"
+      },
+      {
+        "slug": "mr-me",
+        "dlc": "r"
+      },
+      {
+        "slug": "red-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "bbf"
+      },
+      {
+        "slug": "distant-admiration"
+      },
+      {
+        "slug": "forever-alone"
+      },
+      {
+        "slug": "halo-of-flies"
+      },
+      {
+        "slug": "moms-key"
+      },
+      {
+        "slug": "smart-fly"
+      },
+      {
+        "slug": "blue-babys-only-friend",
+        "dlc": "a"
+      },
+      {
+        "slug": "friend-zone",
+        "dlc": "a"
+      },
+      {
+        "slug": "key-bum",
+        "dlc": "a"
+      },
+      {
+        "slug": "lost-fly",
+        "dlc": "a"
+      },
+      {
+        "slug": "big-fan",
+        "dlc": "r"
+      },
+      {
+        "slug": "bot-fly",
+        "dlc": "r"
+      },
+      {
+        "slug": "fruity-plum",
+        "dlc": "r"
+      },
+      {
+        "slug": "latch-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "obsessed-fan",
+        "dlc": "r"
+      },
+      {
+        "slug": "papa-fly",
+        "dlc": "r"
+      },
+      {
+        "slug": "psy-fly",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-swarm",
+        "dlc": "r"
+      },
+      {
+        "slug": "yo-listen",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "library",
+    "name": "Library",
+    "wikiTitle": "Library (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "anarchist-cookbook"
+      },
+      {
+        "slug": "the-bible"
+      },
+      {
+        "slug": "the-book-of-belial"
+      },
+      {
+        "slug": "book-of-revelations"
+      },
+      {
+        "slug": "book-of-secrets"
+      },
+      {
+        "slug": "book-of-shadows"
+      },
+      {
+        "slug": "the-book-of-sin"
+      },
+      {
+        "slug": "how-to-jump"
+      },
+      {
+        "slug": "the-necronomicon"
+      },
+      {
+        "slug": "satanic-bible"
+      },
+      {
+        "slug": "telepathy-for-dummies"
+      },
+      {
+        "slug": "book-of-the-dead",
+        "dlc": "a+"
+      },
+      {
+        "slug": "monster-manual",
+        "dlc": "r"
+      },
+      {
+        "slug": "lemegeton",
+        "dlc": "r"
+      },
+      {
+        "slug": "book-of-virtues",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "moms-chest",
+    "name": "Mom's Chest",
+    "wikiTitle": "Mom's Chest (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "moms-bottle-of-pills"
+      },
+      {
+        "slug": "moms-box"
+      },
+      {
+        "slug": "moms-bra"
+      },
+      {
+        "slug": "moms-pad"
+      },
+      {
+        "slug": "red-key"
+      },
+      {
+        "slug": "moms-coin-purse"
+      },
+      {
+        "slug": "moms-contacts"
+      },
+      {
+        "slug": "moms-eye"
+      },
+      {
+        "slug": "moms-eyeshadow"
+      },
+      {
+        "slug": "moms-heels"
+      },
+      {
+        "slug": "moms-key"
+      },
+      {
+        "slug": "moms-lipstick"
+      },
+      {
+        "slug": "moms-pearls"
+      },
+      {
+        "slug": "moms-perfume"
+      },
+      {
+        "slug": "moms-purse"
+      },
+      {
+        "slug": "moms-razor"
+      },
+      {
+        "slug": "moms-ring"
+      },
+      {
+        "slug": "moms-underwear"
+      },
+      {
+        "slug": "moms-wig"
+      },
+      {
+        "slug": "moms-knife"
+      }
+    ]
+  },
+  {
+    "slug": "planetarium",
+    "name": "Planetarium",
+    "wikiTitle": "Planetarium (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "jupiter"
+      },
+      {
+        "slug": "luna"
+      },
+      {
+        "slug": "mars"
+      },
+      {
+        "slug": "mercurius"
+      },
+      {
+        "slug": "neptunus"
+      },
+      {
+        "slug": "pluto"
+      },
+      {
+        "slug": "saturnus"
+      },
+      {
+        "slug": "sol"
+      },
+      {
+        "slug": "terra"
+      },
+      {
+        "slug": "uranus"
+      },
+      {
+        "slug": "venus"
+      }
+    ]
+  },
+  {
+    "slug": "red-chest",
+    "name": "Red Chest",
+    "wikiTitle": "Red Chest (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "guppys-head"
+      },
+      {
+        "slug": "guppys-paw"
+      },
+      {
+        "slug": "pandoras-box"
+      },
+      {
+        "slug": "plan-c",
+        "dlc": "a+"
+      },
+      {
+        "slug": "magic-skin",
+        "dlc": "r"
+      },
+      {
+        "slug": "red-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "dead-cat"
+      },
+      {
+        "slug": "guppys-collar"
+      },
+      {
+        "slug": "guppys-tail"
+      },
+      {
+        "slug": "goat-head",
+        "dlc": "na"
+      },
+      {
+        "slug": "bobs-curse",
+        "dlc": "a"
+      },
+      {
+        "slug": "curse-of-the-tower",
+        "dlc": "a"
+      },
+      {
+        "slug": "cursed-eye",
+        "dlc": "a"
+      },
+      {
+        "slug": "guppys-eye",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-puppy",
+        "dlc": "r"
+      },
+      {
+        "slug": "false-phd",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "rotten-beggar",
+    "name": "Rotten Beggar",
+    "wikiTitle": "Rotten Beggar (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "bobs-rotten-head"
+      },
+      {
+        "slug": "compost"
+      },
+      {
+        "slug": "yuck-heart"
+      },
+      {
+        "slug": "bobs-brain"
+      },
+      {
+        "slug": "bobs-curse"
+      },
+      {
+        "slug": "rotten-baby"
+      },
+      {
+        "slug": "rotten-meat"
+      },
+      {
+        "slug": "dead-onion"
+      },
+      {
+        "slug": "rotten-tomato"
+      }
+    ]
+  },
+  {
+    "slug": "secret-room",
+    "name": "Secret Room",
+    "wikiTitle": "Secret Room (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "blank-card"
+      },
+      {
+        "slug": "book-of-secrets"
+      },
+      {
+        "slug": "forget-me-now"
+      },
+      {
+        "slug": "the-necronomicon"
+      },
+      {
+        "slug": "we-need-to-go-deeper"
+      },
+      {
+        "slug": "compost",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "clear-rune",
+        "dlc": "r"
+      },
+      {
+        "slug": "death-certificate",
+        "dlc": "r"
+      },
+      {
+        "slug": "d-infinity",
+        "dlc": "r"
+      },
+      {
+        "slug": "esau-jr",
+        "dlc": "r"
+      },
+      {
+        "slug": "eternal-d6",
+        "dlc": "r"
+      },
+      {
+        "slug": "flip",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-box",
+        "dlc": "r"
+      },
+      {
+        "slug": "mega-mush",
+        "dlc": "r"
+      },
+      {
+        "slug": "placebo",
+        "dlc": "r"
+      },
+      {
+        "slug": "red-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "r-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "spindown-dice",
+        "dlc": "r"
+      },
+      {
+        "slug": "wavy-cap",
+        "dlc": "r"
+      },
+      {
+        "slug": "1up"
+      },
+      {
+        "slug": "black-lotus"
+      },
+      {
+        "slug": "cursed-eye"
+      },
+      {
+        "slug": "infamy"
+      },
+      {
+        "slug": "lost-contact"
+      },
+      {
+        "slug": "missing-no"
+      },
+      {
+        "slug": "missing-page-2"
+      },
+      {
+        "slug": "mystery-sack"
+      },
+      {
+        "slug": "odd-mushroom-large"
+      },
+      {
+        "slug": "odd-mushroom-thin"
+      },
+      {
+        "slug": "pyro"
+      },
+      {
+        "slug": "raw-liver"
+      },
+      {
+        "slug": "samsons-chains"
+      },
+      {
+        "slug": "skeleton-key"
+      },
+      {
+        "slug": "transcendence"
+      },
+      {
+        "slug": "a-quarter",
+        "dlc": "nr"
+      },
+      {
+        "slug": "bomb-bag",
+        "dlc": "nr"
+      },
+      {
+        "slug": "mr-mega",
+        "dlc": "nr"
+      },
+      {
+        "slug": "sack-of-pennies",
+        "dlc": "nr"
+      },
+      {
+        "slug": "gb-bug",
+        "dlc": "a"
+      },
+      {
+        "slug": "key-bum",
+        "dlc": "a"
+      },
+      {
+        "slug": "rune-bag",
+        "dlc": "a"
+      },
+      {
+        "slug": "dads-ring",
+        "dlc": "a+"
+      },
+      {
+        "slug": "eye-of-greed",
+        "dlc": "a+"
+      },
+      {
+        "slug": "greeds-gullet",
+        "dlc": "a+"
+      },
+      {
+        "slug": "astral-projection",
+        "dlc": "r"
+      },
+      {
+        "slug": "binge-eater",
+        "dlc": "r"
+      },
+      {
+        "slug": "chaos",
+        "dlc": "r"
+      },
+      {
+        "slug": "cracked-orb",
+        "dlc": "r"
+      },
+      {
+        "slug": "echo-chamber",
+        "dlc": "r"
+      },
+      {
+        "slug": "epic-fetus",
+        "dlc": "r"
+      },
+      {
+        "slug": "evil-charm",
+        "dlc": "r"
+      },
+      {
+        "slug": "glitched-crown",
+        "dlc": "r"
+      },
+      {
+        "slug": "inner-child",
+        "dlc": "r"
+      },
+      {
+        "slug": "isaacs-tomb",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-kin",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-sack",
+        "dlc": "r"
+      },
+      {
+        "slug": "lost-soul",
+        "dlc": "r"
+      },
+      {
+        "slug": "orphan-socks",
+        "dlc": "r"
+      },
+      {
+        "slug": "rock-bottom",
+        "dlc": "r"
+      },
+      {
+        "slug": "sack-head",
+        "dlc": "r"
+      },
+      {
+        "slug": "sack-of-sacks",
+        "dlc": "r"
+      },
+      {
+        "slug": "sausage",
+        "dlc": "r"
+      },
+      {
+        "slug": "spirit-shackles",
+        "dlc": "r"
+      },
+      {
+        "slug": "strawman",
+        "dlc": "r"
+      },
+      {
+        "slug": "tmtrainer",
+        "dlc": "r"
+      },
+      {
+        "slug": "sacred-orb",
+        "dlc": "r"
+      },
+      {
+        "slug": "vanishing-twin",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "shop",
+    "name": "Shop",
+    "wikiTitle": "Shop (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "the-bible"
+      },
+      {
+        "slug": "the-boomerang"
+      },
+      {
+        "slug": "the-candle"
+      },
+      {
+        "slug": "converter"
+      },
+      {
+        "slug": "deck-of-cards"
+      },
+      {
+        "slug": "the-jar"
+      },
+      {
+        "slug": "magic-fingers"
+      },
+      {
+        "slug": "moms-bottle-of-pills"
+      },
+      {
+        "slug": "pandoras-box"
+      },
+      {
+        "slug": "portable-slot"
+      },
+      {
+        "slug": "red-candle"
+      },
+      {
+        "slug": "remote-detonator"
+      },
+      {
+        "slug": "blank-card"
+      },
+      {
+        "slug": "box-of-friends",
+        "dlc": "a"
+      },
+      {
+        "slug": "diplopia",
+        "dlc": "a"
+      },
+      {
+        "slug": "glowing-hourglass",
+        "dlc": "a"
+      },
+      {
+        "slug": "jar-of-flies",
+        "dlc": "a"
+      },
+      {
+        "slug": "moms-box",
+        "dlc": "a"
+      },
+      {
+        "slug": "placebo",
+        "dlc": "a"
+      },
+      {
+        "slug": "tear-detonator",
+        "dlc": "a"
+      },
+      {
+        "slug": "ventricle-razor",
+        "dlc": "a"
+      },
+      {
+        "slug": "wooden-nickel",
+        "dlc": "a"
+      },
+      {
+        "slug": "compost",
+        "dlc": "a+"
+      },
+      {
+        "slug": "coupon",
+        "dlc": "a+"
+      },
+      {
+        "slug": "dull-razor",
+        "dlc": "a+"
+      },
+      {
+        "slug": "moving-box",
+        "dlc": "a+"
+      },
+      {
+        "slug": "mr-me",
+        "dlc": "a+"
+      },
+      {
+        "slug": "mystery-gift",
+        "dlc": "a+"
+      },
+      {
+        "slug": "potato-peeler",
+        "dlc": "a+"
+      },
+      {
+        "slug": "smelter",
+        "dlc": "a+"
+      },
+      {
+        "slug": "crooked-penny",
+        "dlc": "a+"
+      },
+      {
+        "slug": "mama-mega",
+        "dlc": "a+"
+      },
+      {
+        "slug": "plan-c",
+        "dlc": "a+"
+      },
+      {
+        "slug": "alabaster-box",
+        "dlc": "r"
+      },
+      {
+        "slug": "eraser",
+        "dlc": "r"
+      },
+      {
+        "slug": "moms-bracelet",
+        "dlc": "r"
+      },
+      {
+        "slug": "notched-axe-zh",
+        "dlc": "r"
+      },
+      {
+        "slug": "sharp-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-box",
+        "dlc": "r"
+      },
+      {
+        "slug": "magic-skin",
+        "dlc": "r"
+      },
+      {
+        "slug": "9-volt"
+      },
+      {
+        "slug": "the-battery"
+      },
+      {
+        "slug": "bffs"
+      },
+      {
+        "slug": "black-candle"
+      },
+      {
+        "slug": "blue-map"
+      },
+      {
+        "slug": "bogo-bombs"
+      },
+      {
+        "slug": "broken-watch"
+      },
+      {
+        "slug": "champion-belt"
+      },
+      {
+        "slug": "the-compass"
+      },
+      {
+        "slug": "fanny-pack"
+      },
+      {
+        "slug": "habit"
+      },
+      {
+        "slug": "hive-mind"
+      },
+      {
+        "slug": "humbleing-bundle"
+      },
+      {
+        "slug": "the-ladder"
+      },
+      {
+        "slug": "little-baggy"
+      },
+      {
+        "slug": "moms-coin-purse"
+      },
+      {
+        "slug": "moms-key"
+      },
+      {
+        "slug": "moms-purse"
+      },
+      {
+        "slug": "phd"
+      },
+      {
+        "slug": "piggy-bank"
+      },
+      {
+        "slug": "sharp-plug"
+      },
+      {
+        "slug": "starter-deck"
+      },
+      {
+        "slug": "steam-sale"
+      },
+      {
+        "slug": "stop-watch"
+      },
+      {
+        "slug": "theres-options"
+      },
+      {
+        "slug": "treasure-map"
+      },
+      {
+        "slug": "car-battery",
+        "dlc": "a"
+      },
+      {
+        "slug": "charged-baby",
+        "dlc": "a"
+      },
+      {
+        "slug": "deep-pockets",
+        "dlc": "a"
+      },
+      {
+        "slug": "more-options",
+        "dlc": "a"
+      },
+      {
+        "slug": "night-light",
+        "dlc": "a"
+      },
+      {
+        "slug": "pay-to-play",
+        "dlc": "a"
+      },
+      {
+        "slug": "restock",
+        "dlc": "a"
+      },
+      {
+        "slug": "spider-mod",
+        "dlc": "a"
+      },
+      {
+        "slug": "chaos",
+        "dlc": "a"
+      },
+      {
+        "slug": "sack-head",
+        "dlc": "a"
+      },
+      {
+        "slug": "blanket",
+        "dlc": "a+"
+      },
+      {
+        "slug": "broken-modem",
+        "dlc": "a+"
+      },
+      {
+        "slug": "buddy-in-a-box",
+        "dlc": "a+"
+      },
+      {
+        "slug": "jumper-cables",
+        "dlc": "a+"
+      },
+      {
+        "slug": "king-baby",
+        "dlc": "a+"
+      },
+      {
+        "slug": "poke-go",
+        "dlc": "a+"
+      },
+      {
+        "slug": "schoolbag",
+        "dlc": "a+"
+      },
+      {
+        "slug": "tarot-cloth",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sack-of-sacks",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "4-5-volt",
+        "dlc": "r"
+      },
+      {
+        "slug": "battery-pack",
+        "dlc": "r"
+      },
+      {
+        "slug": "birthright",
+        "dlc": "r"
+      },
+      {
+        "slug": "booster-pack",
+        "dlc": "r"
+      },
+      {
+        "slug": "dream-catcher",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-sack",
+        "dlc": "r"
+      },
+      {
+        "slug": "member-card",
+        "dlc": "r"
+      },
+      {
+        "slug": "options",
+        "dlc": "r"
+      },
+      {
+        "slug": "red-stew",
+        "dlc": "r"
+      },
+      {
+        "slug": "voodoo-head",
+        "dlc": "r"
+      },
+      {
+        "slug": "card-reading",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "treasure-room",
+    "name": "Treasure Room",
+    "wikiTitle": "Treasure Room (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "anarchist-cookbook"
+      },
+      {
+        "slug": "the-bean"
+      },
+      {
+        "slug": "best-friend"
+      },
+      {
+        "slug": "blood-rights"
+      },
+      {
+        "slug": "bobs-rotten-head"
+      },
+      {
+        "slug": "book-of-revelations"
+      },
+      {
+        "slug": "book-of-secrets"
+      },
+      {
+        "slug": "book-of-shadows"
+      },
+      {
+        "slug": "the-book-of-sin"
+      },
+      {
+        "slug": "box-of-spiders"
+      },
+      {
+        "slug": "butter-bean"
+      },
+      {
+        "slug": "crack-the-sky"
+      },
+      {
+        "slug": "d10"
+      },
+      {
+        "slug": "d100"
+      },
+      {
+        "slug": "d20"
+      },
+      {
+        "slug": "d4"
+      },
+      {
+        "slug": "the-d6"
+      },
+      {
+        "slug": "dads-key"
+      },
+      {
+        "slug": "dead-sea-scrolls"
+      },
+      {
+        "slug": "deck-of-cards"
+      },
+      {
+        "slug": "doctors-remote"
+      },
+      {
+        "slug": "flush"
+      },
+      {
+        "slug": "forget-me-now"
+      },
+      {
+        "slug": "the-gamekid"
+      },
+      {
+        "slug": "the-hourglass"
+      },
+      {
+        "slug": "how-to-jump"
+      },
+      {
+        "slug": "isaacs-tears"
+      },
+      {
+        "slug": "kamikaze"
+      },
+      {
+        "slug": "lemon-mishap"
+      },
+      {
+        "slug": "magic-fingers"
+      },
+      {
+        "slug": "moms-bottle-of-pills"
+      },
+      {
+        "slug": "moms-bra"
+      },
+      {
+        "slug": "moms-pad"
+      },
+      {
+        "slug": "monster-manual"
+      },
+      {
+        "slug": "monstros-tooth"
+      },
+      {
+        "slug": "mr-boom"
+      },
+      {
+        "slug": "my-little-unicorn"
+      },
+      {
+        "slug": "the-pinking-shears"
+      },
+      {
+        "slug": "the-poop"
+      },
+      {
+        "slug": "prayer-card"
+      },
+      {
+        "slug": "remote-detonator"
+      },
+      {
+        "slug": "satanic-bible"
+      },
+      {
+        "slug": "scissors"
+      },
+      {
+        "slug": "shoop-da-whoop"
+      },
+      {
+        "slug": "spider-butt"
+      },
+      {
+        "slug": "telepathy-for-dummies"
+      },
+      {
+        "slug": "teleport"
+      },
+      {
+        "slug": "undefined"
+      },
+      {
+        "slug": "unicorn-stump"
+      },
+      {
+        "slug": "yum-heart"
+      },
+      {
+        "slug": "blank-card",
+        "dlc": "nr"
+      },
+      {
+        "slug": "crystal-ball",
+        "dlc": "nr"
+      },
+      {
+        "slug": "notched-axe-zh",
+        "dlc": "nr"
+      },
+      {
+        "slug": "d12",
+        "dlc": "a"
+      },
+      {
+        "slug": "d7",
+        "dlc": "a"
+      },
+      {
+        "slug": "d8",
+        "dlc": "a"
+      },
+      {
+        "slug": "friendly-ball",
+        "dlc": "a"
+      },
+      {
+        "slug": "glass-cannon",
+        "dlc": "a"
+      },
+      {
+        "slug": "glowing-hourglass",
+        "dlc": "a"
+      },
+      {
+        "slug": "kidney-bean",
+        "dlc": "a"
+      },
+      {
+        "slug": "mega-bean",
+        "dlc": "a"
+      },
+      {
+        "slug": "mine-crafter",
+        "dlc": "a"
+      },
+      {
+        "slug": "teleport-2-0",
+        "dlc": "a"
+      },
+      {
+        "slug": "black-hole",
+        "dlc": "a+"
+      },
+      {
+        "slug": "book-of-the-dead",
+        "dlc": "a+"
+      },
+      {
+        "slug": "brown-nugget",
+        "dlc": "a+"
+      },
+      {
+        "slug": "clicker",
+        "dlc": "a+"
+      },
+      {
+        "slug": "crooked-penny",
+        "dlc": "a+"
+      },
+      {
+        "slug": "d1",
+        "dlc": "a+"
+      },
+      {
+        "slug": "dataminer",
+        "dlc": "a+"
+      },
+      {
+        "slug": "metronome",
+        "dlc": "a+"
+      },
+      {
+        "slug": "pause",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sharp-straw",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sprinkler",
+        "dlc": "a+"
+      },
+      {
+        "slug": "telekinesis",
+        "dlc": "a+"
+      },
+      {
+        "slug": "d-infinity",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "wait-what",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "anima-sola",
+        "dlc": "r"
+      },
+      {
+        "slug": "bag-of-crafting",
+        "dlc": "r"
+      },
+      {
+        "slug": "decap-attack",
+        "dlc": "r"
+      },
+      {
+        "slug": "everything-jar",
+        "dlc": "r"
+      },
+      {
+        "slug": "fortune-cookie",
+        "dlc": "r"
+      },
+      {
+        "slug": "free-lemonade",
+        "dlc": "r"
+      },
+      {
+        "slug": "friend-finder",
+        "dlc": "r"
+      },
+      {
+        "slug": "golden-razor",
+        "dlc": "r"
+      },
+      {
+        "slug": "larynx",
+        "dlc": "r"
+      },
+      {
+        "slug": "meat-cleaver",
+        "dlc": "r"
+      },
+      {
+        "slug": "razor-blade",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-scooper",
+        "dlc": "r"
+      },
+      {
+        "slug": "spin-to-win",
+        "dlc": "r"
+      },
+      {
+        "slug": "stitches",
+        "dlc": "r"
+      },
+      {
+        "slug": "sumptorium",
+        "dlc": "r"
+      },
+      {
+        "slug": "suplex",
+        "dlc": "r"
+      },
+      {
+        "slug": "tammys-head",
+        "dlc": "r"
+      },
+      {
+        "slug": "yuck-heart",
+        "dlc": "r"
+      },
+      {
+        "slug": "esau-jr",
+        "dlc": "r"
+      },
+      {
+        "slug": "eternal-d6",
+        "dlc": "r"
+      },
+      {
+        "slug": "gello",
+        "dlc": "r"
+      },
+      {
+        "slug": "plum-flute",
+        "dlc": "r"
+      },
+      {
+        "slug": "mega-mush",
+        "dlc": "r"
+      },
+      {
+        "slug": "spindown-dice",
+        "dlc": "r"
+      },
+      {
+        "slug": "20-20"
+      },
+      {
+        "slug": "3-dollar-bill"
+      },
+      {
+        "slug": "less-than-three"
+      },
+      {
+        "slug": "blue-babys-only-friend"
+      },
+      {
+        "slug": "abel"
+      },
+      {
+        "slug": "anemic"
+      },
+      {
+        "slug": "ankh"
+      },
+      {
+        "slug": "anti-gravity"
+      },
+      {
+        "slug": "aquarius"
+      },
+      {
+        "slug": "aries"
+      },
+      {
+        "slug": "bbf"
+      },
+      {
+        "slug": "ball-of-tar"
+      },
+      {
+        "slug": "best-bud"
+      },
+      {
+        "slug": "big-fan"
+      },
+      {
+        "slug": "the-black-bean"
+      },
+      {
+        "slug": "blood-of-the-martyr"
+      },
+      {
+        "slug": "bloody-lust"
+      },
+      {
+        "slug": "bobs-brain"
+      },
+      {
+        "slug": "bobs-curse"
+      },
+      {
+        "slug": "bobby-bomb"
+      },
+      {
+        "slug": "bomb-bag"
+      },
+      {
+        "slug": "boom"
+      },
+      {
+        "slug": "brother-bobby"
+      },
+      {
+        "slug": "bucket-of-lard"
+      },
+      {
+        "slug": "bum-friend"
+      },
+      {
+        "slug": "butt-bombs"
+      },
+      {
+        "slug": "cains-other-eye"
+      },
+      {
+        "slug": "cancer"
+      },
+      {
+        "slug": "capricorn"
+      },
+      {
+        "slug": "celtic-cross"
+      },
+      {
+        "slug": "charm-of-the-vampire"
+      },
+      {
+        "slug": "chemical-peel"
+      },
+      {
+        "slug": "chocolate-milk"
+      },
+      {
+        "slug": "the-common-cold"
+      },
+      {
+        "slug": "crickets-body"
+      },
+      {
+        "slug": "crickets-head"
+      },
+      {
+        "slug": "cupids-arrow"
+      },
+      {
+        "slug": "cursed-eye"
+      },
+      {
+        "slug": "daddy-longlegs"
+      },
+      {
+        "slug": "dark-bum"
+      },
+      {
+        "slug": "dead-bird"
+      },
+      {
+        "slug": "dead-onion"
+      },
+      {
+        "slug": "demon-baby"
+      },
+      {
+        "slug": "distant-admiration"
+      },
+      {
+        "slug": "dr-fetus"
+      },
+      {
+        "slug": "dry-baby"
+      },
+      {
+        "slug": "e-coli"
+      },
+      {
+        "slug": "eves-mascara"
+      },
+      {
+        "slug": "experimental-treatment"
+      },
+      {
+        "slug": "fire-mind"
+      },
+      {
+        "slug": "forever-alone"
+      },
+      {
+        "slug": "gemini"
+      },
+      {
+        "slug": "ghost-baby"
+      },
+      {
+        "slug": "gimpy"
+      },
+      {
+        "slug": "gnawed-leaf"
+      },
+      {
+        "slug": "guillotine"
+      },
+      {
+        "slug": "halo-of-flies"
+      },
+      {
+        "slug": "harlequin-baby"
+      },
+      {
+        "slug": "headless-baby"
+      },
+      {
+        "slug": "holy-water"
+      },
+      {
+        "slug": "hot-bombs"
+      },
+      {
+        "slug": "infamy"
+      },
+      {
+        "slug": "infestation-2"
+      },
+      {
+        "slug": "infestation"
+      },
+      {
+        "slug": "the-inner-eye"
+      },
+      {
+        "slug": "ipecac"
+      },
+      {
+        "slug": "iron-bar"
+      },
+      {
+        "slug": "isaacs-heart"
+      },
+      {
+        "slug": "juicy-sack"
+      },
+      {
+        "slug": "lazarus-rags"
+      },
+      {
+        "slug": "leech"
+      },
+      {
+        "slug": "leo"
+      },
+      {
+        "slug": "libra"
+      },
+      {
+        "slug": "lil-brimstone"
+      },
+      {
+        "slug": "lil-haunt"
+      },
+      {
+        "slug": "little-c-h-a-d"
+      },
+      {
+        "slug": "little-chubby"
+      },
+      {
+        "slug": "little-gish"
+      },
+      {
+        "slug": "little-steven"
+      },
+      {
+        "slug": "lokis-horns"
+      },
+      {
+        "slug": "lost-contact"
+      },
+      {
+        "slug": "lucky-foot"
+      },
+      {
+        "slug": "the-ludovico-technique"
+      },
+      {
+        "slug": "maggys-bow"
+      },
+      {
+        "slug": "magneto"
+      },
+      {
+        "slug": "midas-touch"
+      },
+      {
+        "slug": "mini-mush"
+      },
+      {
+        "slug": "mitre"
+      },
+      {
+        "slug": "moms-contacts"
+      },
+      {
+        "slug": "moms-eye"
+      },
+      {
+        "slug": "moms-eyeshadow"
+      },
+      {
+        "slug": "moms-perfume"
+      },
+      {
+        "slug": "moms-wig"
+      },
+      {
+        "slug": "money-power"
+      },
+      {
+        "slug": "mongo-baby"
+      },
+      {
+        "slug": "monstros-lung"
+      },
+      {
+        "slug": "mr-mega"
+      },
+      {
+        "slug": "the-mulligan"
+      },
+      {
+        "slug": "mutant-spider"
+      },
+      {
+        "slug": "my-reflection"
+      },
+      {
+        "slug": "mysterious-liquid"
+      },
+      {
+        "slug": "mystery-sack"
+      },
+      {
+        "slug": "number-one"
+      },
+      {
+        "slug": "odd-mushroom-large"
+      },
+      {
+        "slug": "odd-mushroom-thin"
+      },
+      {
+        "slug": "ouija-board"
+      },
+      {
+        "slug": "the-parasite"
+      },
+      {
+        "slug": "the-peeper"
+      },
+      {
+        "slug": "phd"
+      },
+      {
+        "slug": "piggy-bank"
+      },
+      {
+        "slug": "pisces"
+      },
+      {
+        "slug": "polyphemus"
+      },
+      {
+        "slug": "proptosis"
+      },
+      {
+        "slug": "punching-bag"
+      },
+      {
+        "slug": "pyromaniac"
+      },
+      {
+        "slug": "rainbow-baby"
+      },
+      {
+        "slug": "robo-baby-2-0"
+      },
+      {
+        "slug": "robo-baby"
+      },
+      {
+        "slug": "roid-rage"
+      },
+      {
+        "slug": "rosary"
+      },
+      {
+        "slug": "rotten-baby"
+      },
+      {
+        "slug": "rubber-cement"
+      },
+      {
+        "slug": "smb-super-fan"
+      },
+      {
+        "slug": "sack-of-pennies"
+      },
+      {
+        "slug": "sacrificial-dagger"
+      },
+      {
+        "slug": "sad-bombs"
+      },
+      {
+        "slug": "the-sad-onion"
+      },
+      {
+        "slug": "sagittarius"
+      },
+      {
+        "slug": "samsons-chains"
+      },
+      {
+        "slug": "scapular"
+      },
+      {
+        "slug": "scorpio"
+      },
+      {
+        "slug": "sissy-longlegs"
+      },
+      {
+        "slug": "sister-maggy"
+      },
+      {
+        "slug": "smart-fly"
+      },
+      {
+        "slug": "soy-milk"
+      },
+      {
+        "slug": "speed-ball"
+      },
+      {
+        "slug": "spelunker-hat"
+      },
+      {
+        "slug": "spider-bite"
+      },
+      {
+        "slug": "spiderbaby"
+      },
+      {
+        "slug": "spoon-bender"
+      },
+      {
+        "slug": "stem-cells"
+      },
+      {
+        "slug": "stigmata"
+      },
+      {
+        "slug": "strange-attractor"
+      },
+      {
+        "slug": "super-bandage"
+      },
+      {
+        "slug": "taurus"
+      },
+      {
+        "slug": "tech-5"
+      },
+      {
+        "slug": "technology-2"
+      },
+      {
+        "slug": "technology"
+      },
+      {
+        "slug": "thunder-thighs"
+      },
+      {
+        "slug": "tiny-planet"
+      },
+      {
+        "slug": "tough-love"
+      },
+      {
+        "slug": "virgo"
+      },
+      {
+        "slug": "the-virus"
+      },
+      {
+        "slug": "the-wafer"
+      },
+      {
+        "slug": "x-ray-vision"
+      },
+      {
+        "slug": "the-halo"
+      },
+      {
+        "slug": "magic-mushroom"
+      },
+      {
+        "slug": "the-body"
+      },
+      {
+        "slug": "deaths-touch"
+      },
+      {
+        "slug": "holy-mantle"
+      },
+      {
+        "slug": "the-mind"
+      },
+      {
+        "slug": "moms-knife"
+      },
+      {
+        "slug": "the-relic"
+      },
+      {
+        "slug": "the-soul"
+      },
+      {
+        "slug": "epic-fetus"
+      },
+      {
+        "slug": "pyro"
+      },
+      {
+        "slug": "a-quarter",
+        "dlc": "nr"
+      },
+      {
+        "slug": "judas-shadow",
+        "dlc": "nr"
+      },
+      {
+        "slug": "8-inch-nails",
+        "dlc": "a"
+      },
+      {
+        "slug": "betrayal",
+        "dlc": "a"
+      },
+      {
+        "slug": "bomber-boy",
+        "dlc": "a"
+      },
+      {
+        "slug": "bumbo",
+        "dlc": "a"
+      },
+      {
+        "slug": "bursting-sack",
+        "dlc": "a"
+      },
+      {
+        "slug": "continuum",
+        "dlc": "a"
+      },
+      {
+        "slug": "curse-of-the-tower",
+        "dlc": "a"
+      },
+      {
+        "slug": "dead-eye",
+        "dlc": "a"
+      },
+      {
+        "slug": "edens-blessing",
+        "dlc": "a"
+      },
+      {
+        "slug": "epiphora",
+        "dlc": "a"
+      },
+      {
+        "slug": "evil-eye",
+        "dlc": "a"
+      },
+      {
+        "slug": "explosivo",
+        "dlc": "a"
+      },
+      {
+        "slug": "farting-baby",
+        "dlc": "a"
+      },
+      {
+        "slug": "fates-reward",
+        "dlc": "a"
+      },
+      {
+        "slug": "friend-zone",
+        "dlc": "a"
+      },
+      {
+        "slug": "fruit-cake",
+        "dlc": "a"
+      },
+      {
+        "slug": "gb-bug",
+        "dlc": "a"
+      },
+      {
+        "slug": "glitter-bombs",
+        "dlc": "a"
+      },
+      {
+        "slug": "gods-flesh",
+        "dlc": "a"
+      },
+      {
+        "slug": "host-hat",
+        "dlc": "a"
+      },
+      {
+        "slug": "key-bum",
+        "dlc": "a"
+      },
+      {
+        "slug": "kidney-stone",
+        "dlc": "a"
+      },
+      {
+        "slug": "lil-chest",
+        "dlc": "a"
+      },
+      {
+        "slug": "lil-gurdy",
+        "dlc": "a"
+      },
+      {
+        "slug": "lil-loki",
+        "dlc": "a"
+      },
+      {
+        "slug": "lost-fly",
+        "dlc": "a"
+      },
+      {
+        "slug": "lusty-blood",
+        "dlc": "a"
+      },
+      {
+        "slug": "marked",
+        "dlc": "a"
+      },
+      {
+        "slug": "milk",
+        "dlc": "a"
+      },
+      {
+        "slug": "multidimensional-baby",
+        "dlc": "a"
+      },
+      {
+        "slug": "no-2",
+        "dlc": "a"
+      },
+      {
+        "slug": "obsessed-fan",
+        "dlc": "a"
+      },
+      {
+        "slug": "papa-fly",
+        "dlc": "a"
+      },
+      {
+        "slug": "pupula-duplex",
+        "dlc": "a"
+      },
+      {
+        "slug": "purity",
+        "dlc": "a"
+      },
+      {
+        "slug": "rune-bag",
+        "dlc": "a"
+      },
+      {
+        "slug": "scatter-bombs",
+        "dlc": "a"
+      },
+      {
+        "slug": "seraphim",
+        "dlc": "a"
+      },
+      {
+        "slug": "serpents-kiss",
+        "dlc": "a"
+      },
+      {
+        "slug": "sticky-bombs",
+        "dlc": "a"
+      },
+      {
+        "slug": "tech-x",
+        "dlc": "a"
+      },
+      {
+        "slug": "toxic-shock",
+        "dlc": "a"
+      },
+      {
+        "slug": "tractor-beam",
+        "dlc": "a"
+      },
+      {
+        "slug": "the-wiz",
+        "dlc": "a"
+      },
+      {
+        "slug": "zodiac",
+        "dlc": "a"
+      },
+      {
+        "slug": "holy-light",
+        "dlc": "a"
+      },
+      {
+        "slug": "acid-baby",
+        "dlc": "a+"
+      },
+      {
+        "slug": "adrenaline",
+        "dlc": "a+"
+      },
+      {
+        "slug": "analog-stick",
+        "dlc": "a+"
+      },
+      {
+        "slug": "angry-fly",
+        "dlc": "a+"
+      },
+      {
+        "slug": "apple",
+        "dlc": "a+"
+      },
+      {
+        "slug": "backstabber",
+        "dlc": "a+"
+      },
+      {
+        "slug": "big-chubby",
+        "dlc": "a+"
+      },
+      {
+        "slug": "bloodshot-eye",
+        "dlc": "a+"
+      },
+      {
+        "slug": "bozo",
+        "dlc": "a+"
+      },
+      {
+        "slug": "brittle-bones",
+        "dlc": "a+"
+      },
+      {
+        "slug": "camo-undies",
+        "dlc": "a+"
+      },
+      {
+        "slug": "compound-fracture",
+        "dlc": "a+"
+      },
+      {
+        "slug": "cone-head",
+        "dlc": "a+"
+      },
+      {
+        "slug": "contagion",
+        "dlc": "a+"
+      },
+      {
+        "slug": "dead-tooth",
+        "dlc": "a+"
+      },
+      {
+        "slug": "depression",
+        "dlc": "a+"
+      },
+      {
+        "slug": "dog-tooth",
+        "dlc": "a+"
+      },
+      {
+        "slug": "euthanasia",
+        "dlc": "a+"
+      },
+      {
+        "slug": "fast-bombs",
+        "dlc": "a+"
+      },
+      {
+        "slug": "finger",
+        "dlc": "a+"
+      },
+      {
+        "slug": "flat-stone",
+        "dlc": "a+"
+      },
+      {
+        "slug": "ghost-pepper",
+        "dlc": "a+"
+      },
+      {
+        "slug": "glaucoma",
+        "dlc": "a+"
+      },
+      {
+        "slug": "haemolacria",
+        "dlc": "a+"
+      },
+      {
+        "slug": "hallowed-ground",
+        "dlc": "a+"
+      },
+      {
+        "slug": "hushy",
+        "dlc": "a+"
+      },
+      {
+        "slug": "jacobs-ladder",
+        "dlc": "a+"
+      },
+      {
+        "slug": "jaw-bone",
+        "dlc": "a+"
+      },
+      {
+        "slug": "lachryphagy",
+        "dlc": "a+"
+      },
+      {
+        "slug": "large-zit",
+        "dlc": "a+"
+      },
+      {
+        "slug": "lead-pencil",
+        "dlc": "a+"
+      },
+      {
+        "slug": "leprosy",
+        "dlc": "a+"
+      },
+      {
+        "slug": "lil-monstro",
+        "dlc": "a+"
+      },
+      {
+        "slug": "lil-spewer",
+        "dlc": "a+"
+      },
+      {
+        "slug": "linger-bean",
+        "dlc": "a+"
+      },
+      {
+        "slug": "metal-plate",
+        "dlc": "a+"
+      },
+      {
+        "slug": "moms-razor",
+        "dlc": "a+"
+      },
+      {
+        "slug": "mystery-egg",
+        "dlc": "a+"
+      },
+      {
+        "slug": "parasitoid",
+        "dlc": "a+"
+      },
+      {
+        "slug": "pointy-rib",
+        "dlc": "a+"
+      },
+      {
+        "slug": "pop",
+        "dlc": "a+"
+      },
+      {
+        "slug": "shard-of-glass",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sinus-infection",
+        "dlc": "a+"
+      },
+      {
+        "slug": "slipped-rib",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sulfuric-acid",
+        "dlc": "a+"
+      },
+      {
+        "slug": "technology-zero",
+        "dlc": "a+"
+      },
+      {
+        "slug": "varicose-veins",
+        "dlc": "a+"
+      },
+      {
+        "slug": "yo-listen",
+        "dlc": "a+"
+      },
+      {
+        "slug": "120-volt",
+        "dlc": "r"
+      },
+      {
+        "slug": "akeldama",
+        "dlc": "r"
+      },
+      {
+        "slug": "almond-milk",
+        "dlc": "r"
+      },
+      {
+        "slug": "belly-button",
+        "dlc": "r"
+      },
+      {
+        "slug": "belly-jelly",
+        "dlc": "r"
+      },
+      {
+        "slug": "bird-cage",
+        "dlc": "r"
+      },
+      {
+        "slug": "birds-eye",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-bombs",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-puppy",
+        "dlc": "r"
+      },
+      {
+        "slug": "bloody-gust",
+        "dlc": "r"
+      },
+      {
+        "slug": "boiled-baby",
+        "dlc": "r"
+      },
+      {
+        "slug": "bone-spurs",
+        "dlc": "r"
+      },
+      {
+        "slug": "bot-fly",
+        "dlc": "r"
+      },
+      {
+        "slug": "candy-heart",
+        "dlc": "r"
+      },
+      {
+        "slug": "cracked-orb",
+        "dlc": "r"
+      },
+      {
+        "slug": "c-section",
+        "dlc": "r"
+      },
+      {
+        "slug": "cube-baby",
+        "dlc": "r"
+      },
+      {
+        "slug": "dirty-mind",
+        "dlc": "r"
+      },
+      {
+        "slug": "empty-heart",
+        "dlc": "r"
+      },
+      {
+        "slug": "eye-sore",
+        "dlc": "r"
+      },
+      {
+        "slug": "freezer-baby",
+        "dlc": "r"
+      },
+      {
+        "slug": "fruity-plum",
+        "dlc": "r"
+      },
+      {
+        "slug": "ghost-bombs",
+        "dlc": "r"
+      },
+      {
+        "slug": "giant-cell",
+        "dlc": "r"
+      },
+      {
+        "slug": "hemoptysis",
+        "dlc": "r"
+      },
+      {
+        "slug": "hypercoagulation",
+        "dlc": "r"
+      },
+      {
+        "slug": "ibs",
+        "dlc": "r"
+      },
+      {
+        "slug": "it-hurts",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-kin",
+        "dlc": "r"
+      },
+      {
+        "slug": "knockout-drops",
+        "dlc": "r"
+      },
+      {
+        "slug": "lil-dumpy",
+        "dlc": "r"
+      },
+      {
+        "slug": "lil-portal",
+        "dlc": "r"
+      },
+      {
+        "slug": "lodestone",
+        "dlc": "r"
+      },
+      {
+        "slug": "lost-soul",
+        "dlc": "r"
+      },
+      {
+        "slug": "montezumas-revenge",
+        "dlc": "r"
+      },
+      {
+        "slug": "mucormycosis",
+        "dlc": "r"
+      },
+      {
+        "slug": "nancy-bombs",
+        "dlc": "r"
+      },
+      {
+        "slug": "playdough-cookie",
+        "dlc": "r"
+      },
+      {
+        "slug": "polydactyly",
+        "dlc": "r"
+      },
+      {
+        "slug": "psy-fly",
+        "dlc": "r"
+      },
+      {
+        "slug": "quints",
+        "dlc": "r"
+      },
+      {
+        "slug": "rocket-in-a-jar",
+        "dlc": "r"
+      },
+      {
+        "slug": "rotten-tomato",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-intruder",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-swarm",
+        "dlc": "r"
+      },
+      {
+        "slug": "tinytoma",
+        "dlc": "r"
+      },
+      {
+        "slug": "tooth-and-nail",
+        "dlc": "r"
+      },
+      {
+        "slug": "vasculitis",
+        "dlc": "r"
+      },
+      {
+        "slug": "worm-friend",
+        "dlc": "r"
+      },
+      {
+        "slug": "astral-projection",
+        "dlc": "r"
+      },
+      {
+        "slug": "skeleton-key",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "ultra-secret-room",
+    "name": "Ultra Secret Room",
+    "wikiTitle": "Ultra Secret Room (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "abyss"
+      },
+      {
+        "slug": "berserk"
+      },
+      {
+        "slug": "the-d6"
+      },
+      {
+        "slug": "d20"
+      },
+      {
+        "slug": "dark-arts"
+      },
+      {
+        "slug": "dataminer"
+      },
+      {
+        "slug": "esau-jr"
+      },
+      {
+        "slug": "flip"
+      },
+      {
+        "slug": "gello"
+      },
+      {
+        "slug": "iv-bag"
+      },
+      {
+        "slug": "kamikaze"
+      },
+      {
+        "slug": "kidney-bean"
+      },
+      {
+        "slug": "plan-c"
+      },
+      {
+        "slug": "plum-flute"
+      },
+      {
+        "slug": "portable-slot"
+      },
+      {
+        "slug": "red-candle"
+      },
+      {
+        "slug": "red-key"
+      },
+      {
+        "slug": "remote-detonator"
+      },
+      {
+        "slug": "shoop-da-whoop"
+      },
+      {
+        "slug": "sulfur"
+      },
+      {
+        "slug": "yum-heart"
+      },
+      {
+        "slug": "less-than-three"
+      },
+      {
+        "slug": "2spooky"
+      },
+      {
+        "slug": "abaddon"
+      },
+      {
+        "slug": "anemic"
+      },
+      {
+        "slug": "angry-fly"
+      },
+      {
+        "slug": "apple"
+      },
+      {
+        "slug": "backstabber"
+      },
+      {
+        "slug": "bffs"
+      },
+      {
+        "slug": "birds-eye"
+      },
+      {
+        "slug": "blood-bag"
+      },
+      {
+        "slug": "blood-bombs"
+      },
+      {
+        "slug": "blood-clot"
+      },
+      {
+        "slug": "blood-puppy"
+      },
+      {
+        "slug": "bloody-gust"
+      },
+      {
+        "slug": "bloody-lust"
+      },
+      {
+        "slug": "the-body"
+      },
+      {
+        "slug": "boiled-baby"
+      },
+      {
+        "slug": "brimstone"
+      },
+      {
+        "slug": "cambion-conception"
+      },
+      {
+        "slug": "candy-heart"
+      },
+      {
+        "slug": "champion-belt"
+      },
+      {
+        "slug": "contagion"
+      },
+      {
+        "slug": "c-section"
+      },
+      {
+        "slug": "cube-of-meat"
+      },
+      {
+        "slug": "dead-eye"
+      },
+      {
+        "slug": "echo-chamber"
+      },
+      {
+        "slug": "eye-of-belial"
+      },
+      {
+        "slug": "eye-of-the-occult"
+      },
+      {
+        "slug": "false-phd"
+      },
+      {
+        "slug": "haemolacria"
+      },
+      {
+        "slug": "harlequin-baby"
+      },
+      {
+        "slug": "heartbreak"
+      },
+      {
+        "slug": "hemoptysis"
+      },
+      {
+        "slug": "hungry-soul"
+      },
+      {
+        "slug": "hypercoagulation"
+      },
+      {
+        "slug": "immaculate-heart"
+      },
+      {
+        "slug": "isaacs-heart"
+      },
+      {
+        "slug": "knockout-drops"
+      },
+      {
+        "slug": "lil-loki"
+      },
+      {
+        "slug": "little-c-h-a-d"
+      },
+      {
+        "slug": "lord-of-the-pit"
+      },
+      {
+        "slug": "lusty-blood"
+      },
+      {
+        "slug": "magic-mushroom"
+      },
+      {
+        "slug": "magic-scab"
+      },
+      {
+        "slug": "magneto"
+      },
+      {
+        "slug": "the-mark"
+      },
+      {
+        "slug": "marked"
+      },
+      {
+        "slug": "marrow"
+      },
+      {
+        "slug": "maw-of-the-void"
+      },
+      {
+        "slug": "meat"
+      },
+      {
+        "slug": "moms-contacts"
+      },
+      {
+        "slug": "moms-heels"
+      },
+      {
+        "slug": "moms-lipstick"
+      },
+      {
+        "slug": "money-power"
+      },
+      {
+        "slug": "ocular-rift"
+      },
+      {
+        "slug": "the-pact"
+      },
+      {
+        "slug": "pentagram"
+      },
+      {
+        "slug": "proptosis"
+      },
+      {
+        "slug": "red-stew"
+      },
+      {
+        "slug": "rosary"
+      },
+      {
+        "slug": "rotten-tomato"
+      },
+      {
+        "slug": "sacred-heart"
+      },
+      {
+        "slug": "sanguine-bond"
+      },
+      {
+        "slug": "sister-maggy"
+      },
+      {
+        "slug": "spirit-of-the-night"
+      },
+      {
+        "slug": "stem-cells"
+      },
+      {
+        "slug": "varicose-veins"
+      },
+      {
+        "slug": "vasculitis"
+      },
+      {
+        "slug": "vengeful-spirit"
+      },
+      {
+        "slug": "the-virus"
+      },
+      {
+        "slug": "whore-of-babylon"
+      },
+      {
+        "slug": "worm-friend"
+      }
+    ]
+  },
+  {
+    "slug": "wooden-chest",
+    "name": "Wooden Chest",
+    "wikiTitle": "Wooden Chest (Item Pool)",
+    "greedMode": false,
+    "items": [
+      {
+        "slug": "keepers-box"
+      },
+      {
+        "slug": "metronome"
+      },
+      {
+        "slug": "moms-box"
+      },
+      {
+        "slug": "mr-me"
+      },
+      {
+        "slug": "wooden-nickel"
+      },
+      {
+        "slug": "blood-of-the-martyr"
+      },
+      {
+        "slug": "the-ladder"
+      },
+      {
+        "slug": "lil-chest"
+      },
+      {
+        "slug": "stigmata"
+      },
+      {
+        "slug": "tooth-picks"
+      },
+      {
+        "slug": "wooden-spoon"
+      }
+    ]
+  },
+  {
+    "slug": "angel-room-greed",
+    "name": "Angel Room",
+    "wikiTitle": "Angel Room (Greed Mode Item Pool)",
+    "greedMode": true,
+    "items": [
+      {
+        "slug": "book-of-revelations"
+      },
+      {
+        "slug": "edens-soul",
+        "dlc": "a+"
+      },
+      {
+        "slug": "breath-of-life",
+        "dlc": "r"
+      },
+      {
+        "slug": "genesis",
+        "dlc": "r"
+      },
+      {
+        "slug": "jar-of-wisps",
+        "dlc": "r"
+      },
+      {
+        "slug": "urn-of-souls",
+        "dlc": "r"
+      },
+      {
+        "slug": "vade-retro",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-of-the-martyr"
+      },
+      {
+        "slug": "the-body"
+      },
+      {
+        "slug": "celtic-cross"
+      },
+      {
+        "slug": "censer"
+      },
+      {
+        "slug": "circle-of-protection"
+      },
+      {
+        "slug": "crown-of-light"
+      },
+      {
+        "slug": "dead-dove"
+      },
+      {
+        "slug": "godhead"
+      },
+      {
+        "slug": "guardian-angel"
+      },
+      {
+        "slug": "holy-grail"
+      },
+      {
+        "slug": "holy-mantle"
+      },
+      {
+        "slug": "holy-water"
+      },
+      {
+        "slug": "immaculate-conception"
+      },
+      {
+        "slug": "jesus-juice"
+      },
+      {
+        "slug": "the-mind"
+      },
+      {
+        "slug": "purity"
+      },
+      {
+        "slug": "rosary"
+      },
+      {
+        "slug": "sacred-heart"
+      },
+      {
+        "slug": "seraphim"
+      },
+      {
+        "slug": "the-soul"
+      },
+      {
+        "slug": "spear-of-destiny"
+      },
+      {
+        "slug": "stigmata"
+      },
+      {
+        "slug": "sworn-protector"
+      },
+      {
+        "slug": "trinity-shield"
+      },
+      {
+        "slug": "cube-of-meat",
+        "dlc": "nr"
+      },
+      {
+        "slug": "mitre",
+        "dlc": "nr"
+      },
+      {
+        "slug": "7-seals",
+        "dlc": "a+"
+      },
+      {
+        "slug": "angelic-prism",
+        "dlc": "a+"
+      },
+      {
+        "slug": "eucharist",
+        "dlc": "a+"
+      },
+      {
+        "slug": "trisagion",
+        "dlc": "a+"
+      },
+      {
+        "slug": "glyph-of-balance",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "act-of-contrition",
+        "dlc": "r"
+      },
+      {
+        "slug": "divine-intervention",
+        "dlc": "r"
+      },
+      {
+        "slug": "hallowed-ground",
+        "dlc": "r"
+      },
+      {
+        "slug": "immaculate-heart",
+        "dlc": "r"
+      },
+      {
+        "slug": "monstrance",
+        "dlc": "r"
+      },
+      {
+        "slug": "paschal-candle",
+        "dlc": "r"
+      },
+      {
+        "slug": "purgatory",
+        "dlc": "r"
+      },
+      {
+        "slug": "revelation",
+        "dlc": "r"
+      },
+      {
+        "slug": "salvation",
+        "dlc": "r"
+      },
+      {
+        "slug": "soul-locket",
+        "dlc": "r"
+      },
+      {
+        "slug": "spirit-sword",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-stairway",
+        "dlc": "r"
+      },
+      {
+        "slug": "star-of-bethlehem",
+        "dlc": "r"
+      },
+      {
+        "slug": "book-of-virtues",
+        "dlc": "r"
+      },
+      {
+        "slug": "sacred-orb",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "boss-greed",
+    "name": "Boss",
+    "wikiTitle": "Boss (Greed Mode Item Pool)",
+    "greedMode": true,
+    "items": [
+      {
+        "slug": "less-than-three"
+      },
+      {
+        "slug": "the-belt"
+      },
+      {
+        "slug": "binky"
+      },
+      {
+        "slug": "blood-clot"
+      },
+      {
+        "slug": "blue-cap"
+      },
+      {
+        "slug": "box"
+      },
+      {
+        "slug": "breakfast"
+      },
+      {
+        "slug": "caffeine-pill"
+      },
+      {
+        "slug": "crack-jacks"
+      },
+      {
+        "slug": "cube-of-meat"
+      },
+      {
+        "slug": "dessert"
+      },
+      {
+        "slug": "dinner"
+      },
+      {
+        "slug": "experimental-treatment"
+      },
+      {
+        "slug": "growth-hormones"
+      },
+      {
+        "slug": "jesus-juice"
+      },
+      {
+        "slug": "latch-key"
+      },
+      {
+        "slug": "a-lump-of-coal"
+      },
+      {
+        "slug": "lunch"
+      },
+      {
+        "slug": "magic-8-ball"
+      },
+      {
+        "slug": "magic-scab"
+      },
+      {
+        "slug": "match-book"
+      },
+      {
+        "slug": "meat"
+      },
+      {
+        "slug": "mini-mush"
+      },
+      {
+        "slug": "moms-coin-purse"
+      },
+      {
+        "slug": "moms-heels"
+      },
+      {
+        "slug": "moms-lipstick"
+      },
+      {
+        "slug": "moms-pearls"
+      },
+      {
+        "slug": "moms-underwear"
+      },
+      {
+        "slug": "mr-dolly"
+      },
+      {
+        "slug": "odd-mushroom-thin"
+      },
+      {
+        "slug": "raw-liver"
+      },
+      {
+        "slug": "roid-rage"
+      },
+      {
+        "slug": "rotten-meat"
+      },
+      {
+        "slug": "safety-pin"
+      },
+      {
+        "slug": "screw"
+      },
+      {
+        "slug": "a-snack"
+      },
+      {
+        "slug": "speed-ball"
+      },
+      {
+        "slug": "squeezy"
+      },
+      {
+        "slug": "stem-cells"
+      },
+      {
+        "slug": "synthoil"
+      },
+      {
+        "slug": "thunder-thighs"
+      },
+      {
+        "slug": "tooth-picks"
+      },
+      {
+        "slug": "torn-photo"
+      },
+      {
+        "slug": "wire-coat-hanger"
+      },
+      {
+        "slug": "wooden-spoon"
+      },
+      {
+        "slug": "the-halo"
+      },
+      {
+        "slug": "pjs"
+      },
+      {
+        "slug": "1up",
+        "dlc": "nr"
+      },
+      {
+        "slug": "moms-key",
+        "dlc": "nr"
+      },
+      {
+        "slug": "dads-lost-coin",
+        "dlc": "a+"
+      },
+      {
+        "slug": "midnight-snack",
+        "dlc": "a+"
+      },
+      {
+        "slug": "marbles",
+        "dlc": "a+"
+      },
+      {
+        "slug": "marrow",
+        "dlc": "a+"
+      },
+      {
+        "slug": "divorce-papers",
+        "dlc": "a+"
+      },
+      {
+        "slug": "belly-button",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "polydactyly",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "ball-of-bandages",
+        "dlc": "r"
+      },
+      {
+        "slug": "a-bar-of-soap",
+        "dlc": "r"
+      },
+      {
+        "slug": "booster-pack",
+        "dlc": "r"
+      },
+      {
+        "slug": "consolation-prize",
+        "dlc": "r"
+      },
+      {
+        "slug": "eye-drops",
+        "dlc": "r"
+      },
+      {
+        "slug": "glass-eye",
+        "dlc": "r"
+      },
+      {
+        "slug": "odd-mushroom-large",
+        "dlc": "r"
+      },
+      {
+        "slug": "stapler",
+        "dlc": "r"
+      },
+      {
+        "slug": "stye",
+        "dlc": "r"
+      },
+      {
+        "slug": "supper",
+        "dlc": "r"
+      },
+      {
+        "slug": "tropicamide",
+        "dlc": "r"
+      },
+      {
+        "slug": "magic-mushroom",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "curse-room-greed",
+    "name": "Curse Room",
+    "wikiTitle": "Curse Room (Greed Mode Item Pool)",
+    "greedMode": true,
+    "items": [
+      {
+        "slug": "guppys-head"
+      },
+      {
+        "slug": "guppys-paw"
+      },
+      {
+        "slug": "magic-skin",
+        "dlc": "r"
+      },
+      {
+        "slug": "razor-blade",
+        "dlc": "r"
+      },
+      {
+        "slug": "sacrificial-altar",
+        "dlc": "r"
+      },
+      {
+        "slug": "plan-c",
+        "dlc": "r"
+      },
+      {
+        "slug": "cube-of-meat"
+      },
+      {
+        "slug": "dead-cat"
+      },
+      {
+        "slug": "guppys-collar"
+      },
+      {
+        "slug": "guppys-tail",
+        "dlc": "nr"
+      },
+      {
+        "slug": "athame",
+        "dlc": "r"
+      },
+      {
+        "slug": "black-candle",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-oath",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-puppy",
+        "dlc": "r"
+      },
+      {
+        "slug": "ceremonial-robes",
+        "dlc": "r"
+      },
+      {
+        "slug": "curse-of-the-tower",
+        "dlc": "r"
+      },
+      {
+        "slug": "dark-princes-crown",
+        "dlc": "r"
+      },
+      {
+        "slug": "euthanasia",
+        "dlc": "r"
+      },
+      {
+        "slug": "gimpy",
+        "dlc": "r"
+      },
+      {
+        "slug": "guppys-eye",
+        "dlc": "r"
+      },
+      {
+        "slug": "little-horn",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-mark",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-pact",
+        "dlc": "r"
+      },
+      {
+        "slug": "pentagram",
+        "dlc": "r"
+      },
+      {
+        "slug": "sanguine-bond",
+        "dlc": "r"
+      },
+      {
+        "slug": "shade",
+        "dlc": "r"
+      },
+      {
+        "slug": "tarot-cloth",
+        "dlc": "r"
+      },
+      {
+        "slug": "vengeful-spirit",
+        "dlc": "r"
+      },
+      {
+        "slug": "false-phd",
+        "dlc": "r"
+      },
+      {
+        "slug": "heartbreak",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "devil-room-greed",
+    "name": "Devil Room",
+    "wikiTitle": "Devil Room (Greed Mode Item Pool)",
+    "greedMode": true,
+    "items": [
+      {
+        "slug": "the-book-of-belial"
+      },
+      {
+        "slug": "the-book-of-sin"
+      },
+      {
+        "slug": "guppys-head"
+      },
+      {
+        "slug": "guppys-paw"
+      },
+      {
+        "slug": "the-nail"
+      },
+      {
+        "slug": "the-necronomicon"
+      },
+      {
+        "slug": "satanic-bible"
+      },
+      {
+        "slug": "mega-blast"
+      },
+      {
+        "slug": "book-of-the-dead",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sacrificial-altar",
+        "dlc": "a+"
+      },
+      {
+        "slug": "damocles",
+        "dlc": "r"
+      },
+      {
+        "slug": "gello",
+        "dlc": "r"
+      },
+      {
+        "slug": "monster-manual",
+        "dlc": "r"
+      },
+      {
+        "slug": "sulfur",
+        "dlc": "r"
+      },
+      {
+        "slug": "abyss",
+        "dlc": "r"
+      },
+      {
+        "slug": "berserk",
+        "dlc": "r"
+      },
+      {
+        "slug": "dark-arts",
+        "dlc": "r"
+      },
+      {
+        "slug": "lemegeton",
+        "dlc": "r"
+      },
+      {
+        "slug": "abaddon"
+      },
+      {
+        "slug": "athame"
+      },
+      {
+        "slug": "betrayal"
+      },
+      {
+        "slug": "black-powder"
+      },
+      {
+        "slug": "ceremonial-robes"
+      },
+      {
+        "slug": "cambion-conception"
+      },
+      {
+        "slug": "contract-from-below"
+      },
+      {
+        "slug": "dark-matter"
+      },
+      {
+        "slug": "dead-cat"
+      },
+      {
+        "slug": "deaths-touch"
+      },
+      {
+        "slug": "demon-baby"
+      },
+      {
+        "slug": "empty-vessel"
+      },
+      {
+        "slug": "gimpy"
+      },
+      {
+        "slug": "guppys-collar"
+      },
+      {
+        "slug": "guppys-hairball"
+      },
+      {
+        "slug": "headless-baby"
+      },
+      {
+        "slug": "incubus"
+      },
+      {
+        "slug": "judas-shadow"
+      },
+      {
+        "slug": "leech"
+      },
+      {
+        "slug": "lord-of-the-pit"
+      },
+      {
+        "slug": "a-lump-of-coal"
+      },
+      {
+        "slug": "the-mark"
+      },
+      {
+        "slug": "maw-of-the-void"
+      },
+      {
+        "slug": "moms-knife"
+      },
+      {
+        "slug": "multidimensional-baby"
+      },
+      {
+        "slug": "my-shadow"
+      },
+      {
+        "slug": "ouija-board"
+      },
+      {
+        "slug": "the-pact"
+      },
+      {
+        "slug": "pentagram"
+      },
+      {
+        "slug": "rotten-baby"
+      },
+      {
+        "slug": "sacrificial-dagger"
+      },
+      {
+        "slug": "sister-maggy"
+      },
+      {
+        "slug": "spirit-of-the-night"
+      },
+      {
+        "slug": "whore-of-babylon"
+      },
+      {
+        "slug": "cube-of-meat",
+        "dlc": "nr"
+      },
+      {
+        "slug": "dead-bird",
+        "dlc": "nr"
+      },
+      {
+        "slug": "guppys-tail",
+        "dlc": "nr"
+      },
+      {
+        "slug": "7-seals",
+        "dlc": "a+"
+      },
+      {
+        "slug": "dark-princes-crown",
+        "dlc": "a+"
+      },
+      {
+        "slug": "eye-of-belial",
+        "dlc": "a+"
+      },
+      {
+        "slug": "lil-delirium",
+        "dlc": "a+"
+      },
+      {
+        "slug": "little-horn",
+        "dlc": "a+"
+      },
+      {
+        "slug": "shade",
+        "dlc": "a+"
+      },
+      {
+        "slug": "tarot-cloth",
+        "dlc": "a+"
+      },
+      {
+        "slug": "2spooky",
+        "dlc": "r"
+      },
+      {
+        "slug": "azazels-rage",
+        "dlc": "r"
+      },
+      {
+        "slug": "backstabber",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-oath",
+        "dlc": "r"
+      },
+      {
+        "slug": "bloody-gust",
+        "dlc": "r"
+      },
+      {
+        "slug": "bloody-lust",
+        "dlc": "r"
+      },
+      {
+        "slug": "brimstone",
+        "dlc": "r"
+      },
+      {
+        "slug": "brimstone-bombs",
+        "dlc": "r"
+      },
+      {
+        "slug": "eye-of-the-occult",
+        "dlc": "r"
+      },
+      {
+        "slug": "false-phd",
+        "dlc": "r"
+      },
+      {
+        "slug": "guppys-eye",
+        "dlc": "r"
+      },
+      {
+        "slug": "hungry-soul",
+        "dlc": "r"
+      },
+      {
+        "slug": "lil-abaddon",
+        "dlc": "r"
+      },
+      {
+        "slug": "lusty-blood",
+        "dlc": "r"
+      },
+      {
+        "slug": "money-power",
+        "dlc": "r"
+      },
+      {
+        "slug": "ocular-rift",
+        "dlc": "r"
+      },
+      {
+        "slug": "purgatory",
+        "dlc": "r"
+      },
+      {
+        "slug": "a-quarter",
+        "dlc": "r"
+      },
+      {
+        "slug": "sanguine-bond",
+        "dlc": "r"
+      },
+      {
+        "slug": "twisted-pair",
+        "dlc": "r"
+      },
+      {
+        "slug": "vengeful-spirit",
+        "dlc": "r"
+      },
+      {
+        "slug": "heartbreak",
+        "dlc": "r"
+      },
+      {
+        "slug": "technology",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "secret-room-greed",
+    "name": "Secret Room",
+    "wikiTitle": "Secret Room (Greed Mode Item Pool)",
+    "greedMode": true,
+    "items": [
+      {
+        "slug": "blank-card",
+        "dlc": "r"
+      },
+      {
+        "slug": "clear-rune",
+        "dlc": "r"
+      },
+      {
+        "slug": "death-certificate",
+        "dlc": "r"
+      },
+      {
+        "slug": "d-infinity",
+        "dlc": "r"
+      },
+      {
+        "slug": "esau-jr",
+        "dlc": "r"
+      },
+      {
+        "slug": "eternal-d6",
+        "dlc": "r"
+      },
+      {
+        "slug": "flip",
+        "dlc": "r"
+      },
+      {
+        "slug": "forget-me-now",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-box",
+        "dlc": "r"
+      },
+      {
+        "slug": "mega-mush",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-necronomicon",
+        "dlc": "r"
+      },
+      {
+        "slug": "placebo",
+        "dlc": "r"
+      },
+      {
+        "slug": "r-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "spindown-dice",
+        "dlc": "r"
+      },
+      {
+        "slug": "wavy-cap",
+        "dlc": "r"
+      },
+      {
+        "slug": "we-need-to-go-deeper",
+        "dlc": "r"
+      },
+      {
+        "slug": "cube-of-meat",
+        "dlc": "nr"
+      },
+      {
+        "slug": "1up",
+        "dlc": "r"
+      },
+      {
+        "slug": "astral-projection",
+        "dlc": "r"
+      },
+      {
+        "slug": "binge-eater",
+        "dlc": "r"
+      },
+      {
+        "slug": "black-lotus",
+        "dlc": "r"
+      },
+      {
+        "slug": "chaos",
+        "dlc": "r"
+      },
+      {
+        "slug": "cursed-eye",
+        "dlc": "r"
+      },
+      {
+        "slug": "dads-ring",
+        "dlc": "r"
+      },
+      {
+        "slug": "echo-chamber",
+        "dlc": "r"
+      },
+      {
+        "slug": "epic-fetus",
+        "dlc": "r"
+      },
+      {
+        "slug": "evil-charm",
+        "dlc": "r"
+      },
+      {
+        "slug": "eye-of-greed",
+        "dlc": "r"
+      },
+      {
+        "slug": "gb-bug",
+        "dlc": "r"
+      },
+      {
+        "slug": "glitched-crown",
+        "dlc": "r"
+      },
+      {
+        "slug": "greeds-gullet",
+        "dlc": "r"
+      },
+      {
+        "slug": "infamy",
+        "dlc": "r"
+      },
+      {
+        "slug": "inner-child",
+        "dlc": "r"
+      },
+      {
+        "slug": "isaacs-tomb",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-kin",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-sack",
+        "dlc": "r"
+      },
+      {
+        "slug": "lost-contact",
+        "dlc": "r"
+      },
+      {
+        "slug": "lost-soul",
+        "dlc": "r"
+      },
+      {
+        "slug": "missing-no",
+        "dlc": "r"
+      },
+      {
+        "slug": "missing-page-2",
+        "dlc": "r"
+      },
+      {
+        "slug": "mystery-sack",
+        "dlc": "r"
+      },
+      {
+        "slug": "odd-mushroom-large",
+        "dlc": "r"
+      },
+      {
+        "slug": "odd-mushroom-thin",
+        "dlc": "r"
+      },
+      {
+        "slug": "orphan-socks",
+        "dlc": "r"
+      },
+      {
+        "slug": "pyro",
+        "dlc": "r"
+      },
+      {
+        "slug": "raw-liver",
+        "dlc": "r"
+      },
+      {
+        "slug": "rock-bottom",
+        "dlc": "r"
+      },
+      {
+        "slug": "rune-bag",
+        "dlc": "r"
+      },
+      {
+        "slug": "sack-head",
+        "dlc": "r"
+      },
+      {
+        "slug": "sack-of-sacks",
+        "dlc": "r"
+      },
+      {
+        "slug": "samsons-chains",
+        "dlc": "r"
+      },
+      {
+        "slug": "sausage",
+        "dlc": "r"
+      },
+      {
+        "slug": "skeleton-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "spirit-shackles",
+        "dlc": "r"
+      },
+      {
+        "slug": "strawman",
+        "dlc": "r"
+      },
+      {
+        "slug": "tmtrainer",
+        "dlc": "r"
+      },
+      {
+        "slug": "transcendence",
+        "dlc": "r"
+      },
+      {
+        "slug": "sacred-orb",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "shop-greed",
+    "name": "Shop",
+    "wikiTitle": "Shop (Greed Mode Item Pool)",
+    "greedMode": true,
+    "items": [
+      {
+        "slug": "d4"
+      },
+      {
+        "slug": "the-d6"
+      },
+      {
+        "slug": "d8"
+      },
+      {
+        "slug": "d10"
+      },
+      {
+        "slug": "d12"
+      },
+      {
+        "slug": "d20"
+      },
+      {
+        "slug": "d100"
+      },
+      {
+        "slug": "jar-of-flies"
+      },
+      {
+        "slug": "moms-box"
+      },
+      {
+        "slug": "pandoras-box"
+      },
+      {
+        "slug": "placebo"
+      },
+      {
+        "slug": "red-candle"
+      },
+      {
+        "slug": "we-need-to-go-deeper"
+      },
+      {
+        "slug": "blank-card"
+      },
+      {
+        "slug": "black-hole",
+        "dlc": "a+"
+      },
+      {
+        "slug": "clicker",
+        "dlc": "a+"
+      },
+      {
+        "slug": "crooked-penny",
+        "dlc": "a+"
+      },
+      {
+        "slug": "d1",
+        "dlc": "a+"
+      },
+      {
+        "slug": "dataminer",
+        "dlc": "a+"
+      },
+      {
+        "slug": "dull-razor",
+        "dlc": "a+"
+      },
+      {
+        "slug": "metronome",
+        "dlc": "a+"
+      },
+      {
+        "slug": "mr-me",
+        "dlc": "a+"
+      },
+      {
+        "slug": "mystery-gift",
+        "dlc": "a+"
+      },
+      {
+        "slug": "pause",
+        "dlc": "a+"
+      },
+      {
+        "slug": "potato-peeler",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sprinkler",
+        "dlc": "a+"
+      },
+      {
+        "slug": "void",
+        "dlc": "a+"
+      },
+      {
+        "slug": "plan-c",
+        "dlc": "a+"
+      },
+      {
+        "slug": "mama-mega",
+        "dlc": "a+"
+      },
+      {
+        "slug": "d-infinity",
+        "dlc": "a+"
+      },
+      {
+        "slug": "alabaster-box",
+        "dlc": "r"
+      },
+      {
+        "slug": "eraser",
+        "dlc": "r"
+      },
+      {
+        "slug": "moms-bracelet",
+        "dlc": "r"
+      },
+      {
+        "slug": "sharp-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "anima-sola",
+        "dlc": "r"
+      },
+      {
+        "slug": "esau-jr",
+        "dlc": "r"
+      },
+      {
+        "slug": "flip",
+        "dlc": "r"
+      },
+      {
+        "slug": "r-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "spindown-dice",
+        "dlc": "r"
+      },
+      {
+        "slug": "20-20"
+      },
+      {
+        "slug": "9-volt"
+      },
+      {
+        "slug": "the-battery"
+      },
+      {
+        "slug": "bffs"
+      },
+      {
+        "slug": "black-candle"
+      },
+      {
+        "slug": "blue-map"
+      },
+      {
+        "slug": "car-battery"
+      },
+      {
+        "slug": "champion-belt"
+      },
+      {
+        "slug": "charged-baby"
+      },
+      {
+        "slug": "cube-of-meat"
+      },
+      {
+        "slug": "deep-pockets"
+      },
+      {
+        "slug": "fanny-pack"
+      },
+      {
+        "slug": "gb-bug"
+      },
+      {
+        "slug": "habit"
+      },
+      {
+        "slug": "hive-mind"
+      },
+      {
+        "slug": "host-hat"
+      },
+      {
+        "slug": "little-baggy"
+      },
+      {
+        "slug": "lucky-foot"
+      },
+      {
+        "slug": "magic-mushroom"
+      },
+      {
+        "slug": "moms-purse"
+      },
+      {
+        "slug": "pay-to-play"
+      },
+      {
+        "slug": "phd"
+      },
+      {
+        "slug": "shard-of-glass"
+      },
+      {
+        "slug": "spelunker-hat"
+      },
+      {
+        "slug": "spider-mod"
+      },
+      {
+        "slug": "starter-deck"
+      },
+      {
+        "slug": "technology"
+      },
+      {
+        "slug": "torn-photo"
+      },
+      {
+        "slug": "x-ray-vision"
+      },
+      {
+        "slug": "chaos"
+      },
+      {
+        "slug": "blanket",
+        "dlc": "a+"
+      },
+      {
+        "slug": "buddy-in-a-box",
+        "dlc": "a+"
+      },
+      {
+        "slug": "king-baby",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sack-of-sacks",
+        "dlc": "a+"
+      },
+      {
+        "slug": "schoolbag",
+        "dlc": "a+"
+      },
+      {
+        "slug": "tarot-cloth",
+        "dlc": "a+"
+      },
+      {
+        "slug": "poke-go",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "1up",
+        "dlc": "r"
+      },
+      {
+        "slug": "4-5-volt",
+        "dlc": "r"
+      },
+      {
+        "slug": "battery-pack",
+        "dlc": "r"
+      },
+      {
+        "slug": "birthright",
+        "dlc": "r"
+      },
+      {
+        "slug": "booster-pack",
+        "dlc": "r"
+      },
+      {
+        "slug": "dream-catcher",
+        "dlc": "r"
+      },
+      {
+        "slug": "moms-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "moms-ring",
+        "dlc": "r"
+      },
+      {
+        "slug": "red-stew",
+        "dlc": "r"
+      },
+      {
+        "slug": "sanguine-bond",
+        "dlc": "r"
+      },
+      {
+        "slug": "echo-chamber",
+        "dlc": "r"
+      },
+      {
+        "slug": "glitched-crown",
+        "dlc": "r"
+      },
+      {
+        "slug": "inner-child",
+        "dlc": "r"
+      },
+      {
+        "slug": "isaacs-tomb",
+        "dlc": "r"
+      },
+      {
+        "slug": "sacred-orb",
+        "dlc": "r"
+      },
+      {
+        "slug": "spirit-shackles",
+        "dlc": "r"
+      },
+      {
+        "slug": "strawman",
+        "dlc": "r"
+      },
+      {
+        "slug": "tmtrainer",
+        "dlc": "r"
+      }
+    ]
+  },
+  {
+    "slug": "treasure-room-greed",
+    "name": "Treasure Room",
+    "wikiTitle": "Treasure Room (Greed Mode Item Pool)",
+    "greedMode": true,
+    "items": [
+      {
+        "slug": "anarchist-cookbook"
+      },
+      {
+        "slug": "the-bean"
+      },
+      {
+        "slug": "blood-rights"
+      },
+      {
+        "slug": "bobs-rotten-head"
+      },
+      {
+        "slug": "the-book-of-belial"
+      },
+      {
+        "slug": "book-of-revelations"
+      },
+      {
+        "slug": "the-book-of-sin"
+      },
+      {
+        "slug": "box-of-friends"
+      },
+      {
+        "slug": "box-of-spiders"
+      },
+      {
+        "slug": "dads-key"
+      },
+      {
+        "slug": "dead-sea-scrolls"
+      },
+      {
+        "slug": "deck-of-cards"
+      },
+      {
+        "slug": "doctors-remote"
+      },
+      {
+        "slug": "flush"
+      },
+      {
+        "slug": "friendly-ball"
+      },
+      {
+        "slug": "the-gamekid"
+      },
+      {
+        "slug": "glass-cannon"
+      },
+      {
+        "slug": "jar-of-flies"
+      },
+      {
+        "slug": "kidney-bean"
+      },
+      {
+        "slug": "lemon-mishap"
+      },
+      {
+        "slug": "mega-bean"
+      },
+      {
+        "slug": "moms-bottle-of-pills"
+      },
+      {
+        "slug": "mr-boom"
+      },
+      {
+        "slug": "my-little-unicorn"
+      },
+      {
+        "slug": "the-necronomicon"
+      },
+      {
+        "slug": "the-pinking-shears"
+      },
+      {
+        "slug": "prayer-card"
+      },
+      {
+        "slug": "remote-detonator"
+      },
+      {
+        "slug": "scissors"
+      },
+      {
+        "slug": "tammys-head"
+      },
+      {
+        "slug": "tear-detonator"
+      },
+      {
+        "slug": "telepathy-for-dummies"
+      },
+      {
+        "slug": "wooden-nickel"
+      },
+      {
+        "slug": "yum-heart"
+      },
+      {
+        "slug": "book-of-the-dead",
+        "dlc": "a+"
+      },
+      {
+        "slug": "brown-nugget",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sharp-straw",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sprinkler",
+        "dlc": "a+"
+      },
+      {
+        "slug": "telekinesis",
+        "dlc": "a+"
+      },
+      {
+        "slug": "wait-what",
+        "dlc": "a+nr"
+      },
+      {
+        "slug": "bag-of-crafting",
+        "dlc": "r"
+      },
+      {
+        "slug": "decap-attack",
+        "dlc": "r"
+      },
+      {
+        "slug": "everything-jar",
+        "dlc": "r"
+      },
+      {
+        "slug": "fortune-cookie",
+        "dlc": "r"
+      },
+      {
+        "slug": "free-lemonade",
+        "dlc": "r"
+      },
+      {
+        "slug": "friend-finder",
+        "dlc": "r"
+      },
+      {
+        "slug": "glowing-hourglass",
+        "dlc": "r"
+      },
+      {
+        "slug": "golden-razor",
+        "dlc": "r"
+      },
+      {
+        "slug": "larynx",
+        "dlc": "r"
+      },
+      {
+        "slug": "meat-cleaver",
+        "dlc": "r"
+      },
+      {
+        "slug": "razor-blade",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-scooper",
+        "dlc": "r"
+      },
+      {
+        "slug": "spin-to-win",
+        "dlc": "r"
+      },
+      {
+        "slug": "stitches",
+        "dlc": "r"
+      },
+      {
+        "slug": "sumptorium",
+        "dlc": "r"
+      },
+      {
+        "slug": "suplex",
+        "dlc": "r"
+      },
+      {
+        "slug": "yuck-heart",
+        "dlc": "r"
+      },
+      {
+        "slug": "esau-jr",
+        "dlc": "r"
+      },
+      {
+        "slug": "eternal-d6",
+        "dlc": "r"
+      },
+      {
+        "slug": "gello",
+        "dlc": "r"
+      },
+      {
+        "slug": "mega-mush",
+        "dlc": "r"
+      },
+      {
+        "slug": "plum-flute",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-box",
+        "dlc": "r"
+      },
+      {
+        "slug": "anima-sola",
+        "dlc": "r"
+      },
+      {
+        "slug": "spindown-dice",
+        "dlc": "r"
+      },
+      {
+        "slug": "3-dollar-bill"
+      },
+      {
+        "slug": "8-inch-nails"
+      },
+      {
+        "slug": "20-20"
+      },
+      {
+        "slug": "blue-babys-only-friend"
+      },
+      {
+        "slug": "abel"
+      },
+      {
+        "slug": "anemic"
+      },
+      {
+        "slug": "ankh"
+      },
+      {
+        "slug": "anti-gravity"
+      },
+      {
+        "slug": "aquarius"
+      },
+      {
+        "slug": "aries"
+      },
+      {
+        "slug": "ball-of-tar"
+      },
+      {
+        "slug": "best-bud"
+      },
+      {
+        "slug": "betrayal"
+      },
+      {
+        "slug": "big-fan"
+      },
+      {
+        "slug": "black-lotus"
+      },
+      {
+        "slug": "blood-clot"
+      },
+      {
+        "slug": "blood-of-the-martyr"
+      },
+      {
+        "slug": "bloody-lust"
+      },
+      {
+        "slug": "bobs-brain"
+      },
+      {
+        "slug": "bobs-curse"
+      },
+      {
+        "slug": "bobby-bomb"
+      },
+      {
+        "slug": "bomb-bag"
+      },
+      {
+        "slug": "bomber-boy"
+      },
+      {
+        "slug": "brother-bobby"
+      },
+      {
+        "slug": "bursting-sack"
+      },
+      {
+        "slug": "butt-bombs"
+      },
+      {
+        "slug": "cains-other-eye"
+      },
+      {
+        "slug": "cancer"
+      },
+      {
+        "slug": "capricorn"
+      },
+      {
+        "slug": "celtic-cross"
+      },
+      {
+        "slug": "charm-of-the-vampire"
+      },
+      {
+        "slug": "chemical-peel"
+      },
+      {
+        "slug": "chocolate-milk"
+      },
+      {
+        "slug": "the-common-cold"
+      },
+      {
+        "slug": "continuum"
+      },
+      {
+        "slug": "crickets-body"
+      },
+      {
+        "slug": "crickets-head"
+      },
+      {
+        "slug": "cupids-arrow"
+      },
+      {
+        "slug": "cursed-eye"
+      },
+      {
+        "slug": "curse-of-the-tower"
+      },
+      {
+        "slug": "daddy-longlegs"
+      },
+      {
+        "slug": "dead-bird"
+      },
+      {
+        "slug": "dead-eye"
+      },
+      {
+        "slug": "dead-onion"
+      },
+      {
+        "slug": "deep-pockets"
+      },
+      {
+        "slug": "distant-admiration"
+      },
+      {
+        "slug": "dr-fetus"
+      },
+      {
+        "slug": "dry-baby"
+      },
+      {
+        "slug": "e-coli"
+      },
+      {
+        "slug": "epiphora"
+      },
+      {
+        "slug": "eves-mascara"
+      },
+      {
+        "slug": "evil-eye"
+      },
+      {
+        "slug": "explosivo"
+      },
+      {
+        "slug": "fire-mind"
+      },
+      {
+        "slug": "forever-alone"
+      },
+      {
+        "slug": "friend-zone"
+      },
+      {
+        "slug": "gemini"
+      },
+      {
+        "slug": "ghost-baby"
+      },
+      {
+        "slug": "glitter-bombs"
+      },
+      {
+        "slug": "gnawed-leaf"
+      },
+      {
+        "slug": "gods-flesh"
+      },
+      {
+        "slug": "guillotine"
+      },
+      {
+        "slug": "halo-of-flies"
+      },
+      {
+        "slug": "harlequin-baby"
+      },
+      {
+        "slug": "headless-baby"
+      },
+      {
+        "slug": "host-hat"
+      },
+      {
+        "slug": "hot-bombs"
+      },
+      {
+        "slug": "infamy"
+      },
+      {
+        "slug": "infestation"
+      },
+      {
+        "slug": "infestation-2"
+      },
+      {
+        "slug": "the-inner-eye"
+      },
+      {
+        "slug": "ipecac"
+      },
+      {
+        "slug": "iron-bar"
+      },
+      {
+        "slug": "juicy-sack"
+      },
+      {
+        "slug": "kidney-stone"
+      },
+      {
+        "slug": "lazarus-rags"
+      },
+      {
+        "slug": "leo"
+      },
+      {
+        "slug": "lil-chest"
+      },
+      {
+        "slug": "lil-gurdy"
+      },
+      {
+        "slug": "lil-haunt"
+      },
+      {
+        "slug": "little-c-h-a-d"
+      },
+      {
+        "slug": "little-chubby"
+      },
+      {
+        "slug": "little-gish"
+      },
+      {
+        "slug": "little-steven"
+      },
+      {
+        "slug": "lokis-horns"
+      },
+      {
+        "slug": "lost-contact"
+      },
+      {
+        "slug": "lost-fly"
+      },
+      {
+        "slug": "the-ludovico-technique"
+      },
+      {
+        "slug": "a-lump-of-coal"
+      },
+      {
+        "slug": "lusty-blood"
+      },
+      {
+        "slug": "maggys-bow"
+      },
+      {
+        "slug": "marked"
+      },
+      {
+        "slug": "milk"
+      },
+      {
+        "slug": "moms-contacts"
+      },
+      {
+        "slug": "moms-eye"
+      },
+      {
+        "slug": "moms-eyeshadow"
+      },
+      {
+        "slug": "moms-perfume"
+      },
+      {
+        "slug": "monstros-lung"
+      },
+      {
+        "slug": "mr-mega"
+      },
+      {
+        "slug": "the-mulligan"
+      },
+      {
+        "slug": "multidimensional-baby"
+      },
+      {
+        "slug": "mutant-spider"
+      },
+      {
+        "slug": "my-reflection"
+      },
+      {
+        "slug": "mysterious-liquid"
+      },
+      {
+        "slug": "mystery-sack"
+      },
+      {
+        "slug": "night-light"
+      },
+      {
+        "slug": "number-one"
+      },
+      {
+        "slug": "no-2"
+      },
+      {
+        "slug": "obsessed-fan"
+      },
+      {
+        "slug": "odd-mushroom-large"
+      },
+      {
+        "slug": "odd-mushroom-thin"
+      },
+      {
+        "slug": "ouija-board"
+      },
+      {
+        "slug": "papa-fly"
+      },
+      {
+        "slug": "the-parasite"
+      },
+      {
+        "slug": "pay-to-play"
+      },
+      {
+        "slug": "the-peeper"
+      },
+      {
+        "slug": "pisces"
+      },
+      {
+        "slug": "polyphemus"
+      },
+      {
+        "slug": "proptosis"
+      },
+      {
+        "slug": "punching-bag"
+      },
+      {
+        "slug": "pupula-duplex"
+      },
+      {
+        "slug": "purity"
+      },
+      {
+        "slug": "pyromaniac"
+      },
+      {
+        "slug": "rotten-baby"
+      },
+      {
+        "slug": "rubber-cement"
+      },
+      {
+        "slug": "rune-bag"
+      },
+      {
+        "slug": "sack-of-pennies"
+      },
+      {
+        "slug": "sacrificial-dagger"
+      },
+      {
+        "slug": "sad-bombs"
+      },
+      {
+        "slug": "the-sad-onion"
+      },
+      {
+        "slug": "sagittarius"
+      },
+      {
+        "slug": "samsons-chains"
+      },
+      {
+        "slug": "scapular"
+      },
+      {
+        "slug": "scatter-bombs"
+      },
+      {
+        "slug": "scorpio"
+      },
+      {
+        "slug": "serpents-kiss"
+      },
+      {
+        "slug": "sissy-longlegs"
+      },
+      {
+        "slug": "sister-maggy"
+      },
+      {
+        "slug": "smart-fly"
+      },
+      {
+        "slug": "smb-super-fan"
+      },
+      {
+        "slug": "soy-milk"
+      },
+      {
+        "slug": "spider-bite"
+      },
+      {
+        "slug": "spoon-bender"
+      },
+      {
+        "slug": "steam-sale"
+      },
+      {
+        "slug": "steven"
+      },
+      {
+        "slug": "sticky-bombs"
+      },
+      {
+        "slug": "stigmata"
+      },
+      {
+        "slug": "strange-attractor"
+      },
+      {
+        "slug": "taurus"
+      },
+      {
+        "slug": "tech-5"
+      },
+      {
+        "slug": "technology"
+      },
+      {
+        "slug": "technology-2"
+      },
+      {
+        "slug": "tech-x"
+      },
+      {
+        "slug": "tiny-planet"
+      },
+      {
+        "slug": "tough-love"
+      },
+      {
+        "slug": "tractor-beam"
+      },
+      {
+        "slug": "virgo"
+      },
+      {
+        "slug": "the-virus"
+      },
+      {
+        "slug": "the-wafer"
+      },
+      {
+        "slug": "the-wiz"
+      },
+      {
+        "slug": "zodiac"
+      },
+      {
+        "slug": "the-halo"
+      },
+      {
+        "slug": "magic-mushroom"
+      },
+      {
+        "slug": "the-body"
+      },
+      {
+        "slug": "deaths-touch"
+      },
+      {
+        "slug": "holy-light"
+      },
+      {
+        "slug": "the-mind"
+      },
+      {
+        "slug": "moms-knife"
+      },
+      {
+        "slug": "the-soul"
+      },
+      {
+        "slug": "epic-fetus"
+      },
+      {
+        "slug": "missing-no"
+      },
+      {
+        "slug": "cube-of-meat",
+        "dlc": "nr"
+      },
+      {
+        "slug": "godhead",
+        "dlc": "nr"
+      },
+      {
+        "slug": "judas-shadow",
+        "dlc": "nr"
+      },
+      {
+        "slug": "pyro",
+        "dlc": "nr"
+      },
+      {
+        "slug": "adrenaline",
+        "dlc": "a+"
+      },
+      {
+        "slug": "analog-stick",
+        "dlc": "a+"
+      },
+      {
+        "slug": "apple",
+        "dlc": "a+"
+      },
+      {
+        "slug": "backstabber",
+        "dlc": "a+"
+      },
+      {
+        "slug": "big-chubby",
+        "dlc": "a+"
+      },
+      {
+        "slug": "bloodshot-eye",
+        "dlc": "a+"
+      },
+      {
+        "slug": "bozo",
+        "dlc": "a+"
+      },
+      {
+        "slug": "brittle-bones",
+        "dlc": "a+"
+      },
+      {
+        "slug": "broken-modem",
+        "dlc": "a+"
+      },
+      {
+        "slug": "camo-undies",
+        "dlc": "a+"
+      },
+      {
+        "slug": "compound-fracture",
+        "dlc": "a+"
+      },
+      {
+        "slug": "cone-head",
+        "dlc": "a+"
+      },
+      {
+        "slug": "contagion",
+        "dlc": "a+"
+      },
+      {
+        "slug": "dead-tooth",
+        "dlc": "a+"
+      },
+      {
+        "slug": "depression",
+        "dlc": "a+"
+      },
+      {
+        "slug": "dog-tooth",
+        "dlc": "a+"
+      },
+      {
+        "slug": "euthanasia",
+        "dlc": "a+"
+      },
+      {
+        "slug": "eye-of-greed",
+        "dlc": "a+"
+      },
+      {
+        "slug": "finger",
+        "dlc": "a+"
+      },
+      {
+        "slug": "flat-stone",
+        "dlc": "a+"
+      },
+      {
+        "slug": "ghost-pepper",
+        "dlc": "a+"
+      },
+      {
+        "slug": "glaucoma",
+        "dlc": "a+"
+      },
+      {
+        "slug": "haemolacria",
+        "dlc": "a+"
+      },
+      {
+        "slug": "hallowed-ground",
+        "dlc": "a+"
+      },
+      {
+        "slug": "hushy",
+        "dlc": "a+"
+      },
+      {
+        "slug": "jacobs-ladder",
+        "dlc": "a+"
+      },
+      {
+        "slug": "jaw-bone",
+        "dlc": "a+"
+      },
+      {
+        "slug": "jumper-cables",
+        "dlc": "a+"
+      },
+      {
+        "slug": "lachryphagy",
+        "dlc": "a+"
+      },
+      {
+        "slug": "large-zit",
+        "dlc": "a+"
+      },
+      {
+        "slug": "lead-pencil",
+        "dlc": "a+"
+      },
+      {
+        "slug": "leprosy",
+        "dlc": "a+"
+      },
+      {
+        "slug": "lil-monstro",
+        "dlc": "a+"
+      },
+      {
+        "slug": "lil-spewer",
+        "dlc": "a+"
+      },
+      {
+        "slug": "linger-bean",
+        "dlc": "a+"
+      },
+      {
+        "slug": "little-horn",
+        "dlc": "a+"
+      },
+      {
+        "slug": "metal-plate",
+        "dlc": "a+"
+      },
+      {
+        "slug": "moms-razor",
+        "dlc": "a+"
+      },
+      {
+        "slug": "moms-wig",
+        "dlc": "a+"
+      },
+      {
+        "slug": "mongo-baby",
+        "dlc": "a+"
+      },
+      {
+        "slug": "mystery-egg",
+        "dlc": "a+"
+      },
+      {
+        "slug": "parasitoid",
+        "dlc": "a+"
+      },
+      {
+        "slug": "pointy-rib",
+        "dlc": "a+"
+      },
+      {
+        "slug": "pop",
+        "dlc": "a+"
+      },
+      {
+        "slug": "rainbow-baby",
+        "dlc": "a+"
+      },
+      {
+        "slug": "robo-baby",
+        "dlc": "a+"
+      },
+      {
+        "slug": "robo-baby-2-0",
+        "dlc": "a+"
+      },
+      {
+        "slug": "shard-of-glass",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sinus-infection",
+        "dlc": "a+"
+      },
+      {
+        "slug": "slipped-rib",
+        "dlc": "a+"
+      },
+      {
+        "slug": "sulfuric-acid",
+        "dlc": "a+"
+      },
+      {
+        "slug": "technology-zero",
+        "dlc": "a+"
+      },
+      {
+        "slug": "varicose-veins",
+        "dlc": "a+"
+      },
+      {
+        "slug": "the-relic",
+        "dlc": "a+"
+      },
+      {
+        "slug": "120-volt",
+        "dlc": "r"
+      },
+      {
+        "slug": "akeldama",
+        "dlc": "r"
+      },
+      {
+        "slug": "almond-milk",
+        "dlc": "r"
+      },
+      {
+        "slug": "belly-button",
+        "dlc": "r"
+      },
+      {
+        "slug": "belly-jelly",
+        "dlc": "r"
+      },
+      {
+        "slug": "birds-eye",
+        "dlc": "r"
+      },
+      {
+        "slug": "bird-cage",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-bombs",
+        "dlc": "r"
+      },
+      {
+        "slug": "blood-puppy",
+        "dlc": "r"
+      },
+      {
+        "slug": "bloody-gust",
+        "dlc": "r"
+      },
+      {
+        "slug": "boiled-baby",
+        "dlc": "r"
+      },
+      {
+        "slug": "bone-spurs",
+        "dlc": "r"
+      },
+      {
+        "slug": "bot-fly",
+        "dlc": "r"
+      },
+      {
+        "slug": "candy-heart",
+        "dlc": "r"
+      },
+      {
+        "slug": "cracked-orb",
+        "dlc": "r"
+      },
+      {
+        "slug": "c-section",
+        "dlc": "r"
+      },
+      {
+        "slug": "cube-baby",
+        "dlc": "r"
+      },
+      {
+        "slug": "dirty-mind",
+        "dlc": "r"
+      },
+      {
+        "slug": "empty-heart",
+        "dlc": "r"
+      },
+      {
+        "slug": "eye-sore",
+        "dlc": "r"
+      },
+      {
+        "slug": "freezer-baby",
+        "dlc": "r"
+      },
+      {
+        "slug": "fruity-plum",
+        "dlc": "r"
+      },
+      {
+        "slug": "ghost-bombs",
+        "dlc": "r"
+      },
+      {
+        "slug": "giant-cell",
+        "dlc": "r"
+      },
+      {
+        "slug": "hemoptysis",
+        "dlc": "r"
+      },
+      {
+        "slug": "hypercoagulation",
+        "dlc": "r"
+      },
+      {
+        "slug": "ibs",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-intruder",
+        "dlc": "r"
+      },
+      {
+        "slug": "it-hurts",
+        "dlc": "r"
+      },
+      {
+        "slug": "knockout-drops",
+        "dlc": "r"
+      },
+      {
+        "slug": "lil-dumpy",
+        "dlc": "r"
+      },
+      {
+        "slug": "lil-portal",
+        "dlc": "r"
+      },
+      {
+        "slug": "lodestone",
+        "dlc": "r"
+      },
+      {
+        "slug": "lost-soul",
+        "dlc": "r"
+      },
+      {
+        "slug": "montezumas-revenge",
+        "dlc": "r"
+      },
+      {
+        "slug": "mucormycosis",
+        "dlc": "r"
+      },
+      {
+        "slug": "nancy-bombs",
+        "dlc": "r"
+      },
+      {
+        "slug": "playdough-cookie",
+        "dlc": "r"
+      },
+      {
+        "slug": "polydactyly",
+        "dlc": "r"
+      },
+      {
+        "slug": "psy-fly",
+        "dlc": "r"
+      },
+      {
+        "slug": "quints",
+        "dlc": "r"
+      },
+      {
+        "slug": "rocket-in-a-jar",
+        "dlc": "r"
+      },
+      {
+        "slug": "rotten-tomato",
+        "dlc": "r"
+      },
+      {
+        "slug": "the-swarm",
+        "dlc": "r"
+      },
+      {
+        "slug": "tinytoma",
+        "dlc": "r"
+      },
+      {
+        "slug": "tooth-and-nail",
+        "dlc": "r"
+      },
+      {
+        "slug": "vasculitis",
+        "dlc": "r"
+      },
+      {
+        "slug": "worm-friend",
+        "dlc": "r"
+      },
+      {
+        "slug": "astral-projection",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-kin",
+        "dlc": "r"
+      },
+      {
+        "slug": "keepers-sack",
+        "dlc": "r"
+      },
+      {
+        "slug": "pyro",
+        "dlc": "r"
+      },
+      {
+        "slug": "skeleton-key",
+        "dlc": "r"
+      },
+      {
+        "slug": "tmtrainer",
+        "dlc": "r"
+      }
+    ]
+  }
+]

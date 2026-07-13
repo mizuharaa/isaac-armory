@@ -1,0 +1,1140 @@
+[
+  {
+    "slug": "isaac",
+    "name": "Isaac",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 3,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "the-d6"
+    ],
+    "startingPickups": "1 bomb",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/e/e5/Character_Isaac_appearance.png/revision/latest?cb=20231008190524",
+    "wikiTitle": "Isaac",
+    "dlc": "rebirth",
+    "notes": "The D6 must be unlocked (defeat ??? as Isaac... achievement 'The D6')."
+  },
+  {
+    "slug": "magdalene",
+    "name": "Magdalene",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 0.85,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 4,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "yum-heart"
+    ],
+    "startingPickups": "1 Full Health pill (unlockable)",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/b/bf/Character_Magdalene_appearance.png/revision/latest?cb=20210824111834",
+    "wikiTitle": "Magdalene",
+    "dlc": "rebirth",
+    "unlockCondition": "Magdalene"
+  },
+  {
+    "slug": "cain",
+    "name": "Cain",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1.2,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 4.5,
+      "speed": 1.3,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 2,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "lucky-foot"
+    ],
+    "startingTrinkets": [
+      "paper-clip"
+    ],
+    "startingPickups": "1 key",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/d/db/Character_Cain_appearance.png/revision/latest?cb=20211204211028",
+    "wikiTitle": "Cain",
+    "dlc": "rebirth",
+    "unlockCondition": "Cain",
+    "notes": "Paper Clip trinket requires Afterbirth and its unlock."
+  },
+  {
+    "slug": "judas",
+    "name": "Judas",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1.35,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 1,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "the-book-of-belial"
+    ],
+    "startingPickups": "3 coins",
+    "altForm": {
+      "name": "Dark Judas",
+      "stats": {
+        "damageMult": 2,
+        "speed": 1.1
+      },
+      "health": {
+        "red": 0,
+        "black": 2
+      },
+      "notes": "Reached via Judas' Shadow. ×2.00 damage multiplier."
+    },
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/8/8d/Character_Judas_appearance.png/revision/latest?cb=20210826071249",
+    "wikiTitle": "Judas",
+    "dlc": "rebirth",
+    "unlockCondition": "Judas"
+  },
+  {
+    "slug": "blue-baby",
+    "name": "???",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1.05,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1.1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 0,
+      "soul": 3,
+      "black": 0,
+      "type": "soul"
+    },
+    "startingItems": [
+      "the-poop"
+    ],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/9/9a/Character_%3F%3F%3F_appearance.png/revision/latest?cb=20210824125207",
+    "wikiTitle": "??? (Character)",
+    "dlc": "rebirth",
+    "unlockCondition": "???",
+    "notes": "Cannot gain red heart containers; soul hearts only."
+  },
+  {
+    "slug": "eve",
+    "name": "Eve",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 0.75,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1.23,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 2,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "whore-of-babylon",
+      "dead-bird",
+      "razor-blade"
+    ],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/9/91/Character_Eve_appearance.png/revision/latest?cb=20210826071757",
+    "wikiTitle": "Eve",
+    "dlc": "rebirth",
+    "unlockCondition": "Eve",
+    "notes": "Damage multiplier becomes ×1.00 while Whore of Babylon is active (at half a red heart). Razor Blade requires Afterbirth and its unlock."
+  },
+  {
+    "slug": "samson",
+    "name": "Samson",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": -0.1,
+      "tearsMult": 1,
+      "shotSpeed": 1.31,
+      "range": 5,
+      "speed": 1.1,
+      "luck": 0,
+      "tearDelay": 10.4
+    },
+    "health": {
+      "red": 3,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "bloody-lust"
+    ],
+    "startingTrinkets": [
+      "childs-heart"
+    ],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/8/8c/Character_Samson_appearance.png/revision/latest?cb=20210824125143",
+    "wikiTitle": "Samson",
+    "dlc": "rebirth",
+    "unlockCondition": "Samson",
+    "notes": "Child's Heart trinket requires Afterbirth+ and its unlock."
+  },
+  {
+    "slug": "azazel",
+    "name": "Azazel",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1.5,
+      "tearsDelta": 0.5,
+      "tearsMult": 0.267,
+      "shotSpeed": 1,
+      "range": 4.5,
+      "speed": 1.25,
+      "luck": 0,
+      "tearDelay": 8.29
+    },
+    "health": {
+      "red": 0,
+      "soul": 0,
+      "black": 3,
+      "type": "normal"
+    },
+    "startingItems": [],
+    "innate": [
+      "Flight",
+      "Short-range Brimstone"
+    ],
+    "startingPickups": "The Fool card",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/0/06/Character_Azazel_appearance.png/revision/latest?cb=20210824125228",
+    "wikiTitle": "Azazel",
+    "dlc": "rebirth",
+    "unlockCondition": "Azazel"
+  },
+  {
+    "slug": "lazarus",
+    "name": "Lazarus",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 4.5,
+      "speed": 1,
+      "luck": -1,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 3,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "anemic"
+    ],
+    "startingPickups": "1 pill",
+    "altForm": {
+      "name": "Lazarus Risen",
+      "stats": {
+        "damageMult": 1.4,
+        "speed": 1.25,
+        "range": 6.5,
+        "luck": 0
+      },
+      "health": {
+        "red": 1
+      },
+      "notes": "Post-revival form. ×1.40 damage in Repentance (×1.20 before)."
+    },
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/7/78/Character_Lazarus_appearance.png/revision/latest?cb=20211111110428",
+    "wikiTitle": "Lazarus",
+    "dlc": "rebirth",
+    "unlockCondition": "Lazarus",
+    "notes": "Anemic requires Afterbirth+ and its unlock. Revives once on death as Lazarus Risen."
+  },
+  {
+    "slug": "eden",
+    "name": "Eden",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "random": true,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 1,
+      "soul": 1,
+      "black": 0,
+      "type": "normal",
+      "random": true
+    },
+    "startingItems": [],
+    "startingPickups": "0-2 bombs, 0-1 key, 0-5 coins, 0-1 trinket/pill/card",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/8/83/Character_Eden_appearance.png/revision/latest?cb=20210826072021",
+    "wikiTitle": "Eden",
+    "dlc": "rebirth",
+    "unlockCondition": "Eden",
+    "notes": "Random stats: damage 3.5±1.0, tears +0.75 to −0.5, shot speed 1±0.25, range 6.5±1.5, speed 1±0.15, luck 0±1. Random active + passive item. Values here are the distribution centers."
+  },
+  {
+    "slug": "the-lost",
+    "name": "The Lost",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 0,
+      "soul": 0,
+      "black": 0,
+      "type": "none"
+    },
+    "startingItems": [
+      "eternal-d6",
+      "holy-mantle"
+    ],
+    "innate": [
+      "Flight",
+      "Spectral tears"
+    ],
+    "startingPickups": "1 coin",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/f/f0/Character_The_Lost_appearance.png/revision/latest?cb=20210826071932",
+    "wikiTitle": "The Lost",
+    "dlc": "rebirth",
+    "unlockCondition": "The Lost",
+    "notes": "No health; dies in one hit. Holy Mantle in the loadout requires its Afterbirth unlock; Eternal D6 is the Repentance starting active."
+  },
+  {
+    "slug": "lilith",
+    "name": "Lilith",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 1,
+      "soul": 0,
+      "black": 2,
+      "type": "normal"
+    },
+    "startingItems": [
+      "incubus",
+      "cambion-conception",
+      "box-of-friends"
+    ],
+    "innate": [
+      "Blindfolded (cannot shoot; Incubus fires instead)"
+    ],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/a/a8/Character_Lilith_appearance.png/revision/latest?cb=20250114193330",
+    "wikiTitle": "Lilith",
+    "dlc": "afterbirth",
+    "unlockCondition": "Lilith"
+  },
+  {
+    "slug": "keeper",
+    "name": "Keeper",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1.2,
+      "tearsDelta": -1.9,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 0.9,
+      "luck": -2,
+      "tearDelay": 16
+    },
+    "health": {
+      "red": 0,
+      "soul": 0,
+      "black": 0,
+      "coin": 2,
+      "type": "coin"
+    },
+    "startingItems": [
+      "wooden-nickel"
+    ],
+    "innate": [
+      "Triple shot"
+    ],
+    "startingPickups": "1 bomb, 1 coin (unlockable), Store Key trinket (unlockable)",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/2/20/Character_Keeper_appearance.png/revision/latest?cb=20210821185529",
+    "wikiTitle": "Keeper",
+    "dlc": "afterbirth",
+    "unlockCondition": "Keeper",
+    "notes": "Coin hearts: picking up coins heals. A third coin container is unlockable in Repentance."
+  },
+  {
+    "slug": "apollyon",
+    "name": "Apollyon",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 2,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "void"
+    ],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/4/40/Character_Apollyon_appearance.png/revision/latest?cb=20210822021832",
+    "wikiTitle": "Apollyon",
+    "dlc": "afterbirth_plus",
+    "unlockCondition": "Apollyon"
+  },
+  {
+    "slug": "the-forgotten",
+    "name": "The Forgotten",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1.5,
+      "tearsDelta": 0,
+      "tearsMult": 0.5,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 0,
+      "soul": 0,
+      "black": 0,
+      "bone": 2,
+      "type": "bone"
+    },
+    "startingItems": [],
+    "innate": [
+      "Bone club (melee/chargeable throw)"
+    ],
+    "altForm": {
+      "name": "The Soul",
+      "stats": {
+        "damageMult": 1,
+        "tearsMult": 1,
+        "speed": 1.3
+      },
+      "health": {
+        "red": 0,
+        "soul": 1,
+        "black": 0,
+        "type": "soul"
+      },
+      "notes": "Swappable second form; flight + spectral tears, chained to the body."
+    },
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/2/21/Character_The_Forgotten_appearance.png/revision/latest?cb=20210822091711",
+    "wikiTitle": "The Forgotten",
+    "dlc": "afterbirth_plus",
+    "unlockCondition": "The Forgotten"
+  },
+  {
+    "slug": "bethany",
+    "name": "Bethany",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 3,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "book-of-virtues"
+    ],
+    "startingPickups": "4 soul charges",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/8/82/Character_Bethany_appearance.png/revision/latest?cb=20210822150024",
+    "wikiTitle": "Bethany",
+    "dlc": "repentance",
+    "unlockCondition": "Bethany",
+    "notes": "Soul/black hearts convert to soul charges that power her active item."
+  },
+  {
+    "slug": "jacob-and-esau",
+    "name": "Jacob & Esau",
+    "tainted": false,
+    "baseStats": {
+      "damageBase": 2.75,
+      "damageMult": 1,
+      "tearsDelta": 0.277,
+      "tearsMult": 1,
+      "shotSpeed": 1.15,
+      "range": 5,
+      "speed": 1,
+      "luck": 1,
+      "tearDelay": 9
+    },
+    "health": {
+      "red": 3,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [],
+    "altForm": {
+      "name": "Esau",
+      "stats": {
+        "damageBase": 3.75,
+        "tearsDelta": -0.1,
+        "shotSpeed": 0.85,
+        "range": 8,
+        "luck": -1,
+        "tearDelay": 10.4
+      },
+      "health": {
+        "red": 1,
+        "soul": 1
+      },
+      "notes": "Moves with Jacob; both die if either dies."
+    },
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/8/87/Character_Esau_appearance.png/revision/latest?cb=20210822150117",
+    "wikiTitle": "Jacob & Esau",
+    "dlc": "repentance",
+    "unlockCondition": "Jacob and Esau",
+    "notes": "Two bodies controlled simultaneously. baseStats are Jacob's; altForm is Esau."
+  },
+  {
+    "slug": "tainted-isaac",
+    "name": "Tainted Isaac",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 3,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [],
+    "startingPickups": "1 bomb",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/e/ec/Character_Tainted_Isaac_appearance.png/revision/latest?cb=20210824112002",
+    "wikiTitle": "Tainted Isaac",
+    "dlc": "repentance",
+    "unlockCondition": "The Broken",
+    "notes": "Can only hold 8 passive items; items rotate out."
+  },
+  {
+    "slug": "tainted-magdalene",
+    "name": "Tainted Magdalene",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 0.75,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 2,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "yum-heart"
+    ],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/f/f1/Character_Tainted_Magdalene_appearance.png/revision/latest?cb=20210824112024",
+    "wikiTitle": "Tainted Magdalene",
+    "dlc": "repentance",
+    "unlockCondition": "The Dauntless",
+    "notes": "2 filled + 2 empty heart containers; non-bone hearts drain over time."
+  },
+  {
+    "slug": "tainted-cain",
+    "name": "Tainted Cain",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1.2,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 4.5,
+      "speed": 1.3,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 2,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "bag-of-crafting"
+    ],
+    "startingPickups": "1 key",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/2/2e/Tainted_Cain_App.png/revision/latest?cb=20210825173304",
+    "wikiTitle": "Tainted Cain",
+    "dlc": "repentance",
+    "unlockCondition": "The Hoarder",
+    "notes": "Pedestal items break into pickups; items are crafted with the Bag."
+  },
+  {
+    "slug": "tainted-judas",
+    "name": "Tainted Judas",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 4.5,
+      "speed": 1.23,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 0,
+      "soul": 0,
+      "black": 2,
+      "type": "normal"
+    },
+    "startingItems": [
+      "dark-arts"
+    ],
+    "startingPickups": "3 coins",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/0/0e/Tainted_Judas_App.png/revision/latest?cb=20210825173324",
+    "wikiTitle": "Tainted Judas",
+    "dlc": "repentance",
+    "unlockCondition": "The Deceiver"
+  },
+  {
+    "slug": "tainted-blue-baby",
+    "name": "Tainted ???",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": -0.35,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 0.9,
+      "luck": 0,
+      "tearDelay": 11.57
+    },
+    "health": {
+      "red": 0,
+      "soul": 3,
+      "black": 0,
+      "type": "soul"
+    },
+    "startingItems": [
+      "hold"
+    ],
+    "startingPickups": "3 poop bombs",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/c/c1/Tainted_Blue_Baby_App.png/revision/latest?cb=20210825173344",
+    "wikiTitle": "Tainted ???",
+    "dlc": "repentance",
+    "unlockCondition": "The Soiled",
+    "notes": "Fires poop projectiles governed by an ammo meter."
+  },
+  {
+    "slug": "tainted-eve",
+    "name": "Tainted Eve",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1.2,
+      "tearsDelta": -0.5,
+      "tearsMult": 0.66,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 12.45
+    },
+    "health": {
+      "red": 2,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "sumptorium"
+    ],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/0/04/Tainted_Eve_App.png/revision/latest?cb=20210825173404",
+    "wikiTitle": "Tainted Eve",
+    "dlc": "repentance",
+    "unlockCondition": "The Curdled",
+    "notes": "Red hearts spawn blood-clot familiars via Sumptorium."
+  },
+  {
+    "slug": "tainted-samson",
+    "name": "Tainted Samson",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": -0.1,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10.4
+    },
+    "health": {
+      "red": 3,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [],
+    "innate": [
+      "Berserk! (rage mode fills from dealing/taking damage)"
+    ],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/7/72/Tainted_Samson_App.png/revision/latest?cb=20210825173424",
+    "wikiTitle": "Tainted Samson",
+    "dlc": "repentance",
+    "unlockCondition": "The Savage"
+  },
+  {
+    "slug": "tainted-azazel",
+    "name": "Tainted Azazel",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1.5,
+      "tearsDelta": 0,
+      "tearsMult": 0.3333,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 0,
+      "soul": 0,
+      "black": 3,
+      "type": "normal"
+    },
+    "startingItems": [],
+    "innate": [
+      "Flight",
+      "Hemoptysis (sneeze) + wide short Brimstone"
+    ],
+    "startingPickups": "The Fool card",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/6/61/Tainted_Azazel_App.png/revision/latest?cb=20210825173445",
+    "wikiTitle": "Tainted Azazel",
+    "dlc": "repentance",
+    "unlockCondition": "The Benighted"
+  },
+  {
+    "slug": "tainted-lazarus",
+    "name": "Tainted Lazarus",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 4.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 3,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "flip"
+    ],
+    "altForm": {
+      "name": "Dead Tainted Lazarus",
+      "stats": {
+        "damageMult": 1.5,
+        "tearsDelta": -0.1,
+        "speed": 0.9,
+        "range": 6.5,
+        "luck": -2,
+        "tearDelay": 10.4
+      },
+      "health": {
+        "red": 0,
+        "soul": 2,
+        "type": "soul"
+      },
+      "notes": "The flipped form; items picked up apply to only one form."
+    },
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/7/70/Character_Tainted_Lazarus_appearance.png/revision/latest?cb=20230111000758",
+    "wikiTitle": "Tainted Lazarus",
+    "dlc": "repentance",
+    "unlockCondition": "The Enigma",
+    "notes": "Alternates with his dead form every room via Flip."
+  },
+  {
+    "slug": "tainted-eden",
+    "name": "Tainted Eden",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "random": true,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 1,
+      "soul": 1,
+      "black": 0,
+      "type": "normal",
+      "random": true
+    },
+    "startingItems": [],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/5/57/Character_Tainted_Eden_appearance.png/revision/latest?cb=20210824112436",
+    "wikiTitle": "Tainted Eden",
+    "dlc": "repentance",
+    "unlockCondition": "The Capricious",
+    "notes": "Random stats like Eden; taking damage rerolls all items and stats."
+  },
+  {
+    "slug": "tainted-lost",
+    "name": "Tainted Lost",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1.3,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 0,
+      "soul": 0,
+      "black": 0,
+      "type": "none"
+    },
+    "startingItems": [],
+    "innate": [
+      "Flight",
+      "Spectral tears"
+    ],
+    "startingPickups": "1 coin, Holy Card",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/b/b7/Tainted_Lost_App.png/revision/latest?cb=20210825173525",
+    "wikiTitle": "Tainted Lost",
+    "dlc": "repentance",
+    "unlockCondition": "The Baleful",
+    "notes": "No health; internal item filter removes purely defensive items."
+  },
+  {
+    "slug": "tainted-lilith",
+    "name": "Tainted Lilith",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 0.85,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 1,
+      "soul": 0,
+      "black": 2,
+      "type": "normal"
+    },
+    "startingItems": [],
+    "innate": [
+      "Gello (demonic womb familiar fires her tears)",
+      "Blindfolded"
+    ],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/a/a7/Tainted_Lilith_App.png/revision/latest?cb=20210825173545",
+    "wikiTitle": "Tainted Lilith",
+    "dlc": "repentance",
+    "unlockCondition": "The Harlot"
+  },
+  {
+    "slug": "tainted-keeper",
+    "name": "Tainted Keeper",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": -2.2,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": -2,
+      "tearDelay": 16
+    },
+    "health": {
+      "red": 0,
+      "soul": 0,
+      "black": 0,
+      "coin": 2,
+      "type": "coin"
+    },
+    "startingItems": [],
+    "startingPickups": "1 bomb",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/0/05/Tainted_Keeper_App.png/revision/latest?cb=20210825173606",
+    "wikiTitle": "Tainted Keeper",
+    "dlc": "repentance",
+    "unlockCondition": "The Miser",
+    "notes": "Enemies drop temporary coins; shop items are bought with them."
+  },
+  {
+    "slug": "tainted-apollyon",
+    "name": "Tainted Apollyon",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": -0.5,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 12.45
+    },
+    "health": {
+      "red": 2,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "abyss"
+    ],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/2/27/Tainted_Apollyon_App.png/revision/latest?cb=20210825173626",
+    "wikiTitle": "Tainted Apollyon",
+    "dlc": "repentance",
+    "unlockCondition": "The Empty"
+  },
+  {
+    "slug": "tainted-forgotten",
+    "name": "Tainted Forgotten",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1.5,
+      "tearsDelta": 0,
+      "tearsMult": 0.5,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 0,
+      "soul": 0,
+      "black": 0,
+      "type": "none"
+    },
+    "startingItems": [],
+    "innate": [
+      "Bone club"
+    ],
+    "altForm": {
+      "name": "Tainted Soul",
+      "health": {
+        "red": 0,
+        "soul": 3,
+        "black": 0,
+        "type": "soul"
+      },
+      "notes": "Carries the body; does not attack directly."
+    },
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/1/1f/Character_Tainted_Forgotten_appearance.png/revision/latest?cb=20210824112044",
+    "wikiTitle": "Tainted Forgotten",
+    "dlc": "repentance",
+    "unlockCondition": "The Fettered",
+    "notes": "An inert skeleton carried and thrown by the Tainted Soul."
+  },
+  {
+    "slug": "tainted-bethany",
+    "name": "Tainted Bethany",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 10
+    },
+    "health": {
+      "red": 0,
+      "soul": 3,
+      "black": 0,
+      "type": "soul"
+    },
+    "startingItems": [
+      "lemegeton"
+    ],
+    "startingPickups": "6 blood charges",
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/e/ed/Tainted_Bethany_App.png/revision/latest?cb=20210825173646",
+    "wikiTitle": "Tainted Bethany",
+    "dlc": "repentance",
+    "unlockCondition": "The Zealot",
+    "notes": "Red hearts convert to blood charges that power her active item."
+  },
+  {
+    "slug": "tainted-jacob",
+    "name": "Tainted Jacob",
+    "tainted": true,
+    "baseStats": {
+      "damageBase": 3.5,
+      "damageMult": 1,
+      "tearsDelta": 0.277,
+      "tearsMult": 1,
+      "shotSpeed": 1,
+      "range": 6.5,
+      "speed": 1,
+      "luck": 0,
+      "tearDelay": 9
+    },
+    "health": {
+      "red": 3,
+      "soul": 0,
+      "black": 0,
+      "type": "normal"
+    },
+    "startingItems": [
+      "anima-sola"
+    ],
+    "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/0/0b/Tainted_Jacob_App.png/revision/latest?cb=20210825173706",
+    "wikiTitle": "Tainted Jacob",
+    "dlc": "repentance",
+    "unlockCondition": "The Deserter",
+    "notes": "Pursued by the ghost Dark Esau; touching him turns Jacob into Lost-like form."
+  }
+]
