@@ -1,0 +1,299 @@
+{
+  "_source": "Hand-transcribed 2026-07-14 from https://bindingofisaacrebirth.fandom.com/wiki/Template:Character_Tables (rendered on the Characters page). Repentance values. tearsDelta/tearsMult are the wiki's 'Tears' row (delta on the tears stat, fire-rate units); tearDelay is derived by the scraper.",
+  "_notes": "startingItems use wiki item names; the scraper resolves them to slugs. 'innate' lists built-in abilities that are not collectibles. Unlockable parts of loadouts are noted per character and assume a fully-unlocked save.",
+  "characters": {
+    "isaac": {
+      "name": "Isaac", "tainted": false, "dlc": "rebirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 3, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["The D6"],
+      "startingPickups": "1 bomb",
+      "notes": "The D6 must be unlocked (defeat ??? as Isaac... achievement 'The D6')."
+    },
+    "magdalene": {
+      "name": "Magdalene", "tainted": false, "dlc": "rebirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 0.85, "luck": 0 },
+      "health": { "red": 4, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Yum Heart"],
+      "startingPickups": "1 Full Health pill (unlockable)"
+    },
+    "cain": {
+      "name": "Cain", "tainted": false, "dlc": "rebirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.2, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 4.5, "speed": 1.3, "luck": 0 },
+      "health": { "red": 2, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Lucky Foot"],
+      "startingTrinkets": ["Paper Clip"],
+      "startingPickups": "1 key",
+      "notes": "Paper Clip trinket requires Afterbirth and its unlock."
+    },
+    "judas": {
+      "name": "Judas", "tainted": false, "dlc": "rebirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.35, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 1, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["The Book of Belial"],
+      "startingPickups": "3 coins",
+      "altForm": {
+        "name": "Dark Judas",
+        "stats": { "damageMult": 2.0, "speed": 1.1 },
+        "health": { "red": 0, "black": 2 },
+        "notes": "Reached via Judas' Shadow. ×2.00 damage multiplier."
+      }
+    },
+    "blue-baby": {
+      "name": "???", "tainted": false, "dlc": "rebirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.05, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.1, "luck": 0 },
+      "health": { "red": 0, "soul": 3, "black": 0, "type": "soul" },
+      "startingItems": ["The Poop"],
+      "notes": "Cannot gain red heart containers; soul hearts only."
+    },
+    "eve": {
+      "name": "Eve", "tainted": false, "dlc": "rebirth",
+      "stats": { "damageBase": 3.5, "damageMult": 0.75, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.23, "luck": 0 },
+      "health": { "red": 2, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Whore of Babylon", "Dead Bird", "Razor Blade"],
+      "notes": "Damage multiplier becomes ×1.00 while Whore of Babylon is active (at half a red heart). Razor Blade requires Afterbirth and its unlock."
+    },
+    "samson": {
+      "name": "Samson", "tainted": false, "dlc": "rebirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": -0.1, "tearsMult": 1.0, "shotSpeed": 1.31, "range": 5.0, "speed": 1.1, "luck": 0 },
+      "health": { "red": 3, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Bloody Lust"],
+      "startingTrinkets": ["Child's Heart"],
+      "notes": "Child's Heart trinket requires Afterbirth+ and its unlock."
+    },
+    "azazel": {
+      "name": "Azazel", "tainted": false, "dlc": "rebirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.5, "tearsDelta": 0.5, "tearsMult": 0.267, "shotSpeed": 1.0, "range": 4.5, "speed": 1.25, "luck": 0 },
+      "health": { "red": 0, "soul": 0, "black": 3, "type": "normal" },
+      "startingItems": [],
+      "innate": ["Flight", "Short-range Brimstone"],
+      "startingPickups": "The Fool card"
+    },
+    "lazarus": {
+      "name": "Lazarus", "tainted": false, "dlc": "rebirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 4.5, "speed": 1.0, "luck": -1 },
+      "health": { "red": 3, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Anemic"],
+      "startingPickups": "1 pill",
+      "notes": "Anemic requires Afterbirth+ and its unlock. Revives once on death as Lazarus Risen.",
+      "altForm": {
+        "name": "Lazarus Risen",
+        "stats": { "damageMult": 1.4, "speed": 1.25, "range": 6.5, "luck": 0 },
+        "health": { "red": 1 },
+        "notes": "Post-revival form. ×1.40 damage in Repentance (×1.20 before)."
+      }
+    },
+    "eden": {
+      "name": "Eden", "tainted": false, "dlc": "rebirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0, "random": true },
+      "health": { "red": 1, "soul": 1, "black": 0, "type": "normal", "random": true },
+      "startingItems": [],
+      "startingPickups": "0-2 bombs, 0-1 key, 0-5 coins, 0-1 trinket/pill/card",
+      "notes": "Random stats: damage 3.5±1.0, tears +0.75 to −0.5, shot speed 1±0.25, range 6.5±1.5, speed 1±0.15, luck 0±1. Random active + passive item. Values here are the distribution centers."
+    },
+    "the-lost": {
+      "name": "The Lost", "tainted": false, "dlc": "rebirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 0, "soul": 0, "black": 0, "type": "none" },
+      "startingItems": ["Eternal D6", "Holy Mantle"],
+      "innate": ["Flight", "Spectral tears"],
+      "startingPickups": "1 coin",
+      "notes": "No health; dies in one hit. Holy Mantle in the loadout requires its Afterbirth unlock; Eternal D6 is the Repentance starting active."
+    },
+    "lilith": {
+      "name": "Lilith", "tainted": false, "dlc": "afterbirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 1, "soul": 0, "black": 2, "type": "normal" },
+      "startingItems": ["Incubus", "Cambion Conception", "Box of Friends"],
+      "innate": ["Blindfolded (cannot shoot; Incubus fires instead)"]
+    },
+    "keeper": {
+      "name": "Keeper", "tainted": false, "dlc": "afterbirth",
+      "stats": { "damageBase": 3.5, "damageMult": 1.2, "tearsDelta": -1.9, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 0.9, "luck": -2 },
+      "health": { "red": 0, "soul": 0, "black": 0, "coin": 2, "type": "coin" },
+      "startingItems": ["Wooden Nickel"],
+      "innate": ["Triple shot"],
+      "startingPickups": "1 bomb, 1 coin (unlockable), Store Key trinket (unlockable)",
+      "notes": "Coin hearts: picking up coins heals. A third coin container is unlockable in Repentance."
+    },
+    "apollyon": {
+      "name": "Apollyon", "tainted": false, "dlc": "afterbirth_plus",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 2, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Void"]
+    },
+    "the-forgotten": {
+      "name": "The Forgotten", "tainted": false, "dlc": "afterbirth_plus",
+      "stats": { "damageBase": 3.5, "damageMult": 1.5, "tearsDelta": 0, "tearsMult": 0.5, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 0, "soul": 0, "black": 0, "bone": 2, "type": "bone" },
+      "startingItems": [],
+      "innate": ["Bone club (melee/chargeable throw)"],
+      "altForm": {
+        "name": "The Soul",
+        "stats": { "damageMult": 1.0, "tearsMult": 1.0, "speed": 1.3 },
+        "health": { "red": 0, "soul": 1, "black": 0, "type": "soul" },
+        "notes": "Swappable second form; flight + spectral tears, chained to the body."
+      }
+    },
+    "bethany": {
+      "name": "Bethany", "tainted": false, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 3, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Book of Virtues"],
+      "startingPickups": "4 soul charges",
+      "notes": "Soul/black hearts convert to soul charges that power her active item."
+    },
+    "jacob-and-esau": {
+      "name": "Jacob & Esau", "tainted": false, "dlc": "repentance",
+      "stats": { "damageBase": 2.75, "damageMult": 1.0, "tearsDelta": 0.277, "tearsMult": 1.0, "shotSpeed": 1.15, "range": 5.0, "speed": 1.0, "luck": 1 },
+      "health": { "red": 3, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": [],
+      "notes": "Two bodies controlled simultaneously. baseStats are Jacob's; altForm is Esau.",
+      "altForm": {
+        "name": "Esau",
+        "stats": { "damageBase": 3.75, "tearsDelta": -0.1, "shotSpeed": 0.85, "range": 8.0, "luck": -1 },
+        "health": { "red": 1, "soul": 1 },
+        "notes": "Moves with Jacob; both die if either dies."
+      }
+    },
+
+    "tainted-isaac": {
+      "name": "Tainted Isaac", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 3, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": [],
+      "startingPickups": "1 bomb",
+      "notes": "Can only hold 8 passive items; items rotate out."
+    },
+    "tainted-magdalene": {
+      "name": "Tainted Magdalene", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 0.75, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 2, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Yum Heart"],
+      "notes": "2 filled + 2 empty heart containers; non-bone hearts drain over time."
+    },
+    "tainted-cain": {
+      "name": "Tainted Cain", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.2, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 4.5, "speed": 1.3, "luck": 0 },
+      "health": { "red": 2, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Bag of Crafting"],
+      "startingPickups": "1 key",
+      "notes": "Pedestal items break into pickups; items are crafted with the Bag."
+    },
+    "tainted-judas": {
+      "name": "Tainted Judas", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 4.5, "speed": 1.23, "luck": 0 },
+      "health": { "red": 0, "soul": 0, "black": 2, "type": "normal" },
+      "startingItems": ["Dark Arts"],
+      "startingPickups": "3 coins"
+    },
+    "tainted-blue-baby": {
+      "name": "Tainted ???", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": -0.35, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 0.9, "luck": 0 },
+      "health": { "red": 0, "soul": 3, "black": 0, "type": "soul" },
+      "startingItems": ["Hold"],
+      "startingPickups": "3 poop bombs",
+      "notes": "Fires poop projectiles governed by an ammo meter."
+    },
+    "tainted-eve": {
+      "name": "Tainted Eve", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.2, "tearsDelta": -0.5, "tearsMult": 0.66, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 2, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Sumptorium"],
+      "notes": "Red hearts spawn blood-clot familiars via Sumptorium."
+    },
+    "tainted-samson": {
+      "name": "Tainted Samson", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": -0.1, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 5.0, "speed": 1.0, "luck": 0 },
+      "health": { "red": 3, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": [],
+      "innate": ["Berserk! (rage mode fills from dealing/taking damage)"]
+    },
+    "tainted-azazel": {
+      "name": "Tainted Azazel", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.5, "tearsDelta": 0, "tearsMult": 0.3333, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 0, "soul": 0, "black": 3, "type": "normal" },
+      "startingItems": [],
+      "innate": ["Flight", "Hemoptysis (sneeze) + wide short Brimstone"],
+      "startingPickups": "The Fool card"
+    },
+    "tainted-lazarus": {
+      "name": "Tainted Lazarus", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 4.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 3, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Flip"],
+      "notes": "Alternates with his dead form every room via Flip.",
+      "altForm": {
+        "name": "Dead Tainted Lazarus",
+        "stats": { "damageMult": 1.5, "tearsDelta": -0.1, "speed": 0.9, "range": 6.5, "luck": -2 },
+        "health": { "red": 0, "soul": 2, "type": "soul" },
+        "notes": "The flipped form; items picked up apply to only one form."
+      }
+    },
+    "tainted-eden": {
+      "name": "Tainted Eden", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0, "random": true },
+      "health": { "red": 1, "soul": 1, "black": 0, "type": "normal", "random": true },
+      "startingItems": [],
+      "notes": "Random stats like Eden; taking damage rerolls all items and stats."
+    },
+    "tainted-lost": {
+      "name": "Tainted Lost", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.3, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 0, "soul": 0, "black": 0, "type": "none" },
+      "startingItems": [],
+      "innate": ["Flight", "Spectral tears"],
+      "startingPickups": "1 coin, Holy Card",
+      "notes": "No health; internal item filter removes purely defensive items."
+    },
+    "tainted-lilith": {
+      "name": "Tainted Lilith", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 0.85, "luck": 0 },
+      "health": { "red": 1, "soul": 0, "black": 2, "type": "normal" },
+      "startingItems": [],
+      "innate": ["Gello (demonic womb familiar fires her tears)", "Blindfolded"]
+    },
+    "tainted-keeper": {
+      "name": "Tainted Keeper", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": -2.2, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": -2 },
+      "health": { "red": 0, "soul": 0, "black": 0, "coin": 2, "type": "coin" },
+      "startingItems": [],
+      "startingPickups": "1 bomb",
+      "notes": "Enemies drop temporary coins; shop items are bought with them."
+    },
+    "tainted-apollyon": {
+      "name": "Tainted Apollyon", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": -0.5, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 2, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Abyss"]
+    },
+    "tainted-forgotten": {
+      "name": "Tainted Forgotten", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.5, "tearsDelta": 0, "tearsMult": 0.5, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 0, "soul": 0, "black": 0, "type": "none" },
+      "startingItems": [],
+      "innate": ["Bone club"],
+      "notes": "An inert skeleton carried and thrown by the Tainted Soul.",
+      "altForm": {
+        "name": "Tainted Soul",
+        "health": { "red": 0, "soul": 3, "black": 0, "type": "soul" },
+        "notes": "Carries the body; does not attack directly."
+      }
+    },
+    "tainted-bethany": {
+      "name": "Tainted Bethany", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 0, "soul": 3, "black": 0, "type": "soul" },
+      "startingItems": ["Lemegeton"],
+      "startingPickups": "6 blood charges",
+      "notes": "Red hearts convert to blood charges that power her active item."
+    },
+    "tainted-jacob": {
+      "name": "Tainted Jacob", "tainted": true, "dlc": "repentance",
+      "stats": { "damageBase": 3.5, "damageMult": 1.0, "tearsDelta": 0.277, "tearsMult": 1.0, "shotSpeed": 1.0, "range": 6.5, "speed": 1.0, "luck": 0 },
+      "health": { "red": 3, "soul": 0, "black": 0, "type": "normal" },
+      "startingItems": ["Anima Sola"],
+      "notes": "Pursued by the ghost Dark Esau; touching him turns Jacob into Lost-like form."
+    }
+  }
+}

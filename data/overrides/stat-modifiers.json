@@ -1,0 +1,31 @@
+{
+  "_status": "Seed overrides for Milestone 1. Milestone 2 (stat engine) expands and validates this list against each item's wiki Effects section; every entry must cite its source page. Items whose descriptions say only 'Damage up' etc. are listed in data/report.md under 'Ambiguous stat descriptions' and belong here.",
+  "overrides": {
+    "the-sad-onion": {
+      "source": "https://bindingofisaacrebirth.fandom.com/wiki/The_Sad_Onion",
+      "statModifiers": { "tears": 0.7 },
+      "note": "Also auto-extracted; kept as a known-good sanity pair for the extractor."
+    },
+    "crickets-head": {
+      "source": "https://bindingofisaacrebirth.fandom.com/wiki/Cricket%27s_Head",
+      "statModifiers": { "damageMult": 1.5 }
+    },
+    "magic-mushroom": {
+      "source": "https://bindingofisaacrebirth.fandom.com/wiki/Magic_Mushroom",
+      "statModifiers": { "hearts": 1, "damageMult": 1.5 },
+      "note": "INCOMPLETE — 'All stats up' also grants speed/range; exact values to be confirmed from the wiki Effects section in Milestone 2."
+    },
+    "polyphemus": {
+      "source": "https://bindingofisaacrebirth.fandom.com/wiki/Polyphemus",
+      "statModifiers": { "damage": 4, "damageMult": 2.0 },
+      "behaviorTags": ["piercing_on_kill"],
+      "note": "INCOMPLETE — also a large tears-down; exact tear-delay change to be confirmed in Milestone 2."
+    },
+    "soy-milk": {
+      "source": "https://bindingofisaacrebirth.fandom.com/wiki/Soy_Milk",
+      "statModifiers": { "damageMult": 0.2 },
+      "behaviorTags": ["rapid_fire", "tiny_tears"],
+      "note": "Fire delay is set near-minimum; modeled as a behavior in the engine, not a flat stat."
+    }
+  }
+}
