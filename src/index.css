@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-basement text-ink font-pixelbody;
+  font-size: 19px;
+  /* subtle grunge vignette, original CSS — evokes the basement without game assets */
+  background-image:
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.55) 100%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.012) 0 2px, transparent 2px 4px);
+  min-height: 100vh;
+}
+
+/* Every sprite in the app is pixel art — never smooth it. */
+.pixelated {
+  image-rendering: pixelated;
+}
+
+/* 2-frame stepped wiggle for card hover: pixel-art motion must snap. */
+@keyframes wiggle {
+  0% {
+    transform: rotate(-2deg) translateY(-2px);
+  }
+  100% {
+    transform: rotate(2deg) translateY(-2px);
+  }
+}
+.hover-wiggle:hover img {
+  animation: wiggle 0.22s steps(1, end) infinite alternate;
+}
+
+/* 4-frame idle bob for the avatar screen (stepped). */
+@keyframes idle-bob {
+  0% {
+    transform: translateY(0) scaleY(1);
+  }
+  25% {
+    transform: translateY(2px) scaleY(0.99);
+  }
+  50% {
+    transform: translateY(4px) scaleY(0.98);
+  }
+  75% {
+    transform: translateY(2px) scaleY(0.99);
+  }
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+}
+.idle-bob {
+  animation: idle-bob 1.2s steps(1, end) infinite;
+  transform-origin: bottom center;
+}
+
+/* Stepped slide for carousel transitions. */
+@keyframes step-in {
+  0% {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.step-in {
+  animation: step-in 0.18s steps(3, end);
+}
+
+/* Stat arrow flash when a value changes. */
+@keyframes stat-flash {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  25%,
+  75% {
+    opacity: 1;
+  }
+}
+.stat-flash {
+  animation: stat-flash 0.9s steps(4, end) 2;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #16100e;
+}
+::-webkit-scrollbar-thumb {
+  background: #4a3628;
+  border: 2px solid #16100e;
+}
