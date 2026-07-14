@@ -133,6 +133,7 @@ for (const c of characters) {
   const dest = path.join(OUT, "characters", c.slug);
   ensure(dest);
   let overlays = 0;
+  let hasHead = false;
   if (sheet) {
     copyFileSync(sheet.file, path.join(dest, "sheet.png"));
     // Costume overlays: the base sheet is only the SKIN — hair, eyepatches,
@@ -145,6 +146,22 @@ for (const c of characters) {
       .match(/^character_(\d+[a-z]?)_([a-z0-9]+)\.png$/);
     if (bm) {
       const [, prefix, baseRest] = bm;
+      // Custom heads (Azazel, Bethany, Jacob) have their OWN anm2 layout —
+      // compositing their sheet flat produces scattered pixels. Export the
+      // head sheet + parsed frames so the engine renders it properly.
+      for (const [rel, full] of gfx) {
+        const hm = rel.match(new RegExp(`^characters/character_${prefix}_([a-z0-9]*head[a-z0-9]*)\\.anm2$`));
+        if (!hm) continue;
+        // the anm2 names its own spritesheet — resolve it rather than guessing
+        const sheetPath = readFileSync(full, "utf8").match(/Spritesheet Path="([^"]+)"/)?.[1];
+        if (!sheetPath) continue;
+        const png = gfx.get(`characters/${sheetPath.replace(/\\/g, "/").toLowerCase()}`);
+        if (!png) continue;
+        copyFileSync(png, path.join(dest, "headsheet.png"));
+        parseAnm2File(full, path.join(dest, "headanim.json"), null, /^head$/);
+        hasHead = true;
+        break;
+      }
       const overlayRe = new RegExp(`^characters/costumes/character_${prefix}_([a-z0-9_]+)\\.png$`);
       const colorRe = /_(black|blue|green|grey|red|white)$/;
       const partRe = /(hair|head|locks|eyepatch|fez|scars|wig|halo|wings?|horns?|body|bandage)/;
@@ -155,15 +172,23 @@ for (const c of characters) {
         if (!om) continue;
         const rest = om[1];
         if (rest === baseRest || colorRe.test(rest)) continue;
+        // full-size sheets with their own anm2 use a custom layout (Azazel's
+        // head) — never composite those; small STRIPS (eyepatch, fez) align
+        // with the head row regardless
+        if (
+          gfx.has(`characters/character_${prefix}_${rest}.anm2`) &&
+          pngSize(full).h > 64
+        ) continue;
         const part = rest.match(partRe)?.[1];
         if (!part || usedParts.has(part)) continue;
         usedParts.add(part);
         copyFileSync(full, path.join(dest, `overlay_${overlays++}.png`));
       }
-      if (overlays) say(`  ${c.slug}: +${overlays} costume overlay(s)`);
+      if (overlays || hasHead)
+        say(`  ${c.slug}: +${overlays} overlay(s)${hasHead ? " + custom head" : ""}`);
     }
   } else say(`  ! no sheet for ${c.slug} (looked for "${sheetKey}")`);
-  writeFileSync(path.join(dest, "manifest.json"), JSON.stringify({ overlays }));
+  writeFileSync(path.join(dest, "manifest.json"), JSON.stringify({ overlays, head: hasHead }));
   if (portrait) copyFileSync(portrait, path.join(dest, "portrait.png"));
   else say(`  ! no portrait for ${c.slug}`);
 }
@@ -228,6 +253,16 @@ function parseAnm2(
     say(`  ! ${relPath} not found`);
     return;
   }
+  parseAnm2File(file, path.join(OUT, "anim", outName), wanted, layerFilter);
+  say(`anim/${outName} parsed`);
+}
+
+function parseAnm2File(
+  file: string,
+  outFile: string,
+  wanted: string[] | null,
+  layerFilter: RegExp,
+): void {
   const xml = readFileSync(file, "utf8");
   const attrs = (tag: string): Record<string, string> => {
     const out: Record<string, string> = {};
@@ -272,9 +307,8 @@ function parseAnm2(
     }
     anims[name] = layerAnims;
   }
-  ensure(path.join(OUT, "anim"));
-  writeFileSync(path.join(OUT, "anim", outName), JSON.stringify(anims, null, 1));
-  say(`anim/${outName}: ${Object.keys(anims).join(", ")}`);
+  ensure(path.dirname(outFile));
+  writeFileSync(outFile, JSON.stringify(anims, null, 1));
 }
 parseAnm2(
   "001.000_player.anm2",

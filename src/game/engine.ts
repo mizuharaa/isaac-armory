@@ -11,7 +11,7 @@
  * the original hand-drawn pixel art so the deployed build still works.
  */
 import type { CombatConfig } from "../engine/combat";
-import type { Anm2Frame, GameAssets } from "./assets";
+import type { Anm2Data, Anm2Frame, GameAssets } from "./assets";
 
 export const VIEW_W = 468;
 export const VIEW_H = 312;
@@ -215,6 +215,8 @@ export class Game {
   private playerSheet: HTMLImageElement | HTMLCanvasElement | null = null;
   private playerPortrait: HTMLImageElement | null = null;
   private playerKey = "";
+  private headSheet: HTMLImageElement | null = null;
+  private headAnim: Anm2Data | null = null;
 
   private px = VIEW_W / 2;
   private py = VIEW_H / 2 + 40;
@@ -311,10 +313,13 @@ export class Game {
     sheet: HTMLImageElement | HTMLCanvasElement | null,
     portrait: HTMLImageElement | null,
     key = "",
+    head?: { sheet: HTMLImageElement | null; anim: Anm2Data | null },
   ) {
     this.playerSheet = sheet;
     this.playerPortrait = portrait;
     this.playerKey = key;
+    this.headSheet = head?.sheet ?? null;
+    this.headAnim = head?.anim ?? null;
     this.tintedSheet = null;
     this.tintedKey = "";
   }
@@ -530,7 +535,7 @@ export class Game {
         this.brimCharge += dt / Math.max(0.5, (p.fireDelay + 1) / 30);
         if (this.brimCharge >= 1) {
           this.brimCharge = 0;
-          this.fireBeam(fx, fy, p, 0.7, p.damage);
+          for (const [dx, dy] of this.volleyDirs(fx, fy, cb)) this.fireBeam(dx, dy, p, 0.7, p.damage);
         }
       } else if (!firing) {
         this.brimCharge = Math.max(0, this.brimCharge - dt * 2);
@@ -565,12 +570,14 @@ export class Game {
         const d = this.lastFireDir;
         if (cb.chargeShot === "techx") {
           const speed = 130 * p.shotSpeed;
-          this.rings.push({
-            x: this.px + d.x * 10, y: this.py - 14 + d.y * 10,
-            vx: d.x * speed, vy: d.y * speed,
-            radius: 8 + this.shotCharge * 22, traveled: 0,
-            max: p.range * G * 1.4, damage: p.damage, tick: 0, hit: new Set(),
-          });
+          for (const [dx, dy] of this.volleyDirs(d.x, d.y, cb)) {
+            this.rings.push({
+              x: this.px + dx * 10, y: this.py - 14 + dy * 10,
+              vx: dx * speed, vy: dy * speed,
+              radius: 8 + this.shotCharge * 22, traveled: 0,
+              max: p.range * G * 1.4, damage: p.damage, tick: 0, hit: new Set(),
+            });
+          }
         } else if (cb.chargeShot === "lung") {
           // Monstro's Lung: shotgun burst in a cone, count scaled by charge
           const n = Math.round(4 + this.shotCharge * 10);
@@ -598,7 +605,7 @@ export class Game {
       this.fireFlash = 0.12;
       switch (cb.fireMode) {
         case "laser":
-          this.fireBeam(fx, fy, p, 0.12, p.damage);
+          for (const [dx, dy] of this.volleyDirs(fx, fy, cb)) this.fireBeam(dx, dy, p, 0.12, p.damage);
           break;
         case "knife":
           if (this.knife && this.knife.state === "held") {
@@ -751,11 +758,7 @@ export class Game {
       if (beam.attached) {
         beam.x = this.px + beam.dir.x * 10;
         beam.y = this.py - 14 + beam.dir.y * 10;
-        const toWall =
-          beam.dir.x > 0 ? VIEW_W - WALL - beam.x
-          : beam.dir.x < 0 ? beam.x - WALL
-          : beam.dir.y > 0 ? VIEW_H - WALL - beam.y
-          : beam.y - WALL;
+        const toWall = this.rayToWall(beam.x, beam.y, beam.dir.x, beam.dir.y);
         beam.len = Math.max(10, Math.min(beam.baseLen ?? Infinity, toWall));
       }
       if (beam.tick <= 0) {
@@ -981,13 +984,12 @@ export class Game {
     }
   }
 
-  private fireTears(fx: number, fy: number, p: GameParams, damageOverride?: number, sizeMult = 1) {
-    const speed = 150 * p.shotSpeed;
-    const cb = p.combat;
-    const isLob = cb.fireMode === "lob";
-
-    // The Wiz: everything fires as a diagonal double; Loki's Horns: chance
-    // of a full 4-way volley
+  /**
+   * Direction layer of the firing pipeline: The Wiz / Loki's Horns rewrite
+   * the volley directions for WHATEVER weapon fires (tears, brimstone,
+   * lasers, rings…) — composition instead of per-weapon special cases.
+   */
+  private volleyDirs(fx: number, fy: number, cb: CombatConfig): [number, number][] {
     let dirs: [number, number][] = [[fx, fy]];
     if (cb.wiz) {
       const d = Math.SQRT1_2;
@@ -996,6 +998,24 @@ export class Game {
     if (cb.quadChance > 0 && Math.random() < cb.quadChance) {
       dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
     }
+    return dirs;
+  }
+
+  /** Distance from a point along a (possibly diagonal) direction to the wall. */
+  private rayToWall(x: number, y: number, dx: number, dy: number): number {
+    let t = Infinity;
+    if (dx > 0) t = Math.min(t, (VIEW_W - WALL - x) / dx);
+    if (dx < 0) t = Math.min(t, (WALL - x) / dx);
+    if (dy > 0) t = Math.min(t, (VIEW_H - WALL - y) / dy);
+    if (dy < 0) t = Math.min(t, (WALL - y) / dy);
+    return t === Infinity ? 0 : t;
+  }
+
+  private fireTears(fx: number, fy: number, p: GameParams, damageOverride?: number, sizeMult = 1) {
+    const speed = 150 * p.shotSpeed;
+    const cb = p.combat;
+    const isLob = cb.fireMode === "lob";
+    const dirs = this.volleyDirs(fx, fy, cb);
 
     // Dead Eye: consecutive hits ramp damage (up to ~4x), a miss resets it
     const deadEyeMult = cb.deadEye ? 1 + this.deadEyeStreak * 0.6 : 1;
@@ -1029,8 +1049,7 @@ export class Game {
     const x = this.px + fx * 10;
     const y = this.py - 14 + fy * 10;
     const isBrim = p.combat.fireMode === "brimstone";
-    const toWall =
-      fx > 0 ? VIEW_W - WALL - x : fx < 0 ? x - WALL : fy > 0 ? VIEW_H - WALL - y : y - WALL;
+    const toWall = this.rayToWall(x, y, fx, fy);
     // Azazel's innate Brimstone is short-range — until he picks up the real
     // Brimstone item, which overrides it with a full-room beam
     const baseLen = p.combat.shortBrim && isBrim ? p.range * G * 1.4 : undefined;
@@ -1651,14 +1670,16 @@ export class Game {
     const flight = this.params.combat.flight;
     const lift = flight ? 5 + Math.round(Math.sin(this.time * 4) * 2) : 0;
     const scale = this.params.combat.sizeUp ? 1.18 : 1;
+    // grounded characters sink 2px so their feet visually plant on the floor
+    const groundNudge = flight ? 0 : 2;
     const x = Math.round(this.px);
-    const y = Math.round(this.py - lift);
+    const y = Math.round(this.py - lift) + groundNudge;
 
-    // shadow sits exactly under the feet (sprite bottom = py + 9); it only
-    // separates from the body when the character actually flies
-    c.fillStyle = flight ? "rgba(0,0,0,0.25)" : "rgba(0,0,0,0.35)";
+    // grounded: small tight shadow under the feet (light source is above);
+    // flight: shadow stays on the floor while the body hovers over it
+    c.fillStyle = flight ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.35)";
     c.beginPath();
-    c.ellipse(x, Math.round(this.py) + 9, flight ? 8 : 9 * scale, 2.5, 0, 0, Math.PI * 2);
+    c.ellipse(x, Math.round(this.py) + 9, flight ? 8 : 6.5 * scale, flight ? 2.5 : 2, 0, 0, Math.PI * 2);
     c.fill();
 
     const anim = this.assets?.playerAnim;
@@ -1670,14 +1691,28 @@ export class Game {
           ? this.moveDir.x < 0 ? "Left" : "Right"
           : this.moveDir.y < 0 ? "Up" : "Down";
       const body = this.animFrame(anim[`Walk${walkDir}`], "body", this.walkTime, !this.walking);
-      const headAnim = anim[`Head${this.headDir}`];
-      const headFrames = headAnim?.find((l) => l.layer === "head")?.frames;
-      const head =
-        this.fireFlash > 0 && headFrames && headFrames.length > 1
-          ? headFrames[1]
-          : headFrames?.[0] ?? null;
       if (body) this.drawAnm2Frame(c, sheet, body, x, y, scale);
-      if (head) this.drawAnm2Frame(c, sheet, head, x, y, scale);
+
+      if (this.headSheet && this.headAnim) {
+        // custom head (Azazel horns etc.) from its own anm2 — with the real
+        // Charge/Shoot pose variants when they exist
+        const suffix =
+          this.brimCharge > 0.05 || this.shotCharge > 0.05
+            ? this.brimCharge >= 0.95 ? "ChargeFull" : "Charge"
+            : this.fireFlash > 0 ? "Shoot" : "";
+        const headLayers =
+          this.headAnim[`Head${this.headDir}${suffix}`] ?? this.headAnim[`Head${this.headDir}`];
+        const f = headLayers?.find((l) => l.layer === "head")?.frames?.[0] ?? headLayers?.[0]?.frames?.[0];
+        if (f) this.drawAnm2Frame(c, this.headSheet, f, x, y, scale);
+      } else {
+        const headAnim = anim[`Head${this.headDir}`];
+        const headFrames = headAnim?.find((l) => l.layer === "head")?.frames;
+        const head =
+          this.fireFlash > 0 && headFrames && headFrames.length > 1
+            ? headFrames[1]
+            : headFrames?.[0] ?? null;
+        if (head) this.drawAnm2Frame(c, sheet, head, x, y, scale);
+      }
     } else if (this.playerPortrait) {
       // fallback: portrait sprite, bottom pinned to the feet line (py + 9)
       const img = this.playerPortrait;

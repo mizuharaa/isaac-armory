@@ -116,33 +116,52 @@ export function characterSheetUrl(slug: string): string {
   return `${BASE}assets/characters/${slug}/sheet.png`;
 }
 
+export interface CharacterLook {
+  sheet: HTMLImageElement | HTMLCanvasElement | null;
+  /** Custom head (Azazel/Bethany/Jacob) rendered from its own anm2 layout. */
+  headSheet: HTMLImageElement | null;
+  headAnim: Anm2Data | null;
+}
+
 /**
- * Full character look = skin sheet + costume overlays (hair, eyepatch,
- * horns…) composited on a canvas — the same layering the game does.
+ * Full character look = skin sheet + grid-aligned costume overlays (hair,
+ * eyepatch…) composited on a canvas, plus an optional custom-head sheet
+ * with its own frame data — the same layering the game does.
  */
-export async function loadCharacterSheet(
-  slug: string,
-): Promise<HTMLImageElement | HTMLCanvasElement | null> {
-  const base = await loadImage(characterSheetUrl(slug));
-  if (!base) return null;
-  let count = 0;
+export async function loadCharacterLook(slug: string): Promise<CharacterLook> {
+  const dir = `${BASE}assets/characters/${slug}`;
+  const base = await loadImage(`${dir}/sheet.png`);
+  if (!base) return { sheet: null, headSheet: null, headAnim: null };
+
+  let manifest: { overlays?: number; head?: boolean } = {};
   try {
-    const res = await fetch(`${BASE}assets/characters/${slug}/manifest.json`);
-    if (res.ok) count = (await res.json()).overlays ?? 0;
+    const res = await fetch(`${dir}/manifest.json`);
+    if (res.ok) manifest = await res.json();
   } catch {
     /* no manifest — skin only */
   }
-  if (!count) return base;
-  const overlays = await Promise.all(
-    Array.from({ length: count }, (_, i) =>
-      loadImage(`${BASE}assets/characters/${slug}/overlay_${i}.png`),
-    ),
-  );
-  const canvas = document.createElement("canvas");
-  canvas.width = base.width;
-  canvas.height = base.height;
-  const ctx = canvas.getContext("2d")!;
-  ctx.drawImage(base, 0, 0);
-  for (const overlay of overlays) if (overlay) ctx.drawImage(overlay, 0, 0);
-  return canvas;
+
+  let sheet: HTMLImageElement | HTMLCanvasElement = base;
+  const count = manifest.overlays ?? 0;
+  if (count > 0) {
+    const overlays = await Promise.all(
+      Array.from({ length: count }, (_, i) => loadImage(`${dir}/overlay_${i}.png`)),
+    );
+    const canvas = document.createElement("canvas");
+    canvas.width = base.width;
+    canvas.height = base.height;
+    const ctx = canvas.getContext("2d")!;
+    ctx.drawImage(base, 0, 0);
+    for (const overlay of overlays) if (overlay) ctx.drawImage(overlay, 0, 0);
+    sheet = canvas;
+  }
+
+  const [headSheet, headAnim] = manifest.head
+    ? await Promise.all([
+        loadImage(`${dir}/headsheet.png`),
+        loadJson<Anm2Data>(`${dir}/headanim.json`),
+      ])
+    : [null, null];
+
+  return { sheet, headSheet, headAnim };
 }
