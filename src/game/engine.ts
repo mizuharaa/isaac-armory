@@ -36,6 +36,8 @@ const DEFAULT_COMBAT: CombatConfig = {
   chargeShot: "none", burst: false, continuum: false, bounce: false, falloff: false,
   orbit: false, hover: false, boomerang: false, split: false, wiz: false,
   quadChance: 0, flameChance: 0, deadEye: false, belial: false, shortBrim: false,
+  pop: false, wide: false, alternating: false, shatter: false, fireMind: false,
+  creep: false, dots: [], specials: [],
   aura: false, shield: false, familiars: [], tint: null, flight: false, sizeUp: false,
 };
 
@@ -55,6 +57,8 @@ export interface Prop {
   price?: number;
   dead?: boolean;
   anim?: number;
+  /** active damage-over-time effects (boogers, poison…) */
+  dots?: Dot[];
 }
 
 interface Tear {
@@ -84,6 +88,23 @@ interface Tear {
   empowered?: boolean;
   /** Dead Eye: did this tear connect with anything */
   hitAny?: boolean;
+  /** Pop!: lingering phase entered at range end */
+  popped?: boolean;
+  /** special projectile (Tough Love tooth / Euthanasia needle) */
+  kind?: "tooth" | "needle";
+}
+
+interface Dot {
+  until: number;
+  next: number;
+  dps: number;
+  color: string;
+}
+
+interface Creep {
+  x: number;
+  y: number;
+  t: number;
 }
 
 interface Beam {
@@ -183,7 +204,7 @@ function makeMainRoom(): Prop[] {
 }
 
 /** Blood-red multiply tint of a grayscale effect sheet (anm2 RedTint=255). */
-function redTintCanvas(img: HTMLImageElement): HTMLCanvasElement {
+function redTintCanvas(img: HTMLImageElement | HTMLCanvasElement): HTMLCanvasElement {
   const off = document.createElement("canvas");
   off.width = img.width;
   off.height = img.height;
@@ -242,6 +263,11 @@ export class Game {
   private swing: Swing | null = null;
   private ludo: { x: number; y: number } | null = null;
   private deadEyeStreak = 0;
+  private eyeLeft = false;
+  private creeps: Creep[] = [];
+  private redHeadCache: HTMLCanvasElement | null = null;
+  private redSheetCache: HTMLCanvasElement | null = null;
+  private redCacheKey = "";
   private familiars: Familiar[] = [];
   private shieldUp = false;
   private shieldTimer = 0;
@@ -528,17 +554,17 @@ export class Game {
     }
 
     if (cb.fireMode === "brimstone") {
-      // wind-up = the full (Brimstone-penalized) fire delay; the beam itself
-      // locks out recharging while it fires — no rapid-fire from holding
+      // wind-up = the full (Brimstone-penalized) fire delay. Holding at full
+      // charge HOLDS — the beam fires only when the input is RELEASED.
       const beamActive = this.beams.some((b) => b.attached);
       if (firing && !beamActive) {
-        this.brimCharge += dt / Math.max(0.5, (p.fireDelay + 1) / 30);
-        if (this.brimCharge >= 1) {
-          this.brimCharge = 0;
-          for (const [dx, dy] of this.volleyDirs(fx, fy, cb)) this.fireBeam(dx, dy, p, 0.7, p.damage);
-        }
+        this.brimCharge = Math.min(1, this.brimCharge + dt / Math.max(0.5, (p.fireDelay + 1) / 30));
       } else if (!firing) {
-        this.brimCharge = Math.max(0, this.brimCharge - dt * 2);
+        if (this.wasFiring && this.brimCharge >= 1 && !beamActive) {
+          const d = this.lastFireDir;
+          for (const [dx, dy] of this.volleyDirs(d.x, d.y, cb)) this.fireBeam(dx, dy, p, 0.7, p.damage);
+        }
+        this.brimCharge = 0; // partial charges are lost on release
       }
     } else if (cb.fireMode === "ludovico") {
       // one persistent tear steered by the arrow keys
@@ -868,8 +894,31 @@ export class Game {
         t.y = Math.max(WALL + 5, Math.min(VIEW_H - WALL - 5, t.y));
         inWall = false;
       }
+      // Pop!: at range end the tear lingers and drifts instead of dying
+      if (cb.pop && !t.popped && t.traveled >= t.max && !inWall) {
+        t.popped = true;
+        t.vx *= 0.12;
+        t.vy *= 0.12;
+        t.max += G * 2.5;
+      }
       if (t.traveled >= t.max || inWall || this.tearHit(t, cb.piercing, cb.falloff)) {
         if (t.lob) this.explode(t.x, t.y);
+        // Fire Mind: burning tears have a chance to detonate on death
+        if (cb.fireMind && Math.random() < 0.1) this.explode(t.x, t.y, p.damage * 3);
+        // Mysterious Liquid: impacts leave a damaging creep puddle
+        if (cb.creep) this.creeps.push({ x: t.x, y: t.y, t: 0 });
+        // Compound Fracture: shatter into forward bone shards
+        if (cb.shatter && !t.fromSplit) {
+          const a = Math.atan2(t.vy, t.vx);
+          for (const da of [-0.5, 0.5]) {
+            this.tears.push({
+              x: t.x, y: t.y,
+              vx: Math.cos(a + da) * 120, vy: Math.sin(a + da) * 120,
+              traveled: 0, max: G * 2.5, damage: t.damage * 0.5, splash: -1,
+              fromSplit: true, kind: "tooth",
+            });
+          }
+        }
         // Haemolacria: burst into a ring of shrapnel tears at half damage
         if (cb.burst && !t.lob && t.damage > p.damage * 0.4) {
           for (let i = 0; i < 6; i++) {
@@ -901,6 +950,30 @@ export class Game {
 
     for (const ex of this.explosions) ex.t += dt;
     this.explosions = this.explosions.filter((ex) => ex.t < 0.5);
+
+    // creep puddles damage whatever stands in them
+    for (const creep of this.creeps) {
+      creep.t += dt;
+      for (const prop of this.props()) {
+        if (prop.dead || prop.kind !== "dummy") continue;
+        const d = Math.hypot(prop.x + prop.w / 2 - creep.x, prop.y + prop.h / 2 - creep.y);
+        if (d < 22 && Math.random() < dt * 2) this.damageProp(prop, 1.5, false, "#9cc98f");
+      }
+    }
+    this.creeps = this.creeps.filter((cr) => cr.t < 2);
+
+    // composable DOT ticking (boogers, poison…) on afflicted props
+    for (const prop of this.props()) {
+      if (!prop.dots?.length || prop.dead) continue;
+      for (const dot of prop.dots) {
+        dot.next -= dt;
+        if (dot.next <= 0 && this.time < dot.until) {
+          dot.next = 0.5;
+          this.damageProp(prop, dot.dps * 0.5, false, dot.color);
+        }
+      }
+      prop.dots = prop.dots.filter((dot) => this.time < dot.until);
+    }
 
     for (const b of this.bombs) {
       b.fuse -= dt;
@@ -1019,12 +1092,17 @@ export class Game {
 
     // Dead Eye: consecutive hits ramp damage (up to ~4x), a miss resets it
     const deadEyeMult = cb.deadEye ? 1 + this.deadEyeStreak * 0.6 : 1;
+    // Chemical Peel: the eyes alternate; the left eye hits +2 harder
+    this.eyeLeft = !this.eyeLeft;
+    const eyeBonus = cb.alternating && this.eyeLeft ? 2 : 0;
 
     for (const [dx, dy] of dirs) {
       const spread = { x: dy !== 0 ? 1 : 0, y: dx !== 0 ? 1 : 0 };
       for (let i = 0; i < cb.shots; i++) {
         const off = (i - (cb.shots - 1) / 2) * 8;
-        const flame = cb.flameChance > 0 && Math.random() < cb.flameChance;
+        const flame = (cb.flameChance > 0 && Math.random() < cb.flameChance) || cb.fireMind;
+        // composable special shots: first spec whose roll hits wins
+        const special = cb.specials.find((s) => Math.random() < s.chance);
         this.tears.push({
           x: this.px + dx * 9 + spread.x * off,
           y: this.py - 14 + dy * 9 + spread.y * off,
@@ -1032,14 +1110,19 @@ export class Game {
           vy: dy * speed * (isLob ? 0.75 : 1),
           traveled: 0,
           max: p.range * G * sizeMult,
-          damage: (damageOverride ?? p.damage) * deadEyeMult * (flame ? 2 : 1),
+          damage:
+            ((damageOverride ?? p.damage) + eyeBonus) *
+            deadEyeMult *
+            (flame && !cb.fireMind ? 2 : 1) *
+            (special?.mult ?? 1),
           splash: -1,
           lob: isLob || undefined,
-          hit: cb.piercing || flame || cb.belial || cb.orbit ? new Set() : undefined,
+          hit: cb.piercing || flame || cb.belial || cb.orbit || cb.wide ? new Set() : undefined,
           orbit: cb.orbit ? { angle: Math.atan2(dy, dx), radius: 14 } : undefined,
           hover: cb.hover ? 0.5 : undefined,
           boomer: cb.boomerang ? "out" : undefined,
           flame: flame || undefined,
+          kind: special?.kind,
         });
       }
     }
@@ -1094,7 +1177,7 @@ export class Game {
     return false;
   }
 
-  private damageProp(p: Prop, damage: number, fromTear: boolean) {
+  private damageProp(p: Prop, damage: number, fromTear: boolean, color = "#fff2cf") {
     p.anim = 0.15;
     if (p.kind === "dummy") {
       this.dummyHits.push({ t: this.time, dmg: damage });
@@ -1103,8 +1186,21 @@ export class Game {
         y: p.y - 4,
         text: damage.toFixed(1),
         age: 0,
-        color: "#fff2cf",
+        color,
       });
+      // composable DOT application: roll every equipped spec independently
+      if (fromTear) {
+        for (const spec of this.params.combat.dots) {
+          if (Math.random() < spec.chance) {
+            (p.dots ??= []).push({
+              until: this.time + spec.duration,
+              next: 0.5,
+              dps: spec.dps,
+              color: spec.color,
+            });
+          }
+        }
+      }
       return;
     }
     if (p.kind === "rock" && fromTear) return;
@@ -1164,6 +1260,18 @@ export class Game {
     }
 
     this.drawRoom(c);
+    // creep puddles sit on the floor under everything
+    for (const cr of this.creeps) {
+      const fade = 1 - cr.t / 2;
+      c.fillStyle = `rgba(126,176,105,${0.45 * fade})`;
+      c.beginPath();
+      c.ellipse(Math.round(cr.x), Math.round(cr.y), 16 * Math.min(1, cr.t * 4 + 0.4), 8 * Math.min(1, cr.t * 4 + 0.4), 0, 0, Math.PI * 2);
+      c.fill();
+      c.fillStyle = `rgba(156,201,143,${0.3 * fade})`;
+      c.beginPath();
+      c.ellipse(Math.round(cr.x) - 3, Math.round(cr.y) - 2, 7, 3.5, 0, 0, Math.PI * 2);
+      c.fill();
+    }
     const drawables: { y: number; draw: () => void }[] = [];
     for (const p of this.props()) drawables.push({ y: p.y + p.h, draw: () => this.drawProp(c, p) });
     for (const b of this.bombs) drawables.push({ y: b.y + 8, draw: () => this.drawBomb(c, b) });
@@ -1191,20 +1299,27 @@ export class Game {
     for (const ex of this.explosions) this.drawExplosion(c, ex);
     if (this.missile) this.drawCrosshair(c, this.missile);
 
-    // charge indicators orbiting the head (brimstone red / charge-shot white)
+    // charge ring beside the character: fills clockwise, green → red as it
+    // charges; once full the ring disappears and the FACE flashes red
     const chargeLevel = Math.max(this.brimCharge, this.shotCharge);
-    if (chargeLevel > 0.05) {
-      const n = Math.ceil(chargeLevel * 6);
-      const full = chargeLevel >= 0.95;
-      c.fillStyle = this.brimCharge > 0 ? (full ? "#ff5240" : "#a81b25") : full ? "#fff6d8" : "#9a917c";
-      for (let i = 0; i < n; i++) {
-        const a = this.time * 6 + (i * Math.PI * 2) / 6;
-        c.fillRect(
-          Math.round(this.px + Math.cos(a) * 14) - 1,
-          Math.round(this.py - 24 + Math.sin(a) * 8) - 1,
-          3, 3,
-        );
-      }
+    if (chargeLevel > 0.05 && chargeLevel < 1) {
+      const rx = Math.round(this.px + 22);
+      const ry = Math.round(this.py - 18);
+      const spin = this.time * 5; // clockwise spin
+      // green (120°) → red (0°) hue sweep with progress
+      const hue = Math.round(120 * (1 - chargeLevel));
+      c.save();
+      c.strokeStyle = "rgba(0,0,0,0.6)";
+      c.lineWidth = 5;
+      c.beginPath();
+      c.arc(rx, ry, 7, spin, spin + chargeLevel * Math.PI * 2);
+      c.stroke();
+      c.strokeStyle = `hsl(${hue} 75% 48%)`;
+      c.lineWidth = 3;
+      c.beginPath();
+      c.arc(rx, ry, 7, spin, spin + chargeLevel * Math.PI * 2);
+      c.stroke();
+      c.restore();
     }
 
     c.font = "8px 'Press Start 2P', monospace";
@@ -1693,25 +1808,46 @@ export class Game {
       const body = this.animFrame(anim[`Walk${walkDir}`], "body", this.walkTime, !this.walking);
       if (body) this.drawAnm2Frame(c, sheet, body, x, y, scale);
 
+      // charge face holds until the input is released; at max charge the
+      // face flashes red instead of any ring indicator
+      const charging = this.brimCharge > 0.05 || this.shotCharge > 0.05;
+      const full = this.brimCharge >= 1 || this.shotCharge >= 1;
+      const redFlash = full && Math.floor(this.time * 10) % 2 === 0;
+
       if (this.headSheet && this.headAnim) {
-        // custom head (Azazel horns etc.) from its own anm2 — with the real
-        // Charge/Shoot pose variants when they exist
-        const suffix =
-          this.brimCharge > 0.05 || this.shotCharge > 0.05
-            ? this.brimCharge >= 0.95 ? "ChargeFull" : "Charge"
-            : this.fireFlash > 0 ? "Shoot" : "";
+        const suffix = charging
+          ? full ? "ChargeFull" : "Charge"
+          : this.fireFlash > 0 ? "Shoot" : "";
         const headLayers =
           this.headAnim[`Head${this.headDir}${suffix}`] ?? this.headAnim[`Head${this.headDir}`];
         const f = headLayers?.find((l) => l.layer === "head")?.frames?.[0] ?? headLayers?.[0]?.frames?.[0];
-        if (f) this.drawAnm2Frame(c, this.headSheet, f, x, y, scale);
+        if (f) {
+          if (this.redCacheKey !== this.playerKey) {
+            this.redHeadCache = null;
+            this.redSheetCache = null;
+            this.redCacheKey = this.playerKey;
+          }
+          if (redFlash && !this.redHeadCache) this.redHeadCache = redTintCanvas(this.headSheet);
+          this.drawAnm2Frame(c, redFlash && this.redHeadCache ? this.redHeadCache : this.headSheet, f, x, y, scale);
+        }
       } else {
         const headAnim = anim[`Head${this.headDir}`];
         const headFrames = headAnim?.find((l) => l.layer === "head")?.frames;
+        // base sheets have no Charge pose — the open-mouth shoot frame doubles
+        // as the wind-up face while charging
         const head =
-          this.fireFlash > 0 && headFrames && headFrames.length > 1
+          (charging || this.fireFlash > 0) && headFrames && headFrames.length > 1
             ? headFrames[1]
             : headFrames?.[0] ?? null;
-        if (head) this.drawAnm2Frame(c, sheet, head, x, y, scale);
+        if (head) {
+          if (this.redCacheKey !== this.playerKey) {
+            this.redHeadCache = null;
+            this.redSheetCache = null;
+            this.redCacheKey = this.playerKey;
+          }
+          if (redFlash && !this.redSheetCache) this.redSheetCache = redTintCanvas(sheet);
+          this.drawAnm2Frame(c, redFlash && this.redSheetCache ? this.redSheetCache : sheet, head, x, y, scale);
+        }
       }
     } else if (this.playerPortrait) {
       // fallback: portrait sprite, bottom pinned to the feet line (py + 9)
@@ -1788,6 +1924,27 @@ export class Game {
       return;
     }
 
+    // Tough Love teeth / Euthanasia needles / bone shards
+    if (t.kind === "tooth") {
+      c.fillStyle = "#f2ede0";
+      c.fillRect(x - 3, y - 4, 6, 6);
+      c.fillRect(x - 2, y + 2, 2, 3);
+      c.fillRect(x + 1, y + 2, 2, 3);
+      return;
+    }
+    if (t.kind === "needle") {
+      const a = Math.atan2(t.vy, t.vx);
+      c.save();
+      c.translate(x, y);
+      c.rotate(a);
+      c.fillStyle = "#c8ccd4";
+      c.fillRect(-7, -1, 14, 2);
+      c.fillStyle = "#83878f";
+      c.fillRect(4, -1, 3, 2);
+      c.restore();
+      return;
+    }
+
     // Ghost Pepper / Bird's Eye flames: animated fire projectile
     if (t.flame) {
       const fl = Math.floor(this.time * 12) % 2;
@@ -1799,10 +1956,19 @@ export class Game {
     }
 
     if (atlas && tearAnim) {
-      // size variant from damage: the game scales tears with damage ups
+      // size variant from damage: the game scales tears with damage ups;
+      // Pupula Duplex renders huge, Pop! swells while lingering
       const idx = this.params.tags.has("tiny_tears")
         ? 3
-        : Math.max(4, Math.min(12, Math.round(4 + (t.damage - 3.5) * 0.6)));
+        : Math.max(
+            4,
+            Math.min(
+              13,
+              Math.round(4 + (t.damage - 3.5) * 0.6) +
+                (this.params.combat.wide ? 4 : 0) +
+                (t.popped ? 2 : 0),
+            ),
+          );
       const frames = tearAnim[`RegularTear${idx}`]?.[0]?.frames;
       const f = frames?.[0];
       if (f) {

@@ -138,6 +138,23 @@ describe("tear-modifier items (round 3)", () => {
     expect(c.fireMode).toBe("brimstone");
     expect(c.orbit).toBe(true);
   });
+  it("30. round-4 flags: Pop!, Pupula Duplex (wide+spectral), Chemical Peel, Compound Fracture, Fire Mind, Mysterious Liquid", () => {
+    expect(combo(["pop"]).pop).toBe(true);
+    const pd = combo(["pupula-duplex"]);
+    expect(pd.wide).toBe(true);
+    expect(pd.spectral).toBe(true);
+    expect(combo(["chemical-peel"]).alternating).toBe(true);
+    expect(combo(["compound-fracture"]).shatter).toBe(true);
+    expect(combo(["fire-mind"]).fireMind).toBe(true);
+    expect(combo(["mysterious-liquid"]).creep).toBe(true);
+  });
+  it("31. DOT and special-shot specs COMPOSE as arrays — no pairwise branching", () => {
+    const c = combo(["sinus-infection", "the-common-cold", "tough-love", "euthanasia", "brimstone"]);
+    expect(c.dots).toHaveLength(2);
+    expect(c.specials).toHaveLength(2);
+    expect(c.fireMode).toBe("brimstone"); // stacking never dethrones the weapon
+    expect(combo(["serpents-kiss", "the-common-cold"]).dots).toHaveLength(2);
+  });
   it("29. Azazel's mini-brim is short-range until the real Brimstone overrides it (wiki/Azazel)", () => {
     const azazel = combo([], [], ["Flight", "Short-range Brimstone"]);
     expect(azazel.fireMode).toBe("brimstone");

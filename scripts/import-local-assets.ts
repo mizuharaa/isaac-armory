@@ -172,13 +172,10 @@ for (const c of characters) {
         if (!om) continue;
         const rest = om[1];
         if (rest === baseRest || colorRe.test(rest)) continue;
-        // full-size sheets with their own anm2 use a custom layout (Azazel's
-        // head) — never composite those; small STRIPS (eyepatch, fez) align
-        // with the head row regardless
-        if (
-          gfx.has(`characters/character_${prefix}_${rest}.anm2`) &&
-          pngSize(full).h > 64
-        ) continue;
+        // ONLY strips (h ≤ 64) are grid-aligned with the head row. Full-size
+        // sheets follow their own anm2 layouts (azazelhead, azazelhead_2…)
+        // and scatter pixels when composited flat — never include them.
+        if (pngSize(full).h > 64) continue;
         const part = rest.match(partRe)?.[1];
         if (!part || usedParts.has(part)) continue;
         usedParts.add(part);

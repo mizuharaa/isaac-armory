@@ -57,6 +57,29 @@ export interface CombatConfig {
   belial: boolean;
   /** innate-only Brimstone (Azazel) is short-range; the item removes this */
   shortBrim: boolean;
+  /** tears linger and drift at range end instead of popping (Pop!) */
+  pop: boolean;
+  /** huge wide spectral tears (Pupula Duplex) */
+  wide: boolean;
+  /** alternating-eye bonus: every other shot gets +2 damage (Chemical Peel) */
+  alternating: boolean;
+  /** tears shatter into forward bone shards on impact (Compound Fracture) */
+  shatter: boolean;
+  /** all tears are flaming; chance to ignite/explode (Fire Mind) */
+  fireMind: boolean;
+  /** tears leave damaging creep puddles on impact (Mysterious Liquid) */
+  creep: boolean;
+  /**
+   * Damage-over-time specs — COMPOSABLE: each item appends its own spec and
+   * every spec is rolled independently on hit (Sinus Infection boogers,
+   * The Common Cold poison…).
+   */
+  dots: { name: string; chance: number; dps: number; duration: number; color: string }[];
+  /**
+   * Special-projectile specs — composable the same way (Tough Love teeth,
+   * Euthanasia needles…). First spec whose roll hits replaces the tear.
+   */
+  specials: { kind: "tooth" | "needle"; chance: number; mult: number }[];
   /** tears carry a damaging halo (Godhead) */
   aura: boolean;
   /** blocks one hit, recharges (Holy Mantle) */
@@ -119,7 +142,7 @@ export function deriveCombat(
       behaviorTags.has("piercing") ||
       has("cupids-arrow", "death-certificate", "eye-of-belial") ||
       fireMode === "csection",
-    spectral: behaviorTags.has("spectral") || has("ouija-board"),
+    spectral: behaviorTags.has("spectral") || has("ouija-board", "pupula-duplex"),
     chargeShot: has("tech-x")
       ? "techx"
       : has("monstros-lung")
@@ -141,6 +164,27 @@ export function deriveCombat(
     deadEye: has("dead-eye"),
     belial: has("eye-of-belial"),
     shortBrim: innateBrim && !itemBrim,
+    pop: has("pop"),
+    wide: has("pupula-duplex"),
+    alternating: has("chemical-peel"),
+    shatter: has("compound-fracture"),
+    fireMind: has("fire-mind"),
+    creep: has("mysterious-liquid"),
+    dots: [
+      ...(has("sinus-infection")
+        ? [{ name: "booger", chance: 0.2, dps: 2, duration: 3, color: "#9cc98f" }]
+        : []),
+      ...(has("the-common-cold")
+        ? [{ name: "poison", chance: 0.25, dps: 3.5, duration: 2, color: "#7fb069" }]
+        : []),
+      ...(has("serpents-kiss")
+        ? [{ name: "venom", chance: 0.3, dps: 3.5, duration: 2, color: "#5e8c4a" }]
+        : []),
+    ],
+    specials: [
+      ...(has("euthanasia") ? [{ kind: "needle" as const, chance: 0.034, mult: 15 }] : []),
+      ...(has("tough-love") ? [{ kind: "tooth" as const, chance: 0.1, mult: 3.2 }] : []),
+    ],
     aura: has("godhead"),
     shield: has("holy-mantle"),
     familiars,
