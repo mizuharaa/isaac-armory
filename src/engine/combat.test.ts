@@ -108,3 +108,34 @@ describe("charge weapons, familiars, defense, looks", () => {
     expect(combo([], [], [], 2).sizeUp).toBe(true);
   });
 });
+
+describe("tear-modifier items (round 3)", () => {
+  it("23. Tiny Planet orbits, Anti-Gravity hovers, My Reflection returns", () => {
+    expect(combo(["tiny-planet"]).orbit).toBe(true);
+    expect(combo(["anti-gravity"]).hover).toBe(true);
+    expect(combo(["my-reflection"]).boomerang).toBe(true);
+  });
+  it("24. The Parasite and Cricket's Body split tears", () => {
+    expect(combo(["the-parasite"]).split).toBe(true);
+    expect(combo(["crickets-body"]).split).toBe(true);
+  });
+  it("25. The Wiz goes diagonal; Loki's Horns adds 25% quad volleys", () => {
+    expect(combo(["the-wiz"]).wiz).toBe(true);
+    expect(combo(["lokis-horns"]).quadChance).toBeCloseTo(0.25);
+  });
+  it("26. Ghost Pepper + Bird's Eye flame chances stack", () => {
+    expect(combo(["ghost-pepper"]).flameChance).toBeCloseTo(0.125);
+    expect(combo(["ghost-pepper", "birds-eye"]).flameChance).toBeCloseTo(0.25);
+  });
+  it("27. Dead Eye ramps; Eye of Belial pierces then doubles", () => {
+    expect(combo(["dead-eye"]).deadEye).toBe(true);
+    const b = combo(["eye-of-belial"]);
+    expect(b.belial).toBe(true);
+    expect(b.piercing).toBe(true);
+  });
+  it("28. modifiers stack on Brimstone without dethroning it", () => {
+    const c = combo(["brimstone", "tiny-planet", "dead-eye"]);
+    expect(c.fireMode).toBe("brimstone");
+    expect(c.orbit).toBe(true);
+  });
+});

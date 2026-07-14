@@ -34,6 +34,8 @@ export interface GameParams {
 const DEFAULT_COMBAT: CombatConfig = {
   fireMode: "tears", shots: 1, homing: false, piercing: false, spectral: false,
   chargeShot: "none", burst: false, continuum: false, bounce: false, falloff: false,
+  orbit: false, hover: false, boomerang: false, split: false, wiz: false,
+  quadChance: 0, flameChance: 0, deadEye: false, belial: false,
   aura: false, shield: false, familiars: [], tint: null, flight: false, sizeUp: false,
 };
 
@@ -68,6 +70,20 @@ interface Tear {
   lob?: boolean;
   /** props already damaged (piercing passes through) */
   hit?: Set<Prop>;
+  /** Tiny Planet orbital state */
+  orbit?: { angle: number; radius: number };
+  /** Anti-Gravity hover time remaining */
+  hover?: number;
+  /** My Reflection boomerang phase */
+  boomer?: "out" | "back";
+  /** spawned by a split — don't re-split */
+  fromSplit?: boolean;
+  /** Ghost Pepper / Bird's Eye flame (piercing, drawn as fire) */
+  flame?: boolean;
+  /** Eye of Belial post-pierce empowerment applied */
+  empowered?: boolean;
+  /** Dead Eye: did this tear connect with anything */
+  hitAny?: boolean;
 }
 
 interface Beam {
@@ -79,6 +95,10 @@ interface Beam {
   duration: number;
   damage: number;
   tick: number;
+  /** brimstone beams stay attached to the player's mouth while firing */
+  attached?: boolean;
+  /** intended length before wall clipping (Azazel short beam) */
+  baseLen?: number;
 }
 
 interface Knife {
@@ -162,6 +182,21 @@ function makeMainRoom(): Prop[] {
   ];
 }
 
+/** Blood-red multiply tint of a grayscale effect sheet (anm2 RedTint=255). */
+function redTintCanvas(img: HTMLImageElement): HTMLCanvasElement {
+  const off = document.createElement("canvas");
+  off.width = img.width;
+  off.height = img.height;
+  const oc = off.getContext("2d")!;
+  oc.drawImage(img, 0, 0);
+  oc.globalCompositeOperation = "multiply";
+  oc.fillStyle = "#e02818";
+  oc.fillRect(0, 0, off.width, off.height);
+  oc.globalCompositeOperation = "destination-in";
+  oc.drawImage(img, 0, 0);
+  return off;
+}
+
 /** Visual/collision arc height of a tear at its current range progress. */
 function tearLift(t: Tear): number {
   const progress = Math.min(1, t.traveled / t.max);
@@ -203,6 +238,7 @@ export class Game {
   private rings: Ring[] = [];
   private swing: Swing | null = null;
   private ludo: { x: number; y: number } | null = null;
+  private deadEyeStreak = 0;
   private familiars: Familiar[] = [];
   private shieldUp = false;
   private shieldTimer = 0;
@@ -210,6 +246,8 @@ export class Game {
   private texts: FloatText[] = [];
   private tintedSheet: HTMLCanvasElement | null = null;
   private tintedKey = "";
+  private redLaser: HTMLCanvasElement | null = null;
+  private redImpact: HTMLCanvasElement | null = null;
   private keys = new Set<string>();
   private shake = 0;
   private time = 0;
@@ -477,14 +515,16 @@ export class Game {
     }
 
     if (cb.fireMode === "brimstone") {
-      if (firing) {
-        // hold to charge, fires automatically when full (like holding in-game)
-        this.brimCharge += dt / Math.max(0.35, (p.fireDelay + 1) / 30);
+      // wind-up = the full (Brimstone-penalized) fire delay; the beam itself
+      // locks out recharging while it fires — no rapid-fire from holding
+      const beamActive = this.beams.some((b) => b.attached);
+      if (firing && !beamActive) {
+        this.brimCharge += dt / Math.max(0.5, (p.fireDelay + 1) / 30);
         if (this.brimCharge >= 1) {
           this.brimCharge = 0;
-          this.fireBeam(fx, fy, p, 0.65, p.damage);
+          this.fireBeam(fx, fy, p, 0.7, p.damage);
         }
-      } else {
+      } else if (!firing) {
         this.brimCharge = Math.max(0, this.brimCharge - dt * 2);
       }
     } else if (cb.fireMode === "ludovico") {
@@ -699,6 +739,17 @@ export class Game {
     for (const beam of this.beams) {
       beam.t += dt;
       beam.tick -= dt;
+      // brimstone stays attached to the mouth and sweeps as the player moves
+      if (beam.attached) {
+        beam.x = this.px + beam.dir.x * 10;
+        beam.y = this.py - 14 + beam.dir.y * 10;
+        const toWall =
+          beam.dir.x > 0 ? VIEW_W - WALL - beam.x
+          : beam.dir.x < 0 ? beam.x - WALL
+          : beam.dir.y > 0 ? VIEW_H - WALL - beam.y
+          : beam.y - WALL;
+        beam.len = Math.max(10, Math.min(beam.baseLen ?? Infinity, toWall));
+      }
       if (beam.tick <= 0) {
         beam.tick = 1 / 15; // the game's laser tick rate
         for (const prop of this.props()) {
@@ -752,9 +803,43 @@ export class Game {
           t.vy = (t.vy / nl) * speed;
         }
       }
+      // Anti-Gravity: tears hang in the air before continuing
+      if (t.hover && t.hover > 0) {
+        t.hover -= dt;
+        if (this.tearHit(t, cb.piercing, cb.falloff)) t.splash = 0;
+        continue;
+      }
+      // Tiny Planet: tears orbit the player while the orbit expands
+      if (t.orbit) {
+        const speed = Math.hypot(t.vx, t.vy);
+        t.orbit.angle += 4.2 * dt;
+        t.orbit.radius = Math.min(52, t.orbit.radius + 26 * dt);
+        t.x = this.px + Math.cos(t.orbit.angle) * t.orbit.radius;
+        t.y = this.py - 10 + Math.sin(t.orbit.angle) * t.orbit.radius * 0.8;
+        t.traveled += speed * dt * 0.55;
+        if (t.traveled >= t.max || this.tearHit(t, true, cb.falloff)) t.splash = 0;
+        continue;
+      }
+      // My Reflection: boomerang back toward the player
+      if (t.boomer === "out" && t.traveled >= t.max * 0.55) t.boomer = "back";
+      if (t.boomer === "back") {
+        const ax = this.px - t.x;
+        const ay = this.py - 10 - t.y;
+        const al = Math.hypot(ax, ay) || 1;
+        const speed = Math.hypot(t.vx, t.vy);
+        t.vx += (ax / al) * speed * 6 * dt;
+        t.vy += (ay / al) * speed * 6 * dt;
+        const nl = Math.hypot(t.vx, t.vy) || 1;
+        t.vx = (t.vx / nl) * speed;
+        t.vy = (t.vy / nl) * speed;
+        if (al < 10) {
+          t.splash = 999; // caught — no splash animation
+          continue;
+        }
+      }
       t.x += t.vx * dt;
       t.y += t.vy * dt;
-      t.traveled += Math.hypot(t.vx, t.vy) * dt;
+      t.traveled += Math.hypot(t.vx, t.vy) * dt * (t.boomer === "back" ? 0 : 1);
       let inWall =
         t.x < WALL + 4 || t.x > VIEW_W - WALL - 4 || t.y < WALL + 4 || t.y > VIEW_H - WALL - 4;
       if (inWall && cb.continuum) {
@@ -781,10 +866,23 @@ export class Game {
             this.tears.push({
               x: t.x, y: t.y,
               vx: Math.cos(a) * 90, vy: Math.sin(a) * 90,
-              traveled: 0, max: G * 2.2, damage: t.damage * 0.5, splash: -1,
+              traveled: 0, max: G * 2.2, damage: t.damage * 0.5, splash: -1, fromSplit: true,
             });
           }
         }
+        // The Parasite / Cricket's Body: split into two perpendicular tears
+        if (cb.split && !t.fromSplit && !t.lob) {
+          const a = Math.atan2(t.vy, t.vx);
+          for (const da of [Math.PI / 2, -Math.PI / 2]) {
+            this.tears.push({
+              x: t.x, y: t.y,
+              vx: Math.cos(a + da) * 110, vy: Math.sin(a + da) * 110,
+              traveled: 0, max: G * 3, damage: t.damage * 0.5, splash: -1, fromSplit: true,
+            });
+          }
+        }
+        // Dead Eye: a tear that dies without connecting resets the streak
+        if (cb.deadEye && !t.hitAny) this.deadEyeStreak = 0;
         t.splash = 0;
       }
     }
@@ -879,22 +977,43 @@ export class Game {
     const speed = 150 * p.shotSpeed;
     const cb = p.combat;
     const isLob = cb.fireMode === "lob";
-    // multishot spread perpendicular to fire direction
-    const spread = { x: fy !== 0 ? 1 : 0, y: fx !== 0 ? 1 : 0 };
-    for (let i = 0; i < cb.shots; i++) {
-      const off = (i - (cb.shots - 1) / 2) * 8;
-      this.tears.push({
-        x: this.px + fx * 9 + spread.x * off,
-        y: this.py - 14 + fy * 9 + spread.y * off,
-        vx: fx * speed * (isLob ? 0.75 : 1),
-        vy: fy * speed * (isLob ? 0.75 : 1),
-        traveled: 0,
-        max: p.range * G * sizeMult,
-        damage: damageOverride ?? p.damage,
-        splash: -1,
-        lob: isLob || undefined,
-        hit: cb.piercing ? new Set() : undefined,
-      });
+
+    // The Wiz: everything fires as a diagonal double; Loki's Horns: chance
+    // of a full 4-way volley
+    let dirs: [number, number][] = [[fx, fy]];
+    if (cb.wiz) {
+      const d = Math.SQRT1_2;
+      dirs = fy === 0 ? [[fx * d, -d], [fx * d, d]] : [[-d, fy * d], [d, fy * d]];
+    }
+    if (cb.quadChance > 0 && Math.random() < cb.quadChance) {
+      dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    }
+
+    // Dead Eye: consecutive hits ramp damage (up to ~4x), a miss resets it
+    const deadEyeMult = cb.deadEye ? 1 + this.deadEyeStreak * 0.6 : 1;
+
+    for (const [dx, dy] of dirs) {
+      const spread = { x: dy !== 0 ? 1 : 0, y: dx !== 0 ? 1 : 0 };
+      for (let i = 0; i < cb.shots; i++) {
+        const off = (i - (cb.shots - 1) / 2) * 8;
+        const flame = cb.flameChance > 0 && Math.random() < cb.flameChance;
+        this.tears.push({
+          x: this.px + dx * 9 + spread.x * off,
+          y: this.py - 14 + dy * 9 + spread.y * off,
+          vx: dx * speed * (isLob ? 0.75 : 1),
+          vy: dy * speed * (isLob ? 0.75 : 1),
+          traveled: 0,
+          max: p.range * G * sizeMult,
+          damage: (damageOverride ?? p.damage) * deadEyeMult * (flame ? 2 : 1),
+          splash: -1,
+          lob: isLob || undefined,
+          hit: cb.piercing || flame || cb.belial || cb.orbit ? new Set() : undefined,
+          orbit: cb.orbit ? { angle: Math.atan2(dy, dx), radius: 14 } : undefined,
+          hover: cb.hover ? 0.5 : undefined,
+          boomer: cb.boomerang ? "out" : undefined,
+          flame: flame || undefined,
+        });
+      }
     }
   }
 
@@ -905,9 +1024,14 @@ export class Game {
     const toWall =
       fx > 0 ? VIEW_W - WALL - x : fx < 0 ? x - WALL : fy > 0 ? VIEW_H - WALL - y : y - WALL;
     // Azazel's innate Brimstone is short-range; items give full-room beams
-    const len = Math.min(toWall, p.range < 5.5 && isBrim ? p.range * G * 1.4 : toWall);
-    // multishot brimstone fires parallel beams in sequence (simplified)
-    this.beams.push({ dir: { x: fx, y: fy }, x, y, len, t: 0, duration, damage: damage * (1 + (p.combat.shots - 1) * 0.35), tick: 0 });
+    const baseLen = p.range < 5.5 && isBrim ? p.range * G * 1.4 : undefined;
+    const len = Math.min(toWall, baseLen ?? toWall);
+    // multishot brimstone fires a fattened beam (simplified from parallel beams)
+    this.beams.push({
+      dir: { x: fx, y: fy }, x, y, len, t: 0, duration,
+      damage: damage * (1 + (p.combat.shots - 1) * 0.35), tick: 0,
+      attached: isBrim, baseLen,
+    });
     this.shake = Math.max(this.shake, isBrim ? 5 : 2);
   }
 
@@ -923,8 +1047,17 @@ export class Game {
         const progress = Math.min(1, t.traveled / t.max);
         const damage = falloff ? t.damage * Math.max(0.25, 1.5 - progress * 1.5) : t.damage;
         this.damageProp(p, damage, true);
-        if (piercing && p.kind === "dummy") {
+        t.hitAny = true;
+        if (p.kind === "dummy" && this.params.combat.deadEye) {
+          this.deadEyeStreak = Math.min(5, this.deadEyeStreak + 1);
+        }
+        if ((piercing || t.flame) && p.kind === "dummy") {
           t.hit?.add(p);
+          // Eye of Belial: damage doubles after piercing the first target
+          if (this.params.combat.belial && !t.empowered) {
+            t.empowered = true;
+            t.damage *= 2;
+          }
           continue; // piercing tears keep flying through
         }
         return true;
@@ -1289,6 +1422,12 @@ export class Game {
     const sheet = this.assets?.env.laser;
     const brimAnim = this.assets?.brimAnim?.LargeRedLaser;
 
+    // the game's laser sheet is grayscale — the anm2 applies RedTint=255,
+    // GreenTint=0, BlueTint=0; reproduce that with a cached multiply pass
+    if (isBrim && sheet && !this.redLaser) this.redLaser = redTintCanvas(sheet);
+    const impactSheetRaw = this.assets?.env.laserimpact;
+    if (isBrim && impactSheetRaw && !this.redImpact) this.redImpact = redTintCanvas(impactSheetRaw);
+
     if (isBrim && sheet && brimAnim) {
       // Real Brimstone: mouth cap ("tip") + tiled pillar ("laser" layer),
       // animated with the game's own 4-frame loop, grow-in then fade-out.
@@ -1298,6 +1437,7 @@ export class Game {
       const tip = tipFrames?.[frameIdx % (tipFrames.length || 1)];
       const body = bodyFrames?.[frameIdx % (bodyFrames.length || 1)];
       if (tip && body) {
+        const src = this.redLaser ?? sheet;
         const growIn = Math.min(1, beam.t / 0.07); // pillar extends from the mouth
         const fadeOut = beam.t > beam.duration - 0.15 ? (beam.duration - beam.t) / 0.15 : 1;
         const len = beam.len * growIn;
@@ -1311,13 +1451,13 @@ export class Game {
         // tiled body segments (64px source slices)
         for (let seg = 0; seg < len; seg += 60) {
           const segH = Math.min(64, ((len - seg) / 60) * 64);
-          c.drawImage(sheet, body.x, body.y, body.w, (segH / 64) * body.h, -w / 2, seg, w, segH);
+          c.drawImage(src, body.x, body.y, body.w, (segH / 64) * body.h, -w / 2, seg, w, segH);
         }
         // mouth cap on top of the pillar start
-        c.drawImage(sheet, tip.x, tip.y, tip.w, tip.h, -w / 2, -10, w, 34);
+        c.drawImage(src, tip.x, tip.y, tip.w, tip.h, -w / 2, -10, w, 34);
         // animated impact splat at the far end
         const impact = this.assets?.brimImpact?.Loop?.[0]?.frames;
-        const impactSheet = this.assets?.env.laserimpact;
+        const impactSheet = this.redImpact ?? impactSheetRaw;
         if (impact && impactSheet && growIn >= 1) {
           const f = impact[frameIdx % impact.length];
           c.drawImage(impactSheet, f.x, f.y, f.w, f.h, -f.w / 2 - 4, len - f.h / 2, f.w + 8, f.h);
@@ -1601,6 +1741,16 @@ export class Game {
           c.fillRect(x + 4, y + 4, 2, 2);
         }
       }
+      return;
+    }
+
+    // Ghost Pepper / Bird's Eye flames: animated fire projectile
+    if (t.flame) {
+      const fl = Math.floor(this.time * 12) % 2;
+      c.fillStyle = fl ? "#d9531e" : "#f2b134";
+      c.beginPath(); c.arc(x, y, 6, 0, Math.PI * 2); c.fill();
+      c.fillStyle = fl ? "#f2b134" : "#ffe9a8";
+      c.beginPath(); c.arc(x, y - 2, 3, 0, Math.PI * 2); c.fill();
       return;
     }
 

@@ -22,6 +22,24 @@
       "behaviorTags": ["piercing_on_kill"],
       "note": "Wiki math: (Damage + 4) x 2; Repentance: tears fired per second x 0.42. Overkill damage pierces to the next enemy."
     },
+    "brimstone": {
+      "source": "https://bindingofisaacrebirth.fandom.com/wiki/Brimstone",
+      "statModifiers": { "tearsMult": 0.3333 },
+      "behaviorTags": ["brimstone_laser", "replaces_tears"],
+      "note": "Repentance: Fire Rate / 3 — this IS the charge wind-up; beam damage handled by the playground engine."
+    },
+    "sulfur": {
+      "source": "https://bindingofisaacrebirth.fandom.com/wiki/Sulfur",
+      "statModifiers": { "tearsMult": 0.3333 },
+      "behaviorTags": ["brimstone_laser", "replaces_tears"],
+      "note": "Temporary Brimstone for the room; modeled as full Brimstone in the sandbox."
+    },
+    "revelation": {
+      "source": "https://bindingofisaacrebirth.fandom.com/wiki/Revelation",
+      "statModifiers": { "tearsMult": 0.5 },
+      "behaviorTags": ["brimstone_laser", "replaces_tears", "flight"],
+      "note": "Chargeable holy Brimstone + flight; lighter fire-rate penalty than Brimstone proper."
+    },
     "brittle-bones": {
       "source": "https://bindingofisaacrebirth.fandom.com/wiki/Brittle_Bones",
       "statModifiers": {},

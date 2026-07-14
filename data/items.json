@@ -3159,14 +3159,17 @@
     "quote": "Blood laser barrage",
     "description": "Tears are replaced with a blood laser beam that pierces through all enemies and obstacles in its path and deals high damage. Can only be fired after a short charge-up period.",
     "devilPrice": 2,
-    "statModifiers": {},
-    "statModifiersSource": "none",
+    "statModifiers": {
+      "tearsMult": 0.3333
+    },
+    "statModifiersSource": "override",
     "behaviorTags": [
       "devil",
       "summonable",
       "offensive",
       "replaces_tears",
-      "laser"
+      "laser",
+      "brimstone_laser"
     ],
     "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/4/46/Collectible_Brimstone_icon.png/revision/latest?cb=20210821045528",
     "dlc": "rebirth",
@@ -14776,11 +14779,15 @@
     "quote": "Temporary demon form",
     "description": "Grants Brimstone for the current room.",
     "recharge": 3,
-    "statModifiers": {},
-    "statModifiersSource": "none",
+    "statModifiers": {
+      "tearsMult": 0.3333
+    },
+    "statModifiersSource": "override",
     "behaviorTags": [
       "devil",
-      "offensive"
+      "offensive",
+      "brimstone_laser",
+      "replaces_tears"
     ],
     "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/7/7b/Collectible_Sulfur_icon.png/revision/latest?cb=20210824092143",
     "dlc": "repentance",
@@ -16953,14 +16960,18 @@
     "quote": "Awaken your faith",
     "description": "Grants flight and two soul hearts. In addition to tears, Isaac can charge up and fire a powerful holy laser.",
     "devilPrice": 2,
-    "statModifiers": {},
-    "statModifiersSource": "none",
+    "statModifiers": {
+      "tearsMult": 0.5
+    },
+    "statModifiersSource": "override",
     "behaviorTags": [
       "summonable",
       "offensive",
       "angel",
       "laser",
-      "flight"
+      "flight",
+      "brimstone_laser",
+      "replaces_tears"
     ],
     "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/9/94/Collectible_Revelation_icon.png/revision/latest?cb=20210821031539",
     "dlc": "repentance",

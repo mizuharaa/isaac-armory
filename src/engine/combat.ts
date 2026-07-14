@@ -37,6 +37,24 @@ export interface CombatConfig {
   bounce: boolean;
   /** damage falls off with distance (Proptosis) */
   falloff: boolean;
+  /** tears orbit the player (Tiny Planet, TEAR_ORBIT) */
+  orbit: boolean;
+  /** tears hover in place before continuing (Anti-Gravity, TEAR_WAIT) */
+  hover: boolean;
+  /** tears return to the player (My Reflection, TEAR_BOMBERANG) */
+  boomerang: boolean;
+  /** tears split in two on death (The Parasite / Cricket's Body, TEAR_SPLIT) */
+  split: boolean;
+  /** shots fire diagonally in both directions (The Wiz) */
+  wiz: boolean;
+  /** chance to fire a volley in all four directions (Loki's Horns) */
+  quadChance: number;
+  /** chance a shot is a piercing flame (Ghost Pepper / Bird's Eye) */
+  flameChance: number;
+  /** consecutive hits ramp damage up to ~4x (Dead Eye) */
+  deadEye: boolean;
+  /** piercing; damage doubles after passing through a target (Eye of Belial) */
+  belial: boolean;
   /** tears carry a damaging halo (Godhead) */
   aura: boolean;
   /** blocks one hit, recharges (Holy Mantle) */
@@ -93,7 +111,10 @@ export function deriveCombat(
     fireMode,
     shots,
     homing: behaviorTags.has("homing") || has("sacred-heart", "godhead", "spoon-bender"),
-    piercing: behaviorTags.has("piercing") || has("cupids-arrow", "death-certificate") || fireMode === "csection",
+    piercing:
+      behaviorTags.has("piercing") ||
+      has("cupids-arrow", "death-certificate", "eye-of-belial") ||
+      fireMode === "csection",
     spectral: behaviorTags.has("spectral") || has("ouija-board"),
     chargeShot: has("tech-x")
       ? "techx"
@@ -106,6 +127,15 @@ export function deriveCombat(
     continuum: has("continuum"),
     bounce: has("rubber-cement"),
     falloff: has("proptosis"),
+    orbit: has("tiny-planet"),
+    hover: has("anti-gravity"),
+    boomerang: has("my-reflection"),
+    split: has("the-parasite", "crickets-body"),
+    wiz: has("the-wiz"),
+    quadChance: has("lokis-horns") ? 0.25 : 0,
+    flameChance: (has("ghost-pepper") ? 0.125 : 0) + (has("birds-eye") ? 0.125 : 0),
+    deadEye: has("dead-eye"),
+    belial: has("eye-of-belial"),
     aura: has("godhead"),
     shield: has("holy-mantle"),
     familiars,
