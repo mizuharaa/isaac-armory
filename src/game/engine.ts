@@ -33,8 +33,8 @@ export interface GameParams {
 
 const DEFAULT_COMBAT: CombatConfig = {
   fireMode: "tears", shots: 1, homing: false, piercing: false, spectral: false,
-  chargeShot: "none", burst: false, aura: false, shield: false,
-  familiars: [], tint: null, flight: false, sizeUp: false,
+  chargeShot: "none", burst: false, continuum: false, bounce: false, falloff: false,
+  aura: false, shield: false, familiars: [], tint: null, flight: false, sizeUp: false,
 };
 
 export type PropKind = "rock" | "poop" | "spike" | "fire" | "tnt" | "dummy" | "pedestal";
@@ -158,8 +158,16 @@ function makeMainRoom(): Prop[] {
     at(1, 7, { kind: "fire", w: G, h: G, hp: 2, solid: true }),
     at(13, 1, { kind: "fire", w: G, h: G, hp: 2, solid: true }),
     at(12, 8, { kind: "tnt", w: G, h: G, hp: 1, solid: true }),
-    at(14, 5, { kind: "dummy", w: G, h: 40, hp: Infinity, solid: true }),
+    at(12, 4, { kind: "dummy", w: G, h: 40, hp: Infinity, solid: true }),
   ];
+}
+
+/** Visual/collision arc height of a tear at its current range progress. */
+function tearLift(t: Tear): number {
+  const progress = Math.min(1, t.traveled / t.max);
+  return t.lob
+    ? Math.sin(progress * Math.PI) * 26
+    : Math.sin(Math.min(1, progress * 2) * Math.PI * 0.5) * 4 - progress * progress * 14;
 }
 
 export class Game {
@@ -194,6 +202,7 @@ export class Game {
   private missile: Missile | null = null;
   private rings: Ring[] = [];
   private swing: Swing | null = null;
+  private ludo: { x: number; y: number } | null = null;
   private familiars: Familiar[] = [];
   private shieldUp = false;
   private shieldTimer = 0;
@@ -297,6 +306,20 @@ export class Game {
 
   toast(text: string, color = "#f2d75e") {
     this.texts.push({ x: this.px, y: this.py - 34, text, age: 0, color });
+  }
+
+  /** The Fool card: teleport back to the room's starting position. */
+  teleportHome() {
+    this.px = VIEW_W / 2;
+    this.py = VIEW_H / 2 + 40;
+    this.shake = 4;
+    this.toast("whoosh!", "#e0d6ff");
+  }
+
+  /** Holy Card: one-time mantle shield. */
+  grantShield() {
+    this.shieldUp = true;
+    this.toast("holy card!", "#9ecbff");
   }
 
   /**
@@ -446,6 +469,11 @@ export class Game {
       this.headDir = fy < 0 ? "Up" : fy > 0 ? "Down" : fx < 0 ? "Left" : "Right";
       this.lastFireDir = { x: fx, y: fy };
       this.fireFlash = 0.1;
+      // wind-up: starting to fire (or re-pressing) costs half a fire delay
+      // before the first shot — holding then keeps the normal cadence
+      if (!this.wasFiring) {
+        this.fireCooldown = Math.max(this.fireCooldown, ((p.fireDelay + 1) / 30) * 0.5);
+      }
     }
 
     if (cb.fireMode === "brimstone") {
@@ -459,8 +487,30 @@ export class Game {
       } else {
         this.brimCharge = Math.max(0, this.brimCharge - dt * 2);
       }
+    } else if (cb.fireMode === "ludovico") {
+      // one persistent tear steered by the arrow keys
+      if (!this.ludo) this.ludo = { x: this.px, y: this.py - 40 };
+      if (firing) {
+        this.ludo.x += fx * 120 * dt;
+        this.ludo.y += fy * 120 * dt;
+      }
+      this.ludo.x = Math.max(WALL + 8, Math.min(VIEW_W - WALL - 8, this.ludo.x));
+      this.ludo.y = Math.max(WALL + 8, Math.min(VIEW_H - WALL - 8, this.ludo.y));
+      this.fireCooldown -= 0; // cadence handled by tick below
+      if (this.fireCooldown <= 0) {
+        for (const prop of this.props()) {
+          if (prop.dead || prop.kind === "spike" || prop.kind === "pedestal") continue;
+          if (
+            this.ludo.x > prop.x - 6 && this.ludo.x < prop.x + prop.w + 6 &&
+            this.ludo.y > prop.y - 6 && this.ludo.y < prop.y + prop.h + 6
+          ) {
+            this.damageProp(prop, p.damage, false);
+            this.fireCooldown = (p.fireDelay + 1) / 30;
+          }
+        }
+      }
     } else if (cb.chargeShot !== "none") {
-      // Chocolate Milk / Tech X: hold to charge, RELEASE to fire
+      // Chocolate Milk / Monstro's Lung / Tech X: hold to charge, RELEASE fires
       if (firing) {
         this.shotCharge = Math.min(1, this.shotCharge + dt / Math.max(0.4, ((p.fireDelay + 1) / 30) * 2));
       } else if (this.wasFiring && this.shotCharge > 0.1) {
@@ -473,6 +523,21 @@ export class Game {
             radius: 8 + this.shotCharge * 22, traveled: 0,
             max: p.range * G * 1.4, damage: p.damage, tick: 0, hit: new Set(),
           });
+        } else if (cb.chargeShot === "lung") {
+          // Monstro's Lung: shotgun burst in a cone, count scaled by charge
+          const n = Math.round(4 + this.shotCharge * 10);
+          const speed = 140 * p.shotSpeed;
+          const baseAngle = Math.atan2(d.y, d.x);
+          for (let i = 0; i < n; i++) {
+            const a = baseAngle + (Math.random() - 0.5) * 0.75;
+            const v = speed * (0.8 + Math.random() * 0.4);
+            this.tears.push({
+              x: this.px + d.x * 9, y: this.py - 14 + d.y * 9,
+              vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+              traveled: 0, max: p.range * G * (0.6 + Math.random() * 0.5),
+              damage: p.damage * 0.7, splash: -1,
+            });
+          }
         } else {
           this.fireTears(d.x, d.y, p, p.damage * (0.3 + this.shotCharge * 1.7), 1 + this.shotCharge);
         }
@@ -602,6 +667,8 @@ export class Game {
       this.shieldUp = false;
     }
 
+    if (cb.fireMode !== "ludovico") this.ludo = null;
+
     // knife lifecycle
     if (cb.fireMode === "knife" && !this.knife) {
       this.knife = { angle: { x: 0, y: 1 }, dist: 0, state: "held", damage: p.damage * 2, hit: new Set() };
@@ -688,9 +755,24 @@ export class Game {
       t.x += t.vx * dt;
       t.y += t.vy * dt;
       t.traveled += Math.hypot(t.vx, t.vy) * dt;
-      const inWall =
+      let inWall =
         t.x < WALL + 4 || t.x > VIEW_W - WALL - 4 || t.y < WALL + 4 || t.y > VIEW_H - WALL - 4;
-      if (t.traveled >= t.max || inWall || this.tearHit(t, cb.piercing)) {
+      if (inWall && cb.continuum) {
+        // Continuum: tears wrap to the opposite side of the room
+        if (t.x < WALL + 4) t.x = VIEW_W - WALL - 5;
+        else if (t.x > VIEW_W - WALL - 4) t.x = WALL + 5;
+        if (t.y < WALL + 4) t.y = VIEW_H - WALL - 5;
+        else if (t.y > VIEW_H - WALL - 4) t.y = WALL + 5;
+        inWall = false;
+      } else if (inWall && cb.bounce) {
+        // Rubber Cement: bounce off walls
+        if (t.x < WALL + 4 || t.x > VIEW_W - WALL - 4) t.vx = -t.vx;
+        if (t.y < WALL + 4 || t.y > VIEW_H - WALL - 4) t.vy = -t.vy;
+        t.x = Math.max(WALL + 5, Math.min(VIEW_W - WALL - 5, t.x));
+        t.y = Math.max(WALL + 5, Math.min(VIEW_H - WALL - 5, t.y));
+        inWall = false;
+      }
+      if (t.traveled >= t.max || inWall || this.tearHit(t, cb.piercing, cb.falloff)) {
         if (t.lob) this.explode(t.x, t.y);
         // Haemolacria: burst into a ring of shrapnel tears at half damage
         if (cb.burst && !t.lob && t.damage > p.damage * 0.4) {
@@ -829,12 +911,18 @@ export class Game {
     this.shake = Math.max(this.shake, isBrim ? 5 : 2);
   }
 
-  private tearHit(t: Tear, piercing: boolean): boolean {
+  private tearHit(t: Tear, piercing: boolean, falloff = false): boolean {
+    // collide where the tear is DRAWN (its arc height), not its base line —
+    // otherwise shots visually over a target whiff
+    const ty = t.y - tearLift(t);
     for (const p of this.props()) {
       if (p.dead || p.kind === "spike" || p.kind === "pedestal") continue;
       if (t.hit?.has(p)) continue;
-      if (t.x > p.x && t.x < p.x + p.w && t.y > p.y - 8 && t.y < p.y + p.h) {
-        this.damageProp(p, t.damage, true);
+      if (t.x > p.x - 2 && t.x < p.x + p.w + 2 && ty > p.y - 10 && ty < p.y + p.h + 2) {
+        // Proptosis: tears start huge and lose damage with distance
+        const progress = Math.min(1, t.traveled / t.max);
+        const damage = falloff ? t.damage * Math.max(0.25, 1.5 - progress * 1.5) : t.damage;
+        this.damageProp(p, damage, true);
         if (piercing && p.kind === "dummy") {
           t.hit?.add(p);
           continue; // piercing tears keep flying through
@@ -927,6 +1015,18 @@ export class Game {
     if (this.knife) this.drawKnife(c, this.knife);
     if (this.swing) this.drawSwing(c, this.swing);
     for (const t of this.tears) this.drawTear(c, t);
+    if (this.ludo) {
+      // the Ludovico tear: one big controlled tear with a soft pulse
+      const r = 8 + Math.sin(this.time * 5) * 1;
+      c.fillStyle = "rgba(0,0,0,0.25)";
+      c.beginPath();
+      c.ellipse(Math.round(this.ludo.x), Math.round(this.ludo.y) + 12, 6, 2, 0, 0, Math.PI * 2);
+      c.fill();
+      c.fillStyle = "#b9c6d8";
+      c.beginPath(); c.arc(Math.round(this.ludo.x), Math.round(this.ludo.y), r, 0, Math.PI * 2); c.fill();
+      c.fillStyle = "#e8f0fa";
+      c.fillRect(Math.round(this.ludo.x) - 3, Math.round(this.ludo.y) - 4, 3, 3);
+    }
     for (const ex of this.explosions) this.drawExplosion(c, ex);
     if (this.missile) this.drawCrosshair(c, this.missile);
 
@@ -1400,14 +1500,16 @@ export class Game {
 
   private drawPlayer(c: CanvasRenderingContext2D) {
     const flight = this.params.combat.flight;
-    const lift = flight ? 4 + Math.round(Math.sin(this.time * 4)) : 0;
+    const lift = flight ? 5 + Math.round(Math.sin(this.time * 4) * 2) : 0;
     const scale = this.params.combat.sizeUp ? 1.18 : 1;
     const x = Math.round(this.px);
     const y = Math.round(this.py - lift);
 
-    c.fillStyle = "rgba(0,0,0,0.35)";
+    // shadow sits exactly under the feet (sprite bottom = py + 9); it only
+    // separates from the body when the character actually flies
+    c.fillStyle = flight ? "rgba(0,0,0,0.25)" : "rgba(0,0,0,0.35)";
     c.beginPath();
-    c.ellipse(x, Math.round(this.py) + 8, 10, 3, 0, 0, Math.PI * 2);
+    c.ellipse(x, Math.round(this.py) + 9, flight ? 8 : 9 * scale, 2.5, 0, 0, Math.PI * 2);
     c.fill();
 
     const anim = this.assets?.playerAnim;
@@ -1428,7 +1530,7 @@ export class Game {
       if (body) this.drawAnm2Frame(c, sheet, body, x, y, scale);
       if (head) this.drawAnm2Frame(c, sheet, head, x, y, scale);
     } else if (this.playerPortrait) {
-      // fallback: portrait sprite with the old bob animation
+      // fallback: portrait sprite, bottom pinned to the feet line (py + 9)
       const img = this.playerPortrait;
       const bob = this.walking ? [0, 1, 0, -1][Math.floor(this.time * 10) % 4] : [0, 0, 1, 1][Math.floor(this.time * 3) % 4];
       const h = 40;
@@ -1436,7 +1538,7 @@ export class Game {
       c.save();
       c.translate(x, y + bob);
       if (this.headDir === "Left" || this.moveDir.x < 0) c.scale(-1, 1);
-      c.drawImage(img, Math.round((-w / 2) * scale), Math.round((-h + 12) * scale), Math.round(w * scale), Math.round(h * scale));
+      c.drawImage(img, Math.round((-w / 2) * scale), Math.round(9 - h * scale), Math.round(w * scale), Math.round(h * scale));
       c.restore();
     } else {
       c.fillStyle = "#e8ddc4";
@@ -1466,12 +1568,9 @@ export class Game {
     const atlas = this.assets?.env.tears;
     const tearAnim = this.assets?.tearAnim;
     const poof = this.assets?.env.tearpoof;
-    const progress = Math.min(1, t.traveled / t.max);
-    // ballistic drop-off: slight rise, then the tear falls to the floor at
-    // the end of its range (ipecac lobs arc much higher)
-    const lift = t.lob
-      ? Math.sin(progress * Math.PI) * 26
-      : Math.sin(Math.min(1, progress * 2) * Math.PI * 0.5) * 4 - progress * progress * 14;
+    // ballistic drop-off shared with the hitbox (tearLift): slight rise,
+    // then the tear falls to the floor at range end (lobs arc much higher)
+    const lift = tearLift(t);
     const x = Math.round(t.x);
     const y = Math.round(t.y - lift);
     // shadow tracks the ground position while airborne

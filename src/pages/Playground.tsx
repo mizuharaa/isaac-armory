@@ -176,6 +176,26 @@ export default function Playground() {
     void gameRef.current?.applyActiveEffect(activeItem.slug);
   }, [activeItem, charge, maxCharge]);
 
+  // ------- pocket item (Q) — cards from the character's starting pickups -------
+  const pocketCard = useMemo(() => {
+    const pickups = character.startingPickups ?? "";
+    if (/fool/i.test(pickups)) return { name: "0 - The Fool", effect: "fool" as const };
+    if (/holy card/i.test(pickups)) return { name: "Holy Card", effect: "holy" as const };
+    return null;
+  }, [character]);
+  const [pocketUsed, setPocketUsed] = useState(false);
+  useEffect(() => setPocketUsed(false), [character]);
+
+  const usePocket = useCallback(() => {
+    const game = gameRef.current;
+    if (!game) return;
+    if (!pocketCard) return game.toast("no pocket item", "#9b8a72");
+    if (pocketUsed) return game.toast("already used!", "#9b8a72");
+    setPocketUsed(true);
+    if (pocketCard.effect === "fool") game.teleportHome();
+    else game.grantShield();
+  }, [pocketCard, pocketUsed]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -244,13 +264,14 @@ export default function Playground() {
     };
   }, [character]);
 
-  // integer scaling to fill the shell
+  // scale to fill the shell in quarter steps — whole-integer flooring left
+  // huge letterboxes ("can't see anything"); 0.25 steps stay crisp enough
   useEffect(() => {
     const el = shellRef.current;
     if (!el) return;
     const fit = () => {
-      const s = Math.max(1, Math.floor(Math.min(el.clientWidth / VIEW_W, el.clientHeight / VIEW_H)));
-      setScale(s);
+      const raw = Math.min(el.clientWidth / VIEW_W, el.clientHeight / VIEW_H) * 0.99;
+      setScale(Math.max(1, Math.floor(raw * 4) / 4));
     };
     fit();
     const ro = new ResizeObserver(fit);
@@ -271,11 +292,12 @@ export default function Playground() {
       else if (e.key.toLowerCase() === "b" && !debugOpen) setEquipOpen((v) => !v);
       else if (e.key.toLowerCase() === "f") toggleFullscreen();
       else if (e.key === " ") useActive();
+      else if (e.key.toLowerCase() === "q") usePocket();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debugOpen, useActive]);
+  }, [debugOpen, useActive, usePocket]);
   useEffect(() => {
     gameRef.current?.setPaused(debugOpen || equipOpen);
   }, [debugOpen, equipOpen]);
@@ -347,6 +369,7 @@ export default function Playground() {
           </div>
         )}
 
+
         {/* hearts + stats, top-left below the active item */}
         <div className={`absolute left-3 space-y-0.5 ${activeItem ? "top-[76px]" : "top-2"}`}>
           <div className="mb-1 flex flex-wrap gap-0.5">
@@ -375,6 +398,17 @@ export default function Playground() {
           <div className="pt-1">
             <HudStat label="DPS" value={stats.dps.toFixed(2)} />
           </div>
+          {pocketCard && (
+            <button
+              onClick={usePocket}
+              title={`${pocketCard.name} — Q to use`}
+              className={`punch pointer-events-auto mt-2 block border-2 border-white/15 bg-black/40 px-2 py-1 font-pixel text-[9px] ${
+                pocketUsed ? "text-muted line-through" : "text-[#e0d6ff]"
+              }`}
+            >
+              [Q] {pocketCard.name}
+            </button>
+          )}
         </div>
 
         {/* loadout strip, top-right (item-tracker style, stacks grouped ×N) */}

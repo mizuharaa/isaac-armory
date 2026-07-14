@@ -18,7 +18,8 @@ export type FireMode =
   | "bombshot"
   | "missile"
   | "sword"
-  | "csection";
+  | "csection"
+  | "ludovico";
 
 export interface CombatConfig {
   fireMode: FireMode;
@@ -27,9 +28,15 @@ export interface CombatConfig {
   piercing: boolean;
   spectral: boolean;
   /** hold-fire-to-charge weapons (Brimstone handled separately in-engine) */
-  chargeShot: "none" | "chocolate" | "techx";
+  chargeShot: "none" | "chocolate" | "techx" | "lung";
   /** tear bursts into shrapnel on impact (Haemolacria) */
   burst: boolean;
+  /** tears wrap around the screen (Continuum) */
+  continuum: boolean;
+  /** tears bounce off walls (Rubber Cement) */
+  bounce: boolean;
+  /** damage falls off with distance (Proptosis) */
+  falloff: boolean;
   /** tears carry a damaging halo (Godhead) */
   aura: boolean;
   /** blocks one hit, recharges (Holy Mantle) */
@@ -65,6 +72,7 @@ export function deriveCombat(
     fireMode = "brimstone";
   else if (has("epic-fetus")) fireMode = "missile";
   else if (has("dr-fetus")) fireMode = "bombshot";
+  else if (has("ludovico-technique")) fireMode = "ludovico";
   else if (has("spirit-sword")) fireMode = "sword";
   else if (has("c-section")) fireMode = "csection";
   else if (has("technology", "technology-2", "tech-x") && !has("tech-x")) fireMode = "laser";
@@ -87,13 +95,27 @@ export function deriveCombat(
     homing: behaviorTags.has("homing") || has("sacred-heart", "godhead", "spoon-bender"),
     piercing: behaviorTags.has("piercing") || has("cupids-arrow", "death-certificate") || fireMode === "csection",
     spectral: behaviorTags.has("spectral") || has("ouija-board"),
-    chargeShot: has("tech-x") ? "techx" : has("chocolate-milk") ? "chocolate" : "none",
+    chargeShot: has("tech-x")
+      ? "techx"
+      : has("monstros-lung")
+        ? "lung"
+        : has("chocolate-milk")
+          ? "chocolate"
+          : "none",
     burst: has("haemolacria"),
+    continuum: has("continuum"),
+    bounce: has("rubber-cement"),
+    falloff: has("proptosis"),
     aura: has("godhead"),
     shield: has("holy-mantle"),
     familiars,
     tint: TINTS.find(([slug]) => slugs.has(slug))?.[1] ?? null,
-    flight: innate.some((s) => /flight/i.test(s)) || behaviorTags.has("flight") || has("revelation"),
+    // explicit item list — description keyword matching gave false positives
+    // that made every character hover
+    flight:
+      innate.some((s) => /flight/i.test(s)) ||
+      has("revelation", "fate", "transcendence", "dead-dove", "holy-grail",
+          "spirit-of-the-night", "astral-projection", "dogma", "empty-vessel", "lord-of-the-pit"),
     sizeUp: maxDamageMult >= 1.5,
   };
 }
