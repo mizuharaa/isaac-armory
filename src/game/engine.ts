@@ -263,6 +263,7 @@ export class Game {
   private swing: Swing | null = null;
   private ludo: { x: number; y: number } | null = null;
   private deadEyeStreak = 0;
+  private deadEyeLastHit = -Infinity;
   private eyeLeft = false;
   private creeps: Creep[] = [];
   private redHeadCache: HTMLCanvasElement | null = null;
@@ -271,6 +272,10 @@ export class Game {
   private familiars: Familiar[] = [];
   private shieldUp = false;
   private shieldTimer = 0;
+  private hp = 6;
+  private maxHp = 6;
+  private noHealth = false;
+  private invuln = 0;
   private bombs: Bomb[] = [];
   private texts: FloatText[] = [];
   private tintedSheet: HTMLCanvasElement | null = null;
@@ -293,6 +298,10 @@ export class Game {
 
   onPickup: (slug: string) => void = () => {};
   onRoomChange: (room: RoomId) => void = () => {};
+  /** Fires whenever HP changes (damage, heal, respawn) so the HUD can update. */
+  onHealthChange: (hp: number, maxHp: number) => void = () => {};
+  /** Fires once per death, right as the respawn happens. */
+  onDeath: () => void = () => {};
   /** Supplies n random items (with sprites) for D6 rerolls. */
   itemProvider: (n: number) => Promise<{ slug: string; img: HTMLImageElement | null }[]> = async () => [];
   /** Death Certificate opens the item picker. */
@@ -330,6 +339,57 @@ export class Game {
   setParams(p: GameParams) {
     this.params = p;
   }
+  /**
+   * (Re)configures max HP in half-heart units from the character's health
+   * pool + any bonus hearts from equipped items. Called whenever the
+   * character or loadout changes; always heals to full on that change
+   * (matches picking a fresh character / entering a new run).
+   */
+  setHealth(maxHalfHearts: number, noHealth: boolean) {
+    this.maxHp = Math.max(0, maxHalfHearts);
+    this.noHealth = noHealth;
+    this.hp = this.maxHp;
+    this.onHealthChange(this.hp, this.maxHp);
+  }
+
+  /**
+   * Single entry point for ALL player damage (hazards, explosions, future
+   * enemy contact). Holy Mantle is checked here once, so every damage
+   * source automatically respects it instead of duplicating the check.
+   */
+  private takeDamage(amount = 1) {
+    if (this.invuln > 0) return;
+    if (this.shieldUp) {
+      this.shieldUp = false;
+      this.shieldTimer = 5;
+      this.toast("mantle!", "#9ecbff");
+      this.invuln = 0.5;
+      return;
+    }
+    this.hurtFlash = 0.5;
+    this.shake = 5;
+    this.invuln = 0.9;
+    if (this.noHealth) {
+      this.respawn();
+      return;
+    }
+    this.hp = Math.max(0, this.hp - amount);
+    this.onHealthChange(this.hp, this.maxHp);
+    if (this.hp <= 0) this.respawn();
+  }
+
+  /** Instant respawn in the middle of the current room, full heal. */
+  private respawn() {
+    this.px = VIEW_W / 2;
+    this.py = VIEW_H / 2 + 40;
+    this.hp = this.maxHp;
+    this.invuln = 1.5;
+    this.onHealthChange(this.hp, this.maxHp);
+    this.onDeath();
+    this.shake = 8;
+    this.texts.push({ x: this.px, y: this.py - 40, text: "RESPAWN", age: 0, color: "#ff4438" });
+  }
+
   setPaused(paused: boolean) {
     this.paused = paused;
     if (!paused) this.last = performance.now();
@@ -588,10 +648,18 @@ export class Game {
         }
       }
     } else if (cb.chargeShot !== "none") {
-      // Chocolate Milk / Monstro's Lung / Tech X: hold to charge, RELEASE fires
+      // Chocolate Milk / Monstro's Lung / Tech X: hold to charge, RELEASE
+      // fires the big shot. A quick TAP (released before any meaningful
+      // charge) still fires a normal tear, exactly like the real items —
+      // these are charge-shot modifiers on top of tears, not an exclusive
+      // replacement. This was firing nothing at all on a tap before.
       if (firing) {
         this.shotCharge = Math.min(1, this.shotCharge + dt / Math.max(0.4, ((p.fireDelay + 1) / 30) * 2));
-      } else if (this.wasFiring && this.shotCharge > 0.1) {
+      } else if (this.wasFiring && this.shotCharge <= 0.15 && this.fireCooldown <= 0) {
+        this.fireCooldown = (p.fireDelay + 1) / 30;
+        this.fireTears(this.lastFireDir.x, this.lastFireDir.y, p);
+        this.shotCharge = 0;
+      } else if (this.wasFiring && this.shotCharge > 0.15) {
         const d = this.lastFireDir;
         if (cb.chargeShot === "techx") {
           const speed = 130 * p.shotSpeed;
@@ -940,8 +1008,6 @@ export class Game {
             });
           }
         }
-        // Dead Eye: a tear that dies without connecting resets the streak
-        if (cb.deadEye && !t.hitAny) this.deadEyeStreak = 0;
         t.splash = 0;
       }
     }
@@ -983,20 +1049,11 @@ export class Game {
     if (!flight) {
       for (const prop of this.props()) {
         if (prop.dead || (prop.kind !== "spike" && prop.kind !== "fire")) continue;
-        if (this.overlap(this.px, this.py, 6, prop) && this.hurtFlash <= 0) {
-          if (this.shieldUp) {
-            // Holy Mantle eats the hit, then needs time to regenerate
-            this.shieldUp = false;
-            this.shieldTimer = 5;
-            this.toast("mantle!", "#9ecbff");
-          } else {
-            this.hurtFlash = 0.5;
-            this.shake = 5;
-          }
-        }
+        if (this.overlap(this.px, this.py, 6, prop)) this.takeDamage(1);
       }
     }
     this.hurtFlash = Math.max(0, this.hurtFlash - dt);
+    this.invuln = Math.max(0, this.invuln - dt);
 
     for (const prop of this.props()) {
       if (prop.dead || prop.kind !== "pedestal" || !prop.itemSlug) continue;
@@ -1024,6 +1081,10 @@ export class Game {
     this.texts = this.texts.filter((ft) => ft.age < 0.9);
     this.dummyHits = this.dummyHits.filter((h) => this.time - h.t <= 3);
     this.dummyDps = this.dummyHits.reduce((s, h) => s + h.dmg, 0) / 3;
+    // Dead Eye streak decays after a gap with no hits, rather than resetting
+    // the instant any single tear in a multishot volley happens to miss
+    // while its siblings connect in the same frame.
+    if (cb.deadEye && this.time - this.deadEyeLastHit > 1.5) this.deadEyeStreak = 0;
     this.shake = Math.max(0, this.shake - 30 * dt);
     for (const prop of this.props()) if (prop.anim) prop.anim = Math.max(0, prop.anim - dt);
   }
@@ -1160,6 +1221,7 @@ export class Game {
         t.hitAny = true;
         if (p.kind === "dummy" && this.params.combat.deadEye) {
           this.deadEyeStreak = Math.min(5, this.deadEyeStreak + 1);
+          this.deadEyeLastHit = this.time;
         }
         if ((piercing || t.flame) && p.kind === "dummy") {
           t.hit?.add(p);
@@ -1235,14 +1297,7 @@ export class Game {
         }
       }
     }
-    if (Math.hypot(this.px - x, this.py - y) < 48) {
-      if (this.shieldUp) {
-        this.shieldUp = false;
-        this.shieldTimer = 5;
-      } else {
-        this.hurtFlash = 0.5;
-      }
-    }
+    if (Math.hypot(this.px - x, this.py - y) < 48) this.takeDamage(2);
   }
 
   // ------------------------------------------------------------------ render

@@ -80,7 +80,13 @@ export default function AvatarScreen() {
       else if (e.key === "Tab") {
         e.preventDefault();
         toggleTainted();
-      } else if (e.key === "Enter") enterBasement();
+      } else if (e.key === "Enter") {
+        // Defensively take over Enter entirely: if a nav/arrow button
+        // happens to still have DOM focus, the browser's own "activate the
+        // focused button" behavior could otherwise fire on top of this.
+        e.preventDefault();
+        enterBasement();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

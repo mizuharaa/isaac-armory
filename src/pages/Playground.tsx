@@ -196,6 +196,17 @@ export default function Playground() {
     else game.grantShield();
   }, [pocketCard, pocketUsed]);
 
+  // ------- live HP (half-heart units): damage/death/respawn -------
+  const [liveHp, setLiveHp] = useState({ hp: 6, maxHp: 6 });
+  const noHealth = character.health.type === "none";
+  const maxHalfHearts = useMemo(() => {
+    const h = character.health;
+    const containers =
+      h.red + h.soul + h.black + (h.bone ?? 0) + (h.coin ?? 0) +
+      stats.bonusHearts.red + stats.bonusHearts.soul + stats.bonusHearts.black;
+    return containers * 2;
+  }, [character, stats.bonusHearts]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -204,6 +215,7 @@ export default function Playground() {
     game.onPickup = (slug) => equip(slug);
     game.onRoomChange = (r) => setRoom(r);
     game.onOpenPicker = () => setDebugOpen(true);
+    game.onHealthChange = (hp, maxHp) => setLiveHp({ hp, maxHp });
     game.onResetRun = () => {
       const { characterSlug: cur, selectCharacter: sel } = useLoadout.getState();
       sel(cur); // resets loadout to the character's starting items
@@ -250,6 +262,10 @@ export default function Playground() {
       combat,
     });
   }, [stats, combat, tags]);
+
+  useEffect(() => {
+    gameRef.current?.setHealth(maxHalfHearts, noHealth);
+  }, [maxHalfHearts, noHealth]);
 
   useEffect(() => {
     let alive = true;
@@ -321,16 +337,23 @@ export default function Playground() {
     setDebugOpen(false);
   };
 
-  const hearts = useMemo(() => {
+  // Ordered heart-container colors; slot count matches maxHalfHearts/2. Fill
+  // state comes from the engine's LIVE hp (damage from spikes/fire/bombs
+  // actually drains these now, instead of always showing full health).
+  const heartSlots = useMemo(() => {
     const h = character.health;
-    return {
-      red: h.red + stats.bonusHearts.red,
-      soul: h.soul + stats.bonusHearts.soul,
-      black: h.black + stats.bonusHearts.black,
-      bone: h.bone ?? 0,
-      coin: h.coin ?? 0,
-    };
-  }, [character, stats]);
+    const groups: [number, string][] = [
+      [h.red + stats.bonusHearts.red, "#e02b2b"],
+      [h.soul + stats.bonusHearts.soul, "#aebfd8"],
+      [h.black + stats.bonusHearts.black, "#3a2b4a"],
+      [h.bone ?? 0, "#d8c9a3"],
+      [h.coin ?? 0, "#f2d75e"],
+    ];
+    const slots: string[] = [];
+    for (const [count, color] of groups) for (let i = 0; i < count; i++) slots.push(color);
+    return slots;
+  }, [character, stats.bonusHearts]);
+  const filledHearts = Math.ceil(liveHp.hp / 2);
 
   return (
     <div
@@ -377,24 +400,16 @@ export default function Playground() {
         {/* hearts + stats, top-left below the active item */}
         <div className={`absolute left-3 space-y-0.5 ${activeItem ? "top-[76px]" : "top-2"}`}>
           <div className="mb-1 flex flex-wrap gap-0.5">
-            {Array.from({ length: hearts.red }, (_, i) => (
-              <span key={`r${i}`} className="punch text-xl leading-none text-[#e02b2b]">♥</span>
+            {heartSlots.map((color, i) => (
+              <span
+                key={i}
+                className="punch text-xl leading-none transition-opacity"
+                style={{ color, opacity: i < filledHearts ? 1 : 0.25 }}
+              >
+                ♥
+              </span>
             ))}
-            {Array.from({ length: hearts.soul }, (_, i) => (
-              <span key={`s${i}`} className="punch text-xl leading-none text-[#aebfd8]">♥</span>
-            ))}
-            {Array.from({ length: hearts.black }, (_, i) => (
-              <span key={`b${i}`} className="punch text-xl leading-none text-[#3a2b4a]">♥</span>
-            ))}
-            {Array.from({ length: hearts.bone }, (_, i) => (
-              <span key={`n${i}`} className="punch text-xl leading-none text-[#d8c9a3]">♥</span>
-            ))}
-            {Array.from({ length: hearts.coin }, (_, i) => (
-              <span key={`c${i}`} className="punch text-xl leading-none text-[#f2d75e]">♥</span>
-            ))}
-            {hearts.red + hearts.soul + hearts.black + hearts.bone + hearts.coin === 0 && (
-              <span className="punch font-pixel text-[10px] text-muted">NO HEALTH</span>
-            )}
+            {noHealth && <span className="punch font-pixel text-[10px] text-muted">NO HEALTH — ONE HIT</span>}
           </div>
           {STAT_KEYS.map((k) => (
             <HudStat key={k} label={STAT_ICON[k]} value={stats[k].toFixed(2)} flash={flashes[k]} />

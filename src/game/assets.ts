@@ -124,9 +124,29 @@ export interface CharacterLook {
 }
 
 /**
- * Full character look = skin sheet + grid-aligned costume overlays (hair,
- * eyepatch…) composited on a canvas, plus an optional custom-head sheet
- * with its own frame data — the same layering the game does.
+ * DISABLED: flat-compositing costume overlay strips (hair/eyepatch/fez) onto
+ * the base skin sheet at (0,0). The assumption was that a "strip" (height
+ * ≤64px) shares the same per-frame crop grid as the base sheet it's laid
+ * over. That assumption was wrong for most characters — only Isaac (no
+ * overlay at all) and Azazel (which uses the verified custom-head path
+ * below, not this) render cleanly; every other character showed scattered/
+ * glitching pixels, because a strip's internal frame layout doesn't actually
+ * line up 1:1 with the base sheet's crop rectangles once you're past frame 0.
+ *
+ * Until someone verifies real per-character alignment (visually, in a
+ * browser — screenshots or a proper animation-preview tool, e.g. the
+ * IsaacAnimator app bundled in the extracted Public/tools folder), leave
+ * this OFF and ship the bare skin sheet for every character. See the
+ * "Character look / costume overlays" section of the agent handoff doc
+ * (docs/HANDOFF.md) for the full investigation and how to re-enable safely.
+ */
+const ENABLE_COSTUME_OVERLAYS = false;
+
+/**
+ * Custom-head characters (Azazel confirmed working) are NOT part of the
+ * disabled system above — they render from their OWN verified per-character
+ * anm2 frame data (headsheet.png + headanim.json), a completely different
+ * and more reliable mechanism than flat strip-compositing.
  */
 export async function loadCharacterLook(slug: string): Promise<CharacterLook> {
   const dir = `${BASE}assets/characters/${slug}`;
@@ -142,7 +162,7 @@ export async function loadCharacterLook(slug: string): Promise<CharacterLook> {
   }
 
   let sheet: HTMLImageElement | HTMLCanvasElement = base;
-  const count = manifest.overlays ?? 0;
+  const count = ENABLE_COSTUME_OVERLAYS ? manifest.overlays ?? 0 : 0;
   if (count > 0) {
     const overlays = await Promise.all(
       Array.from({ length: count }, (_, i) => loadImage(`${dir}/overlay_${i}.png`)),
