@@ -1,5 +1,5 @@
 {
-  "_status": "Seed overrides for Milestone 1. Milestone 2 (stat engine) expands and validates this list against each item's wiki Effects section; every entry must cite its source page. Items whose descriptions say only 'Damage up' etc. are listed in data/report.md under 'Ambiguous stat descriptions' and belong here.",
+  "_status": "Curated stat overrides, validated against each item's wiki Effects section (Repentance values). tearsMult is a fire-rate multiplier (>1 = faster). damageFlat adds AFTER the sqrt formula but BEFORE multipliers, per the Polyphemus page math: (Damage + 4) x 2.",
   "overrides": {
     "the-sad-onion": {
       "source": "https://bindingofisaacrebirth.fandom.com/wiki/The_Sad_Onion",
@@ -8,36 +8,37 @@
     },
     "crickets-head": {
       "source": "https://bindingofisaacrebirth.fandom.com/wiki/Cricket%27s_Head",
-      "statModifiers": { "damageMult": 1.5 }
+      "statModifiers": { "damageMult": 1.5 },
+      "note": "Shares a non-stacking x1.5 multiplier slot with Magic Mushroom (see Magic Mushroom Notes)."
     },
     "magic-mushroom": {
       "source": "https://bindingofisaacrebirth.fandom.com/wiki/Magic_Mushroom",
-      "statModifiers": { "hearts": 1, "damageMult": 1.5 },
-      "note": "INCOMPLETE — 'All stats up' also grants speed/range; exact values to be confirmed from the wiki Effects section in Milestone 2."
+      "statModifiers": { "hearts": 1, "damage": 0.3, "damageMult": 1.5, "range": 2.5, "speed": 0.3 },
+      "note": "Repentance values: +1 heart container, +0.3 damage, x1.5 multiplier (non-stacking with Cricket's Head), +2.5 range, +0.3 speed, full heal, size up."
     },
     "polyphemus": {
       "source": "https://bindingofisaacrebirth.fandom.com/wiki/Polyphemus",
-      "statModifiers": { "damage": 4, "damageMult": 2.0 },
+      "statModifiers": { "damageFlat": 4, "damageMult": 2.0, "tearsMult": 0.42 },
       "behaviorTags": ["piercing_on_kill"],
-      "note": "INCOMPLETE — also a large tears-down; exact tear-delay change to be confirmed in Milestone 2."
+      "note": "Wiki math: (Damage + 4) x 2; Repentance: tears fired per second x 0.42. Overkill damage pierces to the next enemy."
     },
     "brittle-bones": {
       "source": "https://bindingofisaacrebirth.fandom.com/wiki/Brittle_Bones",
       "statModifiers": {},
-      "behaviorTags": ["bone_hearts"],
-      "note": "INCOMPLETE — converts all hearts to bone hearts; grants a permanent tears bonus each time a bone heart breaks. Conditional, so no flat modifier; exact per-break value to be confirmed in Milestone 2."
+      "behaviorTags": ["bone_hearts", "bypass_tear_cap"],
+      "note": "Grants 6 empty bone hearts, removes red containers. Conditional: +0.4 fire rate (cap-breaking) per bone heart lost — modeled at runtime, not as a flat modifier."
     },
     "technology-2": {
       "source": "https://bindingofisaacrebirth.fandom.com/wiki/Technology_2",
-      "statModifiers": {},
+      "statModifiers": { "tearsMult": 0.6667 },
       "behaviorTags": ["laser", "replaces_tears"],
-      "note": "INCOMPLETE — replaces tears with a continuous laser at reduced damage; exact damage multiplier to be confirmed in Milestone 2."
+      "note": "Repentance: right-eye laser deals 13% of damage 15x/second; tears fired per second x (2/3)."
     },
     "soy-milk": {
       "source": "https://bindingofisaacrebirth.fandom.com/wiki/Soy_Milk",
-      "statModifiers": { "damageMult": 0.2 },
-      "behaviorTags": ["rapid_fire", "tiny_tears"],
-      "note": "Fire delay is set near-minimum; modeled as a behavior in the engine, not a flat stat."
+      "statModifiers": { "damageMult": 0.2, "tearsMult": 5.5 },
+      "behaviorTags": ["rapid_fire", "tiny_tears", "bypass_tear_cap"],
+      "note": "Repentance: fire rate x5.5 (15 tears/sec at base, breaking the delay-5 cap), damage x0.2, -0.3 tear size."
     }
   }
 }

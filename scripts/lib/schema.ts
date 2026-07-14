@@ -12,6 +12,8 @@ export type Dlc = z.infer<typeof DlcSchema>;
 export const StatModifiersSchema = z
   .object({
     damage: z.number().optional(),
+    /** Adds after the sqrt damage formula but before multipliers (Polyphemus). */
+    damageFlat: z.number().optional(),
     damageMult: z.number().optional(),
     tears: z.number().optional(),
     tearsMult: z.number().optional(),

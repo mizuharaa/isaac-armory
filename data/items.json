@@ -308,7 +308,10 @@
     "description": "Makes Isaac bigger. Adds one Red Heart Container, +0.3 Damage, x1.5 damage multiplier, +5.25 Range, +0.3 Speed, and restores all Health. Makes Isaac bigger. Adds one Red Heart Container, +0.3 Damage, x1.5 damage multiplier, +2.5 Range, +0.3 Speed, and restores all Health.",
     "statModifiers": {
       "hearts": 1,
-      "damageMult": 1.5
+      "damage": 0.3,
+      "damageMult": 1.5,
+      "range": 2.5,
+      "speed": 0.3
     },
     "statModifiersSource": "override",
     "behaviorTags": [
@@ -3802,7 +3805,9 @@
     ],
     "quote": "Extra laser",
     "description": "Replaces the tears fired from Isaac's right eye with a rapid-firing low damage piercing laser. Damage down.",
-    "statModifiers": {},
+    "statModifiers": {
+      "tearsMult": 0.6667
+    },
     "statModifiersSource": "override",
     "behaviorTags": [
       "summonable",
@@ -4225,8 +4230,9 @@
     "quote": "Mega tears",
     "description": "Isaac fires huge tears that deal massive damage, but fire rate is greatly decreased. If a tear kills an enemy, it travels on with any leftover damage.",
     "statModifiers": {
-      "damage": 4,
-      "damageMult": 2
+      "damageFlat": 4,
+      "damageMult": 2,
+      "tearsMult": 0.42
     },
     "statModifiersSource": "override",
     "behaviorTags": [
@@ -8154,7 +8160,8 @@
     "quote": "DMG down + tears way up",
     "description": "Tears are smaller and do much less damage, but fire in very rapid succession.",
     "statModifiers": {
-      "damageMult": 0.2
+      "damageMult": 0.2,
+      "tearsMult": 5.5
     },
     "statModifiersSource": "override",
     "behaviorTags": [
@@ -8162,7 +8169,8 @@
       "tearsup",
       "offensive",
       "rapid_fire",
-      "tiny_tears"
+      "tiny_tears",
+      "bypass_tear_cap"
     ],
     "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/d/d5/Collectible_Soy_Milk_icon.png/revision/latest?cb=20210821054437",
     "dlc": "rebirth"
@@ -13530,7 +13538,8 @@
     "statModifiersSource": "override",
     "behaviorTags": [
       "nolostbr",
-      "bone_hearts"
+      "bone_hearts",
+      "bypass_tear_cap"
     ],
     "imageUrl": "https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/4/49/Collectible_Brittle_Bones_icon.png/revision/latest?cb=20210822091500",
     "dlc": "afterbirth_plus",
