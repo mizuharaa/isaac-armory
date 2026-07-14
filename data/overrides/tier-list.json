@@ -1,0 +1,25 @@
+{
+  "_source": "Community meta approximation for Repentance-era play (isaacranks.com vote trends + widely-shared community tier lists), curated 2026-07-14. Inherently subjective — edit freely; the scraper re-merges on every run.",
+  "_fallback": "Items not listed here derive their tier from the in-game Repentance quality: q4→S, q3→A, q2→B, q1→C, q0→D. Trinkets (no quality) stay untiered unless listed.",
+  "tiers": {
+    "S+": [
+      "sacred-heart", "brimstone", "moms-knife", "tech-x", "magic-mushroom",
+      "godhead", "crickets-head", "c-section", "revelation", "twisted-pair",
+      "death-certificate", "r-key", "dr-fetus", "epic-fetus"
+    ],
+    "S": [
+      "polyphemus", "20-20", "incubus", "crown-of-light", "spirit-sword",
+      "ipecac", "holy-mantle", "chocolate-milk", "haemolacria", "rock-bottom"
+    ],
+    "A": [
+      "mutant-spider", "the-inner-eye", "soy-milk", "void", "psy-fly", "sulfur"
+    ],
+    "B": ["stop-watch", "monstros-lung"],
+    "C": ["anemic"],
+    "D": [],
+    "F": [
+      "cursed-eye", "bobs-brain", "isaacs-heart", "breath-of-life",
+      "the-bean", "bozo", "clicker"
+    ]
+  }
+}

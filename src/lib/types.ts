@@ -43,7 +43,12 @@ export interface Item {
   imageUrl: string | null;
   dlc: Dlc;
   unlockCondition?: string;
+  tier?: Tier;
+  tierSource?: "curated" | "quality";
 }
+
+export type Tier = "S+" | "S" | "A" | "B" | "C" | "D" | "F";
+export const TIER_ORDER: Tier[] = ["S+", "S", "A", "B", "C", "D", "F"];
 
 export interface CharacterStats {
   damageBase: number;

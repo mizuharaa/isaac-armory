@@ -58,6 +58,9 @@ export const ItemSchema = z.object({
   imageUrl: z.string().nullable(),
   dlc: DlcSchema,
   unlockCondition: z.string().optional(),
+  /** Community meta rating; quality-derived when not hand-curated. */
+  tier: z.enum(["S+", "S", "A", "B", "C", "D", "F"]).optional(),
+  tierSource: z.enum(["curated", "quality"]).optional(),
 });
 export type Item = z.infer<typeof ItemSchema>;
 

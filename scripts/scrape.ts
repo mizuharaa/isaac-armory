@@ -488,6 +488,32 @@ async function main() {
     /(App\.png|appearance\.png)$/i,
   );
 
+  // -- tier list (curated + quality fallback) ---------------------------------
+  const tierFile = await loadJson<{ tiers: Record<string, string[]> }>(
+    "overrides/tier-list.json",
+  );
+  const curatedTier = new Map<string, Item["tier"]>();
+  for (const [tier, slugs] of Object.entries(tierFile.tiers)) {
+    for (const s of slugs) curatedTier.set(s, tier as Item["tier"]);
+  }
+  const TIER_BY_QUALITY: Record<number, Item["tier"]> = { 4: "S", 3: "A", 2: "B", 1: "C", 0: "D" };
+  const allSlugSet = new Set([...items, ...trinkets].map((i) => i.slug));
+  for (const slug of curatedTier.keys()) {
+    if (!allSlugSet.has(slug)) {
+      report.parseWarnings.push(`tier-list.json: slug "${slug}" matches no item — typo?`);
+    }
+  }
+  for (const item of [...items, ...trinkets]) {
+    const curated = curatedTier.get(item.slug);
+    if (curated) {
+      item.tier = curated;
+      item.tierSource = "curated";
+    } else if (item.quality !== null) {
+      item.tier = TIER_BY_QUALITY[item.quality];
+      item.tierSource = "quality";
+    }
+  }
+
   // -- items.xml hook ---------------------------------------------------------
   await applyItemsXml([...items, ...trinkets]);
 

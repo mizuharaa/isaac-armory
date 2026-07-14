@@ -24,14 +24,26 @@ body {
 /* 2-frame stepped wiggle for card hover: pixel-art motion must snap. */
 @keyframes wiggle {
   0% {
-    transform: rotate(-2deg) translateY(-2px);
+    transform: rotate(-1.5deg) translateY(-2px);
   }
   100% {
-    transform: rotate(2deg) translateY(-2px);
+    transform: rotate(1.5deg) translateY(-2px);
   }
 }
-.hover-wiggle:hover img {
+.hover-wiggle:hover {
   animation: wiggle 0.22s steps(1, end) infinite alternate;
+}
+
+/* isaacguru-style sprite zoom on hover — instant integer-ish steps, no easing */
+.sprite-zoom {
+  transition: none;
+}
+.sprite-zoom:hover,
+.group:hover .sprite-zoom {
+  transform: scale(1.5);
+}
+.sprite-zoom-lg:hover {
+  transform: scale(2);
 }
 
 /* 4-frame idle bob for the avatar screen (stepped). */

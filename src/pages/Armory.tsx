@@ -4,13 +4,14 @@ import ItemCard from "../components/ItemCard";
 import ItemDetailModal from "../components/ItemDetailModal";
 import { allItems, itemBySlug, pools, statImpact } from "../lib/data";
 import { fuzzyScore } from "../lib/fuzzy";
-import { DLC_LABEL, type Dlc, type Item } from "../lib/types";
+import { DLC_LABEL, TIER_ORDER, type Dlc, type Item, type Tier } from "../lib/types";
 import { useLoadout } from "../store/loadout";
 
-type SortKey = "name" | "id" | "quality" | "impact";
+type SortKey = "name" | "id" | "quality" | "impact" | "tier";
 const TYPES = ["passive", "active", "trinket"] as const;
 const QUALITIES = [0, 1, 2, 3, 4] as const;
 const DLCS: Dlc[] = ["rebirth", "afterbirth", "afterbirth_plus", "repentance"];
+const tierRank = (t?: Tier) => (t ? TIER_ORDER.indexOf(t) : TIER_ORDER.length);
 
 function toggleSet<T>(set: Set<T>, value: T): Set<T> {
   const next = new Set(set);
@@ -27,6 +28,7 @@ export default function Armory() {
   const [types, setTypes] = useState<Set<string>>(new Set());
   const [qualities, setQualities] = useState<Set<number>>(new Set());
   const [dlcs, setDlcs] = useState<Set<Dlc>>(new Set());
+  const [tiers, setTiers] = useState<Set<Tier>>(new Set());
   const [pool, setPool] = useState<string | null>(null);
   const [showGreed, setShowGreed] = useState(false);
   const [sort, setSort] = useState<SortKey>("name");
@@ -41,6 +43,7 @@ export default function Armory() {
     if (types.size) list = list.filter((i) => types.has(i.type));
     if (qualities.size) list = list.filter((i) => i.quality !== null && qualities.has(i.quality));
     if (dlcs.size) list = list.filter((i) => dlcs.has(i.dlc));
+    if (tiers.size) list = list.filter((i) => i.tier !== undefined && tiers.has(i.tier));
     if (pool) list = list.filter((i) => i.pools.includes(pool));
 
     if (search.trim()) {
@@ -72,9 +75,12 @@ export default function Armory() {
       case "impact":
         sorted.sort((a, b) => statImpact(b) - statImpact(a));
         break;
+      case "tier":
+        sorted.sort((a, b) => tierRank(a.tier) - tierRank(b.tier) || a.name.localeCompare(b.name));
+        break;
     }
     return sorted;
-  }, [search, types, qualities, dlcs, pool, sort]);
+  }, [search, types, qualities, dlcs, tiers, pool, sort]);
 
   const selectedItem: Item | undefined = slug ? itemBySlug.get(slug) : undefined;
 
@@ -135,6 +141,26 @@ export default function Armory() {
         </div>
 
         <div>
+          <h3 className="mb-1 font-pixel text-[10px] text-muted">META TIER</h3>
+          <div className="flex gap-1">
+            {TIER_ORDER.map((t) => (
+              <button
+                key={t}
+                onClick={() => setTiers(toggleSet(tiers, t))}
+                title="Community meta tier (curated + quality-derived)"
+                className={`flex-1 border px-0.5 py-1 text-xs ${
+                  tiers.has(t)
+                    ? "border-gold text-gold"
+                    : "border-basement-border text-muted hover:text-ink"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
           <h3 className="mb-1 font-pixel text-[10px] text-muted">DLC</h3>
           <div className="space-y-1">
             {DLCS.map((d) => (
@@ -183,6 +209,7 @@ export default function Armory() {
             <option value="name">Name</option>
             <option value="id">Item ID</option>
             <option value="quality">Quality</option>
+            <option value="tier">Meta tier</option>
             <option value="impact">Most stat impact</option>
           </select>
         </div>
@@ -193,7 +220,7 @@ export default function Armory() {
         <p className="mb-2 text-sm text-muted">
           {filtered.length} of {allItems.length} entries
         </p>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
+        <div className="grid grid-cols-2 gap-x-2 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
           {filtered.map((item) => (
             <ItemCard
               key={item.slug}
