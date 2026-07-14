@@ -55,6 +55,8 @@ export interface CombatConfig {
   deadEye: boolean;
   /** piercing; damage doubles after passing through a target (Eye of Belial) */
   belial: boolean;
+  /** innate-only Brimstone (Azazel) is short-range; the item removes this */
+  shortBrim: boolean;
   /** tears carry a damaging halo (Godhead) */
   aura: boolean;
   /** blocks one hit, recharges (Holy Mantle) */
@@ -84,10 +86,12 @@ export function deriveCombat(
   const slugs = new Set(equipped);
   const has = (...names: string[]) => names.some((n) => slugs.has(n));
 
+  const itemBrim = has("brimstone", "sulfur", "revelation");
+  const innateBrim = innate.some((s) => /brimstone/i.test(s));
+
   let fireMode: FireMode = "tears";
   if (has("moms-knife")) fireMode = "knife";
-  else if (has("brimstone", "sulfur", "revelation") || innate.some((s) => /brimstone/i.test(s)))
-    fireMode = "brimstone";
+  else if (itemBrim || innateBrim) fireMode = "brimstone";
   else if (has("epic-fetus")) fireMode = "missile";
   else if (has("dr-fetus")) fireMode = "bombshot";
   else if (has("ludovico-technique")) fireMode = "ludovico";
@@ -136,6 +140,7 @@ export function deriveCombat(
     flameChance: (has("ghost-pepper") ? 0.125 : 0) + (has("birds-eye") ? 0.125 : 0),
     deadEye: has("dead-eye"),
     belial: has("eye-of-belial"),
+    shortBrim: innateBrim && !itemBrim,
     aura: has("godhead"),
     shield: has("holy-mantle"),
     familiars,

@@ -34,8 +34,18 @@ export default function AvatarScreen() {
   const navigate = useNavigate();
   const selectCharacter = useLoadout((s) => s.selectCharacter);
 
-  const [index, setIndex] = useState(0);
-  const [tainted, setTainted] = useState(false);
+  // open on the CURRENTLY selected character — starting at index 0 used to
+  // silently re-commit Isaac every visit, which broke character switching
+  const [index, setIndex] = useState(() => {
+    const current = useLoadout.getState().characterSlug;
+    const i = regularCharacters.findIndex(
+      (c) => c.slug === current || TAINTED_OF[c.slug] === current,
+    );
+    return i >= 0 ? i : 0;
+  });
+  const [tainted, setTainted] = useState(() =>
+    useLoadout.getState().characterSlug.startsWith("tainted"),
+  );
   const [animKey, setAnimKey] = useState(0);
 
   const regular = regularCharacters[index];
@@ -46,10 +56,12 @@ export default function AvatarScreen() {
 
   const stats = useMemo(() => computeStats(character.baseStats, []), [character]);
 
-  // commit the highlighted character immediately — the playground must always
-  // reflect what's on the pedestal, not what was last confirmed with Enter
+  // commit the highlighted character immediately — but only on a real change,
+  // so revisiting this page doesn't wipe the current loadout
   useEffect(() => {
-    selectCharacter(character.slug);
+    if (useLoadout.getState().characterSlug !== character.slug) {
+      selectCharacter(character.slug);
+    }
   }, [character, selectCharacter]);
 
   const cycle = (dir: 1 | -1) => {

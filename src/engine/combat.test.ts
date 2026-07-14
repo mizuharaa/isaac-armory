@@ -138,4 +138,12 @@ describe("tear-modifier items (round 3)", () => {
     expect(c.fireMode).toBe("brimstone");
     expect(c.orbit).toBe(true);
   });
+  it("29. Azazel's mini-brim is short-range until the real Brimstone overrides it (wiki/Azazel)", () => {
+    const azazel = combo([], [], ["Flight", "Short-range Brimstone"]);
+    expect(azazel.fireMode).toBe("brimstone");
+    expect(azazel.shortBrim).toBe(true);
+    const upgraded = combo(["brimstone"], [], ["Flight", "Short-range Brimstone"]);
+    expect(upgraded.fireMode).toBe("brimstone");
+    expect(upgraded.shortBrim).toBe(false);
+  });
 });

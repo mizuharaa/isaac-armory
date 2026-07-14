@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SpriteImg from "../components/SpriteImg";
 import { deriveCombat } from "../engine/combat";
 import { computeStats, type EquippedItem } from "../engine/stats";
-import { characterSheetUrl, loadFirst, loadGameAssets } from "../game/assets";
+import { loadCharacterSheet, loadFirst, loadGameAssets } from "../game/assets";
 import { Game, VIEW_H, VIEW_W, type RoomId } from "../game/engine";
 import { characterPortraitCandidates, itemSpriteCandidates } from "../lib/assets";
 import { allItems, characterBySlug, itemBySlug, poolBySlug } from "../lib/data";
@@ -254,10 +254,10 @@ export default function Playground() {
   useEffect(() => {
     let alive = true;
     Promise.all([
-      loadFirst([characterSheetUrl(character.slug)]),
+      loadCharacterSheet(character.slug),
       loadFirst(characterPortraitCandidates(character)),
     ]).then(([sheet, portrait]) => {
-      if (alive) gameRef.current?.setPlayerSheet(sheet, portrait);
+      if (alive) gameRef.current?.setPlayerSheet(sheet, portrait, character.slug);
     });
     return () => {
       alive = false;

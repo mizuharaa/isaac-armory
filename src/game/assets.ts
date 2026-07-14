@@ -115,3 +115,34 @@ export function loadGameAssets(): Promise<GameAssets> {
 export function characterSheetUrl(slug: string): string {
   return `${BASE}assets/characters/${slug}/sheet.png`;
 }
+
+/**
+ * Full character look = skin sheet + costume overlays (hair, eyepatch,
+ * horns…) composited on a canvas — the same layering the game does.
+ */
+export async function loadCharacterSheet(
+  slug: string,
+): Promise<HTMLImageElement | HTMLCanvasElement | null> {
+  const base = await loadImage(characterSheetUrl(slug));
+  if (!base) return null;
+  let count = 0;
+  try {
+    const res = await fetch(`${BASE}assets/characters/${slug}/manifest.json`);
+    if (res.ok) count = (await res.json()).overlays ?? 0;
+  } catch {
+    /* no manifest — skin only */
+  }
+  if (!count) return base;
+  const overlays = await Promise.all(
+    Array.from({ length: count }, (_, i) =>
+      loadImage(`${BASE}assets/characters/${slug}/overlay_${i}.png`),
+    ),
+  );
+  const canvas = document.createElement("canvas");
+  canvas.width = base.width;
+  canvas.height = base.height;
+  const ctx = canvas.getContext("2d")!;
+  ctx.drawImage(base, 0, 0);
+  for (const overlay of overlays) if (overlay) ctx.drawImage(overlay, 0, 0);
+  return canvas;
+}

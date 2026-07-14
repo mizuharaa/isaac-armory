@@ -35,7 +35,7 @@ const DEFAULT_COMBAT: CombatConfig = {
   fireMode: "tears", shots: 1, homing: false, piercing: false, spectral: false,
   chargeShot: "none", burst: false, continuum: false, bounce: false, falloff: false,
   orbit: false, hover: false, boomerang: false, split: false, wiz: false,
-  quadChance: 0, flameChance: 0, deadEye: false, belial: false,
+  quadChance: 0, flameChance: 0, deadEye: false, belial: false, shortBrim: false,
   aura: false, shield: false, familiars: [], tint: null, flight: false, sizeUp: false,
 };
 
@@ -212,8 +212,9 @@ export class Game {
     speed: 1, fireDelay: 10, damage: 3.5, range: 6.5, shotSpeed: 1, tags: new Set(),
     combat: DEFAULT_COMBAT,
   };
-  private playerSheet: HTMLImageElement | null = null;
+  private playerSheet: HTMLImageElement | HTMLCanvasElement | null = null;
   private playerPortrait: HTMLImageElement | null = null;
+  private playerKey = "";
 
   private px = VIEW_W / 2;
   private py = VIEW_H / 2 + 40;
@@ -306,9 +307,16 @@ export class Game {
     if (!paused) this.last = performance.now();
     this.keys.clear();
   }
-  setPlayerSheet(sheet: HTMLImageElement | null, portrait: HTMLImageElement | null) {
+  setPlayerSheet(
+    sheet: HTMLImageElement | HTMLCanvasElement | null,
+    portrait: HTMLImageElement | null,
+    key = "",
+  ) {
     this.playerSheet = sheet;
     this.playerPortrait = portrait;
+    this.playerKey = key;
+    this.tintedSheet = null;
+    this.tintedKey = "";
   }
   setShopPedestals(pedestals: { slug: string; img: HTMLImageElement | null; price: number }[]) {
     this.rooms.shop = pedestals.map((p, i) => ({
@@ -1023,8 +1031,9 @@ export class Game {
     const isBrim = p.combat.fireMode === "brimstone";
     const toWall =
       fx > 0 ? VIEW_W - WALL - x : fx < 0 ? x - WALL : fy > 0 ? VIEW_H - WALL - y : y - WALL;
-    // Azazel's innate Brimstone is short-range; items give full-room beams
-    const baseLen = p.range < 5.5 && isBrim ? p.range * G * 1.4 : undefined;
+    // Azazel's innate Brimstone is short-range — until he picks up the real
+    // Brimstone item, which overrides it with a full-room beam
+    const baseLen = p.combat.shortBrim && isBrim ? p.range * G * 1.4 : undefined;
     const len = Math.min(toWall, baseLen ?? toWall);
     // multishot brimstone fires a fattened beam (simplified from parallel beams)
     this.beams.push({
@@ -1621,7 +1630,7 @@ export class Game {
     if (!this.playerSheet) return null;
     const tint = this.params.combat.tint;
     if (!tint) return this.playerSheet;
-    const key = `${this.playerSheet.src}|${tint}`;
+    const key = `${this.playerKey}|${tint}`;
     if (this.tintedKey === key && this.tintedSheet) return this.tintedSheet;
     const off = document.createElement("canvas");
     off.width = this.playerSheet.width;

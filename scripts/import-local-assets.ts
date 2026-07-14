@@ -132,8 +132,38 @@ for (const c of characters) {
 
   const dest = path.join(OUT, "characters", c.slug);
   ensure(dest);
-  if (sheet) copyFileSync(sheet.file, path.join(dest, "sheet.png"));
-  else say(`  ! no sheet for ${c.slug} (looked for "${sheetKey}")`);
+  let overlays = 0;
+  if (sheet) {
+    copyFileSync(sheet.file, path.join(dest, "sheet.png"));
+    // Costume overlays: the base sheet is only the SKIN — hair, eyepatches,
+    // horns, scars etc. live in sibling character_<id>_*.png sheets on the
+    // same grid. Allowlisted keywords keep alt-form full bodies (lazarus2,
+    // thesoul, esau) from being composited over the base by mistake.
+    const bm = path
+      .basename(sheet.file)
+      .toLowerCase()
+      .match(/^character_(\d+[a-z]?)_([a-z0-9]+)\.png$/);
+    if (bm) {
+      const [, prefix, baseRest] = bm;
+      const overlayRe = new RegExp(`^characters/costumes/character_${prefix}_([a-z0-9_]+)\\.png$`);
+      const colorRe = /_(black|blue|green|grey|red|white)$/;
+      const partRe = /(hair|head|locks|eyepatch|fez|scars|wig|halo|wings?|horns?|body|bandage)/;
+      // one overlay per part type — Eden alone has 40+ random hair sheets
+      const usedParts = new Set<string>();
+      for (const [rel, full] of [...gfx].sort(([a], [b]) => a.localeCompare(b))) {
+        const om = rel.match(overlayRe);
+        if (!om) continue;
+        const rest = om[1];
+        if (rest === baseRest || colorRe.test(rest)) continue;
+        const part = rest.match(partRe)?.[1];
+        if (!part || usedParts.has(part)) continue;
+        usedParts.add(part);
+        copyFileSync(full, path.join(dest, `overlay_${overlays++}.png`));
+      }
+      if (overlays) say(`  ${c.slug}: +${overlays} costume overlay(s)`);
+    }
+  } else say(`  ! no sheet for ${c.slug} (looked for "${sheetKey}")`);
+  writeFileSync(path.join(dest, "manifest.json"), JSON.stringify({ overlays }));
   if (portrait) copyFileSync(portrait, path.join(dest, "portrait.png"));
   else say(`  ! no portrait for ${c.slug}`);
 }
