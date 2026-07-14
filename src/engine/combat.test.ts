@@ -39,6 +39,9 @@ describe("weapon priority (override order)", () => {
   it("8. Spirit Sword replaces tears with melee (wiki/Spirit_Sword)", () => {
     expect(combo(["spirit-sword"]).fireMode).toBe("sword");
   });
+  it("8b. The Ludovico Technique takes the persistent-tear weapon slot", () => {
+    expect(combo(["the-ludovico-technique"]).fireMode).toBe("ludovico");
+  });
 });
 
 describe("multishot stacking", () => {

@@ -33,20 +33,23 @@ const TAINTED_OF: Record<string, string> = {
 export default function AvatarScreen() {
   const navigate = useNavigate();
   const selectCharacter = useLoadout((s) => s.selectCharacter);
+  // The store IS the source of truth for which character is selected — no
+  // local mirror. A local copy (read once at mount, written back a tick
+  // later via an effect) was the actual bug: on a fresh page load the store
+  // hadn't finished rehydrating from localStorage yet when this component's
+  // initial state was captured, so the stale local value got pushed back
+  // into the store moments later and silently stomped the real selection.
+  // Only a full reload (or an HMR remount) happened to dodge the timing.
+  const storeSlug = useLoadout((s) => s.characterSlug);
+  const [animKey, setAnimKey] = useState(0);
 
-  // open on the CURRENTLY selected character — starting at index 0 used to
-  // silently re-commit Isaac every visit, which broke character switching
-  const [index, setIndex] = useState(() => {
-    const current = useLoadout.getState().characterSlug;
+  const index = useMemo(() => {
     const i = regularCharacters.findIndex(
-      (c) => c.slug === current || TAINTED_OF[c.slug] === current,
+      (c) => c.slug === storeSlug || TAINTED_OF[c.slug] === storeSlug,
     );
     return i >= 0 ? i : 0;
-  });
-  const [tainted, setTainted] = useState(() =>
-    useLoadout.getState().characterSlug.startsWith("tainted"),
-  );
-  const [animKey, setAnimKey] = useState(0);
+  }, [storeSlug]);
+  const tainted = storeSlug.startsWith("tainted");
 
   const regular = regularCharacters[index];
   const character = useMemo(() => {
@@ -56,16 +59,14 @@ export default function AvatarScreen() {
 
   const stats = useMemo(() => computeStats(character.baseStats, []), [character]);
 
-  // commit the highlighted character immediately — but only on a real change,
-  // so revisiting this page doesn't wipe the current loadout
-  useEffect(() => {
-    if (useLoadout.getState().characterSlug !== character.slug) {
-      selectCharacter(character.slug);
-    }
-  }, [character, selectCharacter]);
-
   const cycle = (dir: 1 | -1) => {
-    setIndex((i) => (i + dir + regularCharacters.length) % regularCharacters.length);
+    const nextIndex = (index + dir + regularCharacters.length) % regularCharacters.length;
+    const nextRegular = regularCharacters[nextIndex];
+    selectCharacter(tainted ? TAINTED_OF[nextRegular.slug] ?? nextRegular.slug : nextRegular.slug);
+    setAnimKey((k) => k + 1);
+  };
+  const toggleTainted = () => {
+    selectCharacter(tainted ? regular.slug : TAINTED_OF[regular.slug] ?? regular.slug);
     setAnimKey((k) => k + 1);
   };
   const enterBasement = () => {
@@ -78,14 +79,13 @@ export default function AvatarScreen() {
       else if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") cycle(-1);
       else if (e.key === "Tab") {
         e.preventDefault();
-        setTainted((t) => !t);
-        setAnimKey((k) => k + 1);
+        toggleTainted();
       } else if (e.key === "Enter") enterBasement();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [character]);
+  }, [index, tainted]);
 
   const neighbor = (offset: number) =>
     regularCharacters[(index + offset + regularCharacters.length) % regularCharacters.length];

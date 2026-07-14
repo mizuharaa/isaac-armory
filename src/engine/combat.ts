@@ -117,7 +117,7 @@ export function deriveCombat(
   else if (itemBrim || innateBrim) fireMode = "brimstone";
   else if (has("epic-fetus")) fireMode = "missile";
   else if (has("dr-fetus")) fireMode = "bombshot";
-  else if (has("ludovico-technique")) fireMode = "ludovico";
+  else if (has("the-ludovico-technique")) fireMode = "ludovico";
   else if (has("spirit-sword")) fireMode = "sword";
   else if (has("c-section")) fireMode = "csection";
   else if (has("technology", "technology-2", "tech-x") && !has("tech-x")) fireMode = "laser";

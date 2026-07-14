@@ -400,9 +400,9 @@ export class Game {
   }
 
   /**
-   * Active-item effects (SPACE). Implemented: D6-style rerolls, Diplopia
-   * duplication (pedestal cap prevents infinite dupes), Kamikaze!, The Poop.
-   * Anything else flashes a "not simulated" note.
+   * Active-item effects (SPACE). See src/engine/implemented.ts for the
+   * canonical list of every slug wired up here and in deriveCombat — keep
+   * that file in sync whenever a branch is added below.
    */
   async applyActiveEffect(slug: string): Promise<void> {
     const props = this.props();
@@ -546,11 +546,10 @@ export class Game {
       this.headDir = fy < 0 ? "Up" : fy > 0 ? "Down" : fx < 0 ? "Left" : "Right";
       this.lastFireDir = { x: fx, y: fy };
       this.fireFlash = 0.1;
-      // wind-up: starting to fire (or re-pressing) costs half a fire delay
-      // before the first shot — holding then keeps the normal cadence
-      if (!this.wasFiring) {
-        this.fireCooldown = Math.max(this.fireCooldown, ((p.fireDelay + 1) / 30) * 0.5);
-      }
+      // No forced delay here: plain tears fire the instant you tap, exactly
+      // like the game. "Wind-up" only exists for hold-to-charge weapons
+      // (Brimstone, Monstro's Lung, Chocolate Milk, Tech X), which already
+      // model it honestly below via their own charge/release state.
     }
 
     if (cb.fireMode === "brimstone") {

@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { isImplemented } from "../engine/implemented";
 import { itemSpriteCandidates } from "../lib/assets";
 import type { Item } from "../lib/types";
 import SpriteImg from "./SpriteImg";
@@ -39,6 +40,12 @@ export default memo(function ItemCard({
       </span>
       {equipped && (
         <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 bg-heal" title="In loadout" />
+      )}
+      {isImplemented(item.slug) && (
+        <span
+          className="absolute bottom-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-[#7dff5e] shadow-[0_0_4px_#7dff5e]"
+          title="Has a real coded effect in the Playground"
+        />
       )}
       <div className="overflow-visible py-1">
         <SpriteImg

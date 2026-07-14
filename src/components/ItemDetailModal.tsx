@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { isImplemented } from "../engine/implemented";
 import { itemSpriteCandidates } from "../lib/assets";
 import { poolBySlug } from "../lib/data";
 import { DLC_LABEL, type Item } from "../lib/types";
@@ -76,6 +77,21 @@ export default function ItemDetailModal({ item, onClose }: { item: Item; onClose
             <span className="border border-basement-border px-1.5 py-0.5 text-sm text-muted">
               {DLC_LABEL[item.dlc]}
             </span>
+            {isImplemented(item.slug) ? (
+              <span
+                className="border border-heal/50 bg-heal/10 px-1.5 py-0.5 text-sm text-heal"
+                title="This item has a real coded effect in the Playground — go test it"
+              >
+                ● Working in Playground
+              </span>
+            ) : (
+              <span
+                className="border border-basement-border px-1.5 py-0.5 text-sm text-muted"
+                title="Only generic auto-extracted stats apply right now; no special effect coded yet"
+              >
+                ○ Not yet simulated
+              </span>
+            )}
           </div>
 
           <div className="overflow-visible py-3">

@@ -2,12 +2,14 @@ import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ItemCard from "../components/ItemCard";
 import ItemDetailModal from "../components/ItemDetailModal";
+import { isImplemented } from "../engine/implemented";
 import { allItems, itemBySlug, pools, statImpact } from "../lib/data";
 import { fuzzyScore } from "../lib/fuzzy";
 import { DLC_LABEL, TIER_ORDER, type Dlc, type Item, type Tier } from "../lib/types";
 import { useLoadout } from "../store/loadout";
 
 type SortKey = "name" | "id" | "quality" | "impact" | "tier";
+type WorkingFilter = "all" | "working" | "deco";
 const TYPES = ["passive", "active", "trinket"] as const;
 const QUALITIES = [0, 1, 2, 3, 4] as const;
 const DLCS: Dlc[] = ["rebirth", "afterbirth", "afterbirth_plus", "repentance"];
@@ -31,7 +33,10 @@ export default function Armory() {
   const [tiers, setTiers] = useState<Set<Tier>>(new Set());
   const [pool, setPool] = useState<string | null>(null);
   const [showGreed, setShowGreed] = useState(false);
+  const [working, setWorking] = useState<WorkingFilter>("all");
   const [sort, setSort] = useState<SortKey>("name");
+
+  const workingCount = useMemo(() => allItems.filter((i) => isImplemented(i.slug)).length, []);
 
   const visiblePools = useMemo(
     () => pools.filter((p) => (showGreed ? true : !p.greedMode)),
@@ -45,6 +50,8 @@ export default function Armory() {
     if (dlcs.size) list = list.filter((i) => dlcs.has(i.dlc));
     if (tiers.size) list = list.filter((i) => i.tier !== undefined && tiers.has(i.tier));
     if (pool) list = list.filter((i) => i.pools.includes(pool));
+    if (working === "working") list = list.filter((i) => isImplemented(i.slug));
+    else if (working === "deco") list = list.filter((i) => !isImplemented(i.slug));
 
     if (search.trim()) {
       list = list
@@ -80,7 +87,7 @@ export default function Armory() {
         break;
     }
     return sorted;
-  }, [search, types, qualities, dlcs, tiers, pool, sort]);
+  }, [search, types, qualities, dlcs, tiers, pool, working, sort]);
 
   const selectedItem: Item | undefined = slug ? itemBySlug.get(slug) : undefined;
 
@@ -101,6 +108,46 @@ export default function Armory() {
           placeholder="Search…"
           className="w-full border-2 border-basement-border bg-basement px-2 py-1.5 text-ink placeholder:text-muted focus:border-gold focus:outline-none"
         />
+
+        <div>
+          <h3 className="mb-1 font-pixel text-[10px] text-muted">
+            PLAYGROUND EFFECT ({workingCount} working)
+          </h3>
+          <div className="flex gap-1">
+            <button
+              onClick={() => setWorking("working")}
+              title="Items with a real coded weapon/tear-flag/active effect in the Playground"
+              className={`flex-1 border px-1 py-1 text-sm ${
+                working === "working"
+                  ? "border-heal text-heal bg-heal/10"
+                  : "border-basement-border text-muted hover:text-ink"
+              }`}
+            >
+              Working
+            </button>
+            <button
+              onClick={() => setWorking("deco")}
+              title="Items that only apply generic auto-extracted stat numbers (or nothing) right now"
+              className={`flex-1 border px-1 py-1 text-sm ${
+                working === "deco"
+                  ? "border-hurt text-hurt bg-hurt/10"
+                  : "border-basement-border text-muted hover:text-ink"
+              }`}
+            >
+              Deco
+            </button>
+            <button
+              onClick={() => setWorking("all")}
+              className={`flex-1 border px-1 py-1 text-sm ${
+                working === "all"
+                  ? "border-gold text-gold"
+                  : "border-basement-border text-muted hover:text-ink"
+              }`}
+            >
+              All
+            </button>
+          </div>
+        </div>
 
         <div>
           <h3 className="mb-1 font-pixel text-[10px] text-muted">TYPE</h3>
