@@ -46,12 +46,17 @@ export default function AvatarScreen() {
 
   const stats = useMemo(() => computeStats(character.baseStats, []), [character]);
 
+  // commit the highlighted character immediately — the playground must always
+  // reflect what's on the pedestal, not what was last confirmed with Enter
+  useEffect(() => {
+    selectCharacter(character.slug);
+  }, [character, selectCharacter]);
+
   const cycle = (dir: 1 | -1) => {
     setIndex((i) => (i + dir + regularCharacters.length) % regularCharacters.length);
     setAnimKey((k) => k + 1);
   };
   const enterBasement = () => {
-    selectCharacter(character.slug);
     navigate("/playground");
   };
 

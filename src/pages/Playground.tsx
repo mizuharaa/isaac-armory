@@ -1,13 +1,40 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SpriteImg from "../components/SpriteImg";
 import { computeStats, type EquippedItem } from "../engine/stats";
 import { characterSheetUrl, loadFirst, loadGameAssets } from "../game/assets";
-import { Game, VIEW_H, VIEW_W, type RoomId } from "../game/engine";
+import { Game, VIEW_H, VIEW_W, type FireMode, type RoomId } from "../game/engine";
 import { characterPortraitCandidates, itemSpriteCandidates } from "../lib/assets";
 import { allItems, characterBySlug, itemBySlug, poolBySlug } from "../lib/data";
 import { fuzzyScore } from "../lib/fuzzy";
 import type { Item } from "../lib/types";
 import { useLoadout } from "../store/loadout";
+
+/** Item/innate → firing mode. Priority mirrors the game's weapon override order. */
+function deriveFireMode(slugs: Set<string>, innate: string[]): FireMode {
+  if (slugs.has("moms-knife")) return "knife";
+  if (slugs.has("brimstone") || slugs.has("sulfur") || innate.some((s) => /brimstone/i.test(s)))
+    return "brimstone";
+  if (slugs.has("technology") || slugs.has("technology-2") || slugs.has("tech-x")) return "laser";
+  if (slugs.has("ipecac") || slugs.has("bobs-brain")) return "lob";
+  return "tears";
+}
+
+function deriveShots(slugs: Set<string>, innate: string[]): number {
+  let shots = 1;
+  if (slugs.has("20-20")) shots = Math.max(shots, 2);
+  if (slugs.has("the-inner-eye") || innate.some((s) => /triple shot/i.test(s))) shots = Math.max(shots, 3);
+  if (slugs.has("mutant-spider")) shots = Math.max(shots, 4);
+  return shots;
+}
+
+/** Costume-style looks for iconic items (sprite tint, applied in-engine). */
+const TINTS: [string, string][] = [
+  ["brimstone", "#c96a5e"],
+  ["whore-of-babylon", "#8a8a9c"],
+  ["gnawed-leaf", "#9aa39a"],
+  ["the-virus", "#9cc98f"],
+  ["lunch", "#e8d8a8"],
+];
 
 function ItemPicker({
   title,
@@ -141,13 +168,48 @@ export default function Playground() {
     }
   }, [stats]);
 
-  const tags = useMemo(() => {
-    const t = new Set<string>();
-    for (const i of equippedItems) for (const tag of i.behaviorTags) t.add(tag);
-    if (character.innate?.some((s) => /flight/i.test(s))) t.add("flight");
-    if (equippedItems.some((i) => (i.statModifiers.damageMult ?? 1) >= 1.5)) t.add("size_up");
-    return t;
-  }, [equippedItems, character]);
+  const combat = useMemo(() => {
+    const slugs = new Set(equipped);
+    const innate = character.innate ?? [];
+    const tags = new Set<string>();
+    for (const i of equippedItems) for (const tag of i.behaviorTags) tags.add(tag);
+    if (innate.some((s) => /flight/i.test(s))) tags.add("flight");
+    if (equippedItems.some((i) => (i.statModifiers.damageMult ?? 1) >= 1.5)) tags.add("size_up");
+    return {
+      tags,
+      fireMode: deriveFireMode(slugs, innate),
+      shots: deriveShots(slugs, innate),
+      homing: tags.has("homing"),
+      piercing: tags.has("piercing") || tags.has("spectral"),
+      tint: TINTS.find(([slug]) => slugs.has(slug))?.[1] ?? null,
+    };
+  }, [equippedItems, equipped, character]);
+
+  // ------- active item (SPACE) with charge meter -------
+  const activeItem = useMemo(
+    () => equippedItems.filter((i) => i.type === "active").at(-1) ?? null,
+    [equippedItems],
+  );
+  const maxCharge = useMemo(() => {
+    if (!activeItem) return 0;
+    return typeof activeItem.recharge === "number" ? Math.max(1, Math.min(12, activeItem.recharge)) : 6;
+  }, [activeItem]);
+  const [charge, setCharge] = useState(0);
+  useEffect(() => {
+    setCharge(maxCharge); // arrives fully charged in the sandbox
+    if (!activeItem) return;
+    const iv = setInterval(() => setCharge((c) => Math.min(maxCharge, c + 1)), 4000);
+    return () => clearInterval(iv);
+  }, [activeItem, maxCharge]);
+
+  const useActive = useCallback(() => {
+    if (!activeItem || charge < maxCharge) {
+      if (activeItem) gameRef.current?.toast("not charged!", "#9b8a72");
+      return;
+    }
+    setCharge(0);
+    void gameRef.current?.applyActiveEffect(activeItem.slug);
+  }, [activeItem, charge, maxCharge]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -156,6 +218,11 @@ export default function Playground() {
     gameRef.current = game;
     game.onPickup = (slug) => equip(slug);
     game.onRoomChange = (r) => setRoom(r);
+    game.itemProvider = async (n) => {
+      const picks = [...allItems].filter((i) => i.type !== "trinket").sort(() => Math.random() - 0.5).slice(0, n);
+      const imgs = await Promise.all(picks.map((i) => loadFirst(itemSpriteCandidates(i))));
+      return picks.map((i, idx) => ({ slug: i.slug, img: imgs[idx] }));
+    };
     loadGameAssets().then((a) => game.setAssets(a));
 
     const shopPool = poolBySlug.get("shop");
@@ -185,9 +252,14 @@ export default function Playground() {
       damage: stats.damage,
       range: stats.range,
       shotSpeed: stats.shotSpeed,
-      tags,
+      tags: combat.tags,
+      fireMode: combat.fireMode,
+      shots: combat.shots,
+      homing: combat.homing,
+      piercing: combat.piercing,
+      tint: combat.tint,
     });
-  }, [stats, tags]);
+  }, [stats, combat]);
 
   useEffect(() => {
     let alive = true;
@@ -228,11 +300,12 @@ export default function Playground() {
       } else if (e.key === "`") setDebugOpen((v) => !v);
       else if (e.key.toLowerCase() === "b" && !debugOpen) setEquipOpen((v) => !v);
       else if (e.key.toLowerCase() === "f") toggleFullscreen();
+      else if (e.key === " ") useActive();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debugOpen]);
+  }, [debugOpen, useActive]);
   useEffect(() => {
     gameRef.current?.setPaused(debugOpen || equipOpen);
   }, [debugOpen, equipOpen]);
@@ -280,8 +353,32 @@ export default function Playground() {
 
       {/* ------- overlay HUD (in-game style) ------- */}
       <div className="pointer-events-none absolute inset-0">
-        {/* hearts + stats, top-left */}
-        <div className="absolute left-3 top-2 space-y-0.5">
+        {/* active item + vertical charge meter, very top-left (like the game) */}
+        {activeItem && (
+          <div className="pointer-events-auto absolute left-3 top-2 flex items-start gap-1">
+            {/* charge meter: green segments filling bottom-up */}
+            <div className="flex h-14 w-3 flex-col-reverse gap-px border-2 border-black/80 bg-black/50 p-px">
+              {Array.from({ length: maxCharge }, (_, i) => (
+                <span
+                  key={i}
+                  className={`w-full flex-1 ${
+                    i < charge ? (charge >= maxCharge ? "bg-[#7dff5e]" : "bg-[#4fae3a]") : "bg-transparent"
+                  }`}
+                />
+              ))}
+            </div>
+            <button onClick={useActive} title={`${activeItem.name} — SPACE to use`} className="group">
+              <SpriteImg
+                candidates={itemSpriteCandidates(activeItem)}
+                alt={activeItem.name}
+                className={`pixelated h-14 w-14 object-contain ${charge >= maxCharge ? "" : "opacity-50 grayscale"}`}
+              />
+            </button>
+          </div>
+        )}
+
+        {/* hearts + stats, top-left below the active item */}
+        <div className={`absolute left-3 space-y-0.5 ${activeItem ? "top-[76px]" : "top-2"}`}>
           <div className="mb-1 flex flex-wrap gap-0.5">
             {Array.from({ length: hearts.red }, (_, i) => (
               <span key={`r${i}`} className="punch text-xl leading-none text-[#e02b2b]">♥</span>
@@ -310,18 +407,26 @@ export default function Playground() {
           </div>
         </div>
 
-        {/* loadout strip, top-right (item-tracker style) */}
+        {/* loadout strip, top-right (item-tracker style, stacks grouped ×N) */}
         <div className="pointer-events-auto absolute right-3 top-2 flex max-w-[40%] flex-wrap justify-end gap-1">
-          {equippedItems.map((i) => (
-            <button
-              key={i.slug}
-              onClick={() => unequip(i.slug)}
-              title={`${i.name} (click to unequip)`}
-              className="border border-white/10 bg-black/40 p-0.5 hover:border-hurt"
-            >
-              <SpriteImg candidates={itemSpriteCandidates(i)} alt={i.name} className="pixelated h-8 w-8 object-contain" />
-            </button>
-          ))}
+          {[...new Map(equippedItems.map((i) => [i.slug, i])).values()].map((i) => {
+            const count = equipped.filter((s) => s === i.slug).length;
+            return (
+              <button
+                key={i.slug}
+                onClick={() => unequip(i.slug)}
+                title={`${i.name}${count > 1 ? ` ×${count}` : ""} (click to remove one)`}
+                className="relative border border-white/10 bg-black/40 p-0.5 hover:border-hurt"
+              >
+                <SpriteImg candidates={itemSpriteCandidates(i)} alt={i.name} className="pixelated h-8 w-8 object-contain" />
+                {count > 1 && (
+                  <span className="punch absolute -bottom-1 -right-1 font-pixel text-[9px] text-gold">
+                    x{count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
           {equippedItems.length > 0 && (
             <button
               onClick={clearLoadout}
@@ -338,7 +443,8 @@ export default function Playground() {
             {room === "main" ? "THE BASEMENT" : "THE SHOP"}
           </span>
           <span className="punch text-right font-pixelbody text-lg leading-tight text-[#bfb49b]">
-            WASD move · ARROWS shoot · E bomb · B equip · ` spawn · F fullscreen
+            WASD move · ARROWS shoot{combat.fireMode === "brimstone" ? " (hold to charge)" : ""} · SPACE
+            active · E bomb · B equip · ` spawn · F fullscreen
           </span>
         </div>
 

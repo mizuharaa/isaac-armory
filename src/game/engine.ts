@@ -18,6 +18,8 @@ const WALL = 26;
 const TICK = 1 / 60;
 const ANM_FPS = 30;
 
+export type FireMode = "tears" | "brimstone" | "laser" | "knife" | "lob";
+
 export interface GameParams {
   speed: number;
   fireDelay: number;
@@ -25,6 +27,14 @@ export interface GameParams {
   range: number;
   shotSpeed: number;
   tags: Set<string>;
+  /** Item-driven firing mode (Brimstone charge beam, Technology laser…). */
+  fireMode: FireMode;
+  /** Tears per volley (20/20 = 2, Inner Eye = 3, Mutant Spider = 4). */
+  shots: number;
+  homing: boolean;
+  piercing: boolean;
+  /** Sprite tint for costume-style looks (Brimstone reddens Isaac). */
+  tint: string | null;
 }
 
 export type PropKind = "rock" | "poop" | "spike" | "fire" | "tnt" | "dummy" | "pedestal";
@@ -54,6 +64,29 @@ interface Tear {
   max: number;
   damage: number;
   splash: number;
+  /** ipecac-style lobbed shot — explodes at range end */
+  lob?: boolean;
+  /** props already damaged (piercing passes through) */
+  hit?: Set<Prop>;
+}
+
+interface Beam {
+  dir: { x: number; y: number };
+  x: number;
+  y: number;
+  len: number;
+  t: number;
+  duration: number;
+  damage: number;
+  tick: number;
+}
+
+interface Knife {
+  angle: { x: number; y: number };
+  dist: number;
+  state: "held" | "out" | "back";
+  damage: number;
+  hit: Set<Prop>;
 }
 
 interface Bomb {
@@ -97,6 +130,7 @@ export class Game {
   private assets: GameAssets | null = null;
   private params: GameParams = {
     speed: 1, fireDelay: 10, damage: 3.5, range: 6.5, shotSpeed: 1, tags: new Set(),
+    fireMode: "tears", shots: 1, homing: false, piercing: false, tint: null,
   };
   private playerSheet: HTMLImageElement | null = null;
   private playerPortrait: HTMLImageElement | null = null;
@@ -113,8 +147,13 @@ export class Game {
   private holdItem: { img: HTMLImageElement | null; t: number } | null = null;
 
   private tears: Tear[] = [];
+  private beams: Beam[] = [];
+  private knife: Knife | null = null;
+  private brimCharge = 0; // 0..1 while holding fire in brimstone mode
   private bombs: Bomb[] = [];
   private texts: FloatText[] = [];
+  private tintedSheet: HTMLCanvasElement | null = null;
+  private tintedKey = "";
   private keys = new Set<string>();
   private shake = 0;
   private time = 0;
@@ -131,6 +170,8 @@ export class Game {
 
   onPickup: (slug: string) => void = () => {};
   onRoomChange: (room: RoomId) => void = () => {};
+  /** Supplies n random items (with sprites) for D6 rerolls. */
+  itemProvider: (n: number) => Promise<{ slug: string; img: HTMLImageElement | null }[]> = async () => [];
 
   constructor(private canvas: HTMLCanvasElement) {
     const ctx = canvas.getContext("2d");
@@ -185,6 +226,10 @@ export class Game {
   spawnPedestal(slug: string, img: HTMLImageElement | null) {
     const props = this.rooms[this.room];
     const n = props.filter((p) => p.kind === "pedestal").length;
+    if (n >= 8) {
+      this.toast("the room is full!", "#ff6a5e");
+      return;
+    }
     props.push({
       kind: "pedestal",
       ...cell(5 + (n % 4) * 2, 5 + Math.floor(n / 4) * 2),
@@ -195,6 +240,58 @@ export class Game {
       itemSlug: slug,
       itemImg: img ?? undefined,
     });
+  }
+
+  toast(text: string, color = "#f2d75e") {
+    this.texts.push({ x: this.px, y: this.py - 34, text, age: 0, color });
+  }
+
+  /**
+   * Active-item effects (SPACE). Implemented: D6-style rerolls, Diplopia
+   * duplication (pedestal cap prevents infinite dupes), Kamikaze!, The Poop.
+   * Anything else flashes a "not simulated" note.
+   */
+  async applyActiveEffect(slug: string): Promise<void> {
+    const props = this.props();
+    const pedestals = props.filter((p) => p.kind === "pedestal" && p.itemSlug);
+    if (["the-d6", "d-infinity", "d100", "d20", "eternal-d6", "spindown-dice"].includes(slug)) {
+      if (pedestals.length === 0) return this.toast("nothing to reroll");
+      const fresh = await this.itemProvider(pedestals.length);
+      pedestals.forEach((p, i) => {
+        p.itemSlug = fresh[i]?.slug ?? p.itemSlug;
+        p.itemImg = fresh[i]?.img ?? undefined;
+        p.anim = 0.3;
+      });
+      this.shake = 4;
+      this.toast("rerolled!");
+    } else if (["diplopia", "crooked-penny"].includes(slug)) {
+      if (pedestals.length === 0) return this.toast("nothing to duplicate");
+      const room = props.filter((p) => p.kind === "pedestal").length;
+      const space = Math.max(0, 8 - room);
+      if (space === 0) return this.toast("the room is full!", "#ff6a5e");
+      for (const p of pedestals.slice(0, space)) {
+        if (slug === "crooked-penny" && Math.random() < 0.5) continue;
+        const n = this.props().filter((q) => q.kind === "pedestal").length;
+        this.props().push({
+          kind: "pedestal",
+          ...cell(5 + (n % 4) * 2, 5 + Math.floor(n / 4) * 2),
+          w: G, h: G, hp: Infinity, solid: false,
+          itemSlug: p.itemSlug, itemImg: p.itemImg,
+        });
+      }
+      this.shake = 4;
+      this.toast("doubled!");
+    } else if (slug === "kamikaze") {
+      this.explode(this.px, this.py);
+    } else if (slug === "the-poop") {
+      const n = this.props().length;
+      this.props().push({ kind: "poop", x: this.px - 13, y: this.py + 14, w: G, h: G, hp: 3, maxHp: 3, solid: true, anim: 0.2 });
+      if (n === this.props().length - 1) this.toast("plop.", "#a87b4f");
+    } else if (["mr-boom", "remote-detonator", "bobs-rotten-head"].includes(slug)) {
+      this.explode(this.px + this.moveDir.x * 40, this.py + this.moveDir.y * 40);
+    } else {
+      this.toast("(effect not simulated)", "#9b8a72");
+    }
   }
 
   private onKeyDown = (e: KeyboardEvent) => {
@@ -269,39 +366,125 @@ export class Game {
     else if (this.keys.has("ArrowDown")) fy = 1;
     else if (this.keys.has("ArrowLeft")) fx = -1;
     else if (this.keys.has("ArrowRight")) fx = 1;
+
     if (fx || fy) {
       this.headDir = fy < 0 ? "Up" : fy > 0 ? "Down" : fx < 0 ? "Left" : "Right";
-      if (this.fireCooldown <= 0) {
+      this.fireFlash = 0.1;
+      if (p.fireMode === "brimstone") {
+        // hold to charge, fires automatically when full (like holding in-game)
+        this.brimCharge += dt / Math.max(0.35, (p.fireDelay + 1) / 30);
+        if (this.brimCharge >= 1) {
+          this.brimCharge = 0;
+          this.fireBeam(fx, fy, p, 0.65, p.damage);
+        }
+      } else if (this.fireCooldown <= 0) {
         this.fireCooldown = (p.fireDelay + 1) / 30;
         this.fireFlash = 0.12;
-        const speed = 150 * p.shotSpeed;
-        this.tears.push({
-          x: this.px + fx * 9,
-          y: this.py - 14 + fy * 9,
-          vx: fx * speed,
-          vy: fy * speed,
-          traveled: 0,
-          max: p.range * G,
-          damage: p.damage,
-          splash: -1,
-        });
+        if (p.fireMode === "laser") {
+          this.fireBeam(fx, fy, p, 0.12, p.damage);
+        } else if (p.fireMode === "knife") {
+          if (this.knife && this.knife.state === "held") {
+            this.knife.angle = { x: fx, y: fy };
+            this.knife.state = "out";
+            this.knife.damage = p.damage * 2;
+            this.knife.hit.clear();
+          }
+        } else {
+          this.fireTears(fx, fy, p);
+        }
       }
-    } else if (this.walking) {
-      this.headDir =
-        this.moveDir.y < 0 ? "Up" : this.moveDir.y > 0 ? "Down" : this.moveDir.x < 0 ? "Left" : "Right";
+    } else {
+      this.brimCharge = Math.max(0, this.brimCharge - dt * 2);
+      if (this.walking) {
+        this.headDir =
+          this.moveDir.y < 0 ? "Up" : this.moveDir.y > 0 ? "Down" : this.moveDir.x < 0 ? "Left" : "Right";
+      }
     }
+
+    // knife lifecycle
+    if (p.fireMode === "knife" && !this.knife) {
+      this.knife = { angle: { x: 0, y: 1 }, dist: 0, state: "held", damage: p.damage * 2, hit: new Set() };
+    } else if (p.fireMode !== "knife") {
+      this.knife = null;
+    }
+    if (this.knife && this.knife.state !== "held") {
+      const kSpeed = 260 * p.shotSpeed;
+      this.knife.dist += (this.knife.state === "out" ? 1 : -1) * kSpeed * dt;
+      const max = p.range * G * 1.2;
+      if (this.knife.dist >= max) this.knife.state = "back";
+      if (this.knife.dist <= 0 && this.knife.state === "back") {
+        this.knife.state = "held";
+        this.knife.dist = 0;
+      }
+      const kx = this.px + this.knife.angle.x * this.knife.dist;
+      const ky = this.py - 10 + this.knife.angle.y * this.knife.dist;
+      for (const prop of this.props()) {
+        if (prop.dead || prop.kind === "spike" || prop.kind === "pedestal" || this.knife.hit.has(prop)) continue;
+        if (kx > prop.x && kx < prop.x + prop.w && ky > prop.y - 6 && ky < prop.y + prop.h) {
+          this.knife.hit.add(prop);
+          this.damageProp(prop, this.knife.damage, false);
+        }
+      }
+    }
+
+    // beams tick damage along their line
+    for (const beam of this.beams) {
+      beam.t += dt;
+      beam.tick -= dt;
+      if (beam.tick <= 0) {
+        beam.tick = 1 / 15; // the game's laser tick rate
+        for (const prop of this.props()) {
+          if (prop.dead || prop.kind === "spike" || prop.kind === "pedestal") continue;
+          const cx = prop.x + prop.w / 2;
+          const cy = prop.y + prop.h / 2;
+          const along = (cx - beam.x) * beam.dir.x + (cy - beam.y) * beam.dir.y;
+          const ortho = Math.abs((cx - beam.x) * beam.dir.y - (cy - beam.y) * beam.dir.x);
+          if (along > 0 && along < beam.len && ortho < 16) {
+            this.damageProp(prop, beam.damage, false);
+          }
+        }
+      }
+    }
+    this.beams = this.beams.filter((b) => b.t < b.duration);
 
     for (const t of this.tears) {
       if (t.splash >= 0) {
         t.splash += dt;
         continue;
       }
+      // homing: steer toward the nearest damageable prop
+      if (p.homing) {
+        let best: Prop | null = null;
+        let bestD = 90;
+        for (const prop of this.props()) {
+          if (prop.dead || prop.kind === "spike" || prop.kind === "pedestal") continue;
+          const d = Math.hypot(prop.x + prop.w / 2 - t.x, prop.y + prop.h / 2 - t.y);
+          if (d < bestD) {
+            bestD = d;
+            best = prop;
+          }
+        }
+        if (best) {
+          const speed = Math.hypot(t.vx, t.vy);
+          const ax = best.x + best.w / 2 - t.x;
+          const ay = best.y + best.h / 2 - t.y;
+          const al = Math.hypot(ax, ay) || 1;
+          t.vx += (ax / al) * speed * 3 * dt;
+          t.vy += (ay / al) * speed * 3 * dt;
+          const nl = Math.hypot(t.vx, t.vy) || 1;
+          t.vx = (t.vx / nl) * speed;
+          t.vy = (t.vy / nl) * speed;
+        }
+      }
       t.x += t.vx * dt;
       t.y += t.vy * dt;
       t.traveled += Math.hypot(t.vx, t.vy) * dt;
       const inWall =
         t.x < WALL + 4 || t.x > VIEW_W - WALL - 4 || t.y < WALL + 4 || t.y > VIEW_H - WALL - 4;
-      if (t.traveled >= t.max || inWall || this.tearHit(t)) t.splash = 0;
+      if (t.traveled >= t.max || inWall || this.tearHit(t, p.piercing)) {
+        if (t.lob) this.explode(t.x, t.y);
+        t.splash = 0;
+      }
     }
     this.tears = this.tears.filter((t) => t.splash < 0.3);
 
@@ -380,11 +563,49 @@ export class Game {
     }
   }
 
-  private tearHit(t: Tear): boolean {
+  private fireTears(fx: number, fy: number, p: GameParams) {
+    const speed = 150 * p.shotSpeed;
+    const isLob = p.fireMode === "lob";
+    // multishot spread perpendicular to fire direction
+    const spread = { x: fy !== 0 ? 1 : 0, y: fx !== 0 ? 1 : 0 };
+    for (let i = 0; i < p.shots; i++) {
+      const off = (i - (p.shots - 1) / 2) * 8;
+      this.tears.push({
+        x: this.px + fx * 9 + spread.x * off,
+        y: this.py - 14 + fy * 9 + spread.y * off,
+        vx: fx * speed * (isLob ? 0.75 : 1),
+        vy: fy * speed * (isLob ? 0.75 : 1),
+        traveled: 0,
+        max: p.range * G,
+        damage: p.damage,
+        splash: -1,
+        lob: isLob || undefined,
+        hit: p.piercing ? new Set() : undefined,
+      });
+    }
+  }
+
+  private fireBeam(fx: number, fy: number, p: GameParams, duration: number, damage: number) {
+    const x = this.px + fx * 10;
+    const y = this.py - 14 + fy * 10;
+    const toWall =
+      fx > 0 ? VIEW_W - WALL - x : fx < 0 ? x - WALL : fy > 0 ? VIEW_H - WALL - y : y - WALL;
+    // Azazel's innate Brimstone is short-range; items give full-room beams
+    const len = Math.min(toWall, p.range < 5.5 && p.fireMode === "brimstone" ? p.range * G * 1.4 : toWall);
+    this.beams.push({ dir: { x: fx, y: fy }, x, y, len, t: 0, duration, damage, tick: 0 });
+    this.shake = Math.max(this.shake, p.fireMode === "brimstone" ? 5 : 2);
+  }
+
+  private tearHit(t: Tear, piercing: boolean): boolean {
     for (const p of this.props()) {
       if (p.dead || p.kind === "spike" || p.kind === "pedestal") continue;
+      if (t.hit?.has(p)) continue;
       if (t.x > p.x && t.x < p.x + p.w && t.y > p.y - 8 && t.y < p.y + p.h) {
         this.damageProp(p, t.damage, true);
+        if (piercing && p.kind === "dummy") {
+          t.hit?.add(p);
+          continue; // piercing tears keep flying through
+        }
         return true;
       }
     }
@@ -460,7 +681,23 @@ export class Game {
     drawables.push({ y: this.py + 10, draw: () => this.drawPlayer(c) });
     drawables.sort((a, b) => a.y - b.y);
     for (const d of drawables) d.draw();
+    for (const beam of this.beams) this.drawBeam(c, beam);
+    if (this.knife) this.drawKnife(c, this.knife);
     for (const t of this.tears) this.drawTear(c, t);
+
+    // brimstone charge dots orbiting the head
+    if (this.brimCharge > 0.05) {
+      const n = Math.ceil(this.brimCharge * 6);
+      c.fillStyle = this.brimCharge >= 0.95 ? "#ff5240" : "#a81b25";
+      for (let i = 0; i < n; i++) {
+        const a = this.time * 6 + (i * Math.PI * 2) / 6;
+        c.fillRect(
+          Math.round(this.px + Math.cos(a) * 14) - 1,
+          Math.round(this.py - 24 + Math.sin(a) * 8) - 1,
+          3, 3,
+        );
+      }
+    }
 
     c.font = "8px 'Press Start 2P', monospace";
     c.textAlign = "center";
@@ -700,6 +937,49 @@ export class Game {
     }
   }
 
+  private drawBeam(c: CanvasRenderingContext2D, beam: Beam) {
+    const fade = 1 - beam.t / beam.duration;
+    const isBrim = beam.duration > 0.3;
+    const width = isBrim ? 14 * Math.min(1, fade + 0.4) : 4;
+    const pulse = Math.floor(this.time * 20) % 2 === 0 ? 1 : 0.85;
+    const ex = beam.x + beam.dir.x * beam.len;
+    const ey = beam.y + beam.dir.y * beam.len;
+    c.save();
+    c.globalAlpha = Math.min(1, fade * 1.5);
+    // outer glow
+    c.strokeStyle = isBrim ? "rgba(168,27,37,0.5)" : "rgba(120,180,255,0.4)";
+    c.lineWidth = width + 6;
+    c.beginPath(); c.moveTo(beam.x, beam.y); c.lineTo(ex, ey); c.stroke();
+    // core
+    c.strokeStyle = isBrim ? `rgba(224,58,47,${pulse})` : `rgba(190,225,255,${pulse})`;
+    c.lineWidth = width;
+    c.beginPath(); c.moveTo(beam.x, beam.y); c.lineTo(ex, ey); c.stroke();
+    // inner highlight
+    c.strokeStyle = isBrim ? "#ffb0a0" : "#ffffff";
+    c.lineWidth = Math.max(1, width / 3);
+    c.beginPath(); c.moveTo(beam.x, beam.y); c.lineTo(ex, ey); c.stroke();
+    // impact burst
+    c.fillStyle = isBrim ? "#ff5240" : "#cfe6ff";
+    const r = isBrim ? 8 : 4;
+    c.beginPath(); c.arc(ex, ey, r * pulse, 0, Math.PI * 2); c.fill();
+    c.restore();
+  }
+
+  private drawKnife(c: CanvasRenderingContext2D, k: Knife) {
+    const kx = Math.round(this.px + k.angle.x * k.dist);
+    const ky = Math.round(this.py - 10 + k.angle.y * k.dist);
+    c.save();
+    c.translate(kx, ky);
+    c.rotate(Math.atan2(k.angle.y, k.angle.x) + Math.PI / 4 + (k.state === "held" ? 0 : this.time * 2));
+    c.fillStyle = "#cfd6de";
+    c.fillRect(-2, -10, 4, 14);
+    c.fillStyle = "#8a919c";
+    c.fillRect(-1, -10, 2, 14);
+    c.fillStyle = "#5a3d26";
+    c.fillRect(-2, 4, 4, 6);
+    c.restore();
+  }
+
   private drawBomb(c: CanvasRenderingContext2D, b: Bomb) {
     const img = this.assets?.env.bomb;
     const blink = b.fuse < 0.5 && Math.floor(this.time * 12) % 2 === 0;
@@ -728,13 +1008,42 @@ export class Game {
     return la.frames[la.frames.length - 1];
   }
 
-  private drawAnm2Frame(c: CanvasRenderingContext2D, sheet: HTMLImageElement, f: Anm2Frame, ox: number, oy: number, scale: number) {
+  private drawAnm2Frame(
+    c: CanvasRenderingContext2D,
+    sheet: HTMLImageElement | HTMLCanvasElement,
+    f: Anm2Frame,
+    ox: number,
+    oy: number,
+    scale: number,
+  ) {
     c.save();
     c.translate(Math.round(ox + f.ox * scale), Math.round(oy + f.oy * scale));
     if (f.flipX) c.scale(-1, 1);
     c.scale(scale, scale);
-    c.drawImage(f.x >= 0 ? sheet : sheet, f.x, f.y, f.w, f.h, -f.px, -f.py, f.w, f.h);
+    c.drawImage(sheet, f.x, f.y, f.w, f.h, -f.px, -f.py, f.w, f.h);
     c.restore();
+  }
+
+  /** Costume-style tint (Brimstone turns Isaac blood-red, etc.), cached. */
+  private tintSheet(): HTMLImageElement | HTMLCanvasElement | null {
+    if (!this.playerSheet) return null;
+    const tint = this.params.tint;
+    if (!tint) return this.playerSheet;
+    const key = `${this.playerSheet.src}|${tint}`;
+    if (this.tintedKey === key && this.tintedSheet) return this.tintedSheet;
+    const off = document.createElement("canvas");
+    off.width = this.playerSheet.width;
+    off.height = this.playerSheet.height;
+    const oc = off.getContext("2d")!;
+    oc.drawImage(this.playerSheet, 0, 0);
+    oc.globalCompositeOperation = "multiply";
+    oc.fillStyle = tint;
+    oc.fillRect(0, 0, off.width, off.height);
+    oc.globalCompositeOperation = "destination-in";
+    oc.drawImage(this.playerSheet, 0, 0);
+    this.tintedSheet = off;
+    this.tintedKey = key;
+    return off;
   }
 
   private drawPlayer(c: CanvasRenderingContext2D) {
@@ -750,7 +1059,8 @@ export class Game {
     c.fill();
 
     const anim = this.assets?.playerAnim;
-    if (this.playerSheet && anim) {
+    const sheet = this.tintSheet();
+    if (sheet && anim) {
       // real .anm2 rendering: body layer + head layer
       const walkDir =
         Math.abs(this.moveDir.x) >= Math.abs(this.moveDir.y)
@@ -763,8 +1073,8 @@ export class Game {
         this.fireFlash > 0 && headFrames && headFrames.length > 1
           ? headFrames[1]
           : headFrames?.[0] ?? null;
-      if (body) this.drawAnm2Frame(c, this.playerSheet, body, x, y, scale);
-      if (head) this.drawAnm2Frame(c, this.playerSheet, head, x, y, scale);
+      if (body) this.drawAnm2Frame(c, sheet, body, x, y, scale);
+      if (head) this.drawAnm2Frame(c, sheet, head, x, y, scale);
     } else if (this.playerPortrait) {
       // fallback: portrait sprite with the old bob animation
       const img = this.playerPortrait;
@@ -792,8 +1102,21 @@ export class Game {
     const atlas = this.assets?.env.tears;
     const tearAnim = this.assets?.tearAnim;
     const poof = this.assets?.env.tearpoof;
+    const progress = Math.min(1, t.traveled / t.max);
+    // ballistic drop-off: slight rise, then the tear falls to the floor at
+    // the end of its range (ipecac lobs arc much higher)
+    const lift = t.lob
+      ? Math.sin(progress * Math.PI) * 26
+      : Math.sin(Math.min(1, progress * 2) * Math.PI * 0.5) * 4 - progress * progress * 14;
     const x = Math.round(t.x);
-    const y = Math.round(t.y - Math.sin(Math.min(1, t.traveled / t.max) * Math.PI) * 5);
+    const y = Math.round(t.y - lift);
+    // shadow tracks the ground position while airborne
+    if (t.splash < 0) {
+      c.fillStyle = "rgba(0,0,0,0.25)";
+      c.beginPath();
+      c.ellipse(x, Math.round(t.y) + 4, 3, 1.5, 0, 0, Math.PI * 2);
+      c.fill();
+    }
 
     if (t.splash >= 0) {
       const frame = Math.floor(t.splash / 0.075);
