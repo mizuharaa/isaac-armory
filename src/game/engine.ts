@@ -10,7 +10,8 @@
  * sprites + real .anm2 frame data; otherwise every draw call falls back to
  * the original hand-drawn pixel art so the deployed build still works.
  */
-import type { Anm2Data, Anm2Frame, GameAssets } from "./assets";
+import type { CombatConfig } from "../engine/combat";
+import type { Anm2Frame, GameAssets } from "./assets";
 
 export const VIEW_W = 468;
 export const VIEW_H = 312;
@@ -18,7 +19,7 @@ const WALL = 26;
 const TICK = 1 / 60;
 const ANM_FPS = 30;
 
-export type FireMode = "tears" | "brimstone" | "laser" | "knife" | "lob";
+export type { FireMode } from "../engine/combat";
 
 export interface GameParams {
   speed: number;
@@ -27,15 +28,14 @@ export interface GameParams {
   range: number;
   shotSpeed: number;
   tags: Set<string>;
-  /** Item-driven firing mode (Brimstone charge beam, Technology laser…). */
-  fireMode: FireMode;
-  /** Tears per volley (20/20 = 2, Inner Eye = 3, Mutant Spider = 4). */
-  shots: number;
-  homing: boolean;
-  piercing: boolean;
-  /** Sprite tint for costume-style looks (Brimstone reddens Isaac). */
-  tint: string | null;
+  combat: CombatConfig;
 }
+
+const DEFAULT_COMBAT: CombatConfig = {
+  fireMode: "tears", shots: 1, homing: false, piercing: false, spectral: false,
+  chargeShot: "none", burst: false, aura: false, shield: false,
+  familiars: [], tint: null, flight: false, sizeUp: false,
+};
 
 export type PropKind = "rock" | "poop" | "spike" | "fire" | "tnt" | "dummy" | "pedestal";
 
@@ -89,6 +89,43 @@ interface Knife {
   hit: Set<Prop>;
 }
 
+interface Explosion {
+  x: number;
+  y: number;
+  t: number;
+}
+
+interface Missile {
+  x: number;
+  y: number;
+  t: number; // countdown to impact
+}
+
+interface Ring {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  traveled: number;
+  max: number;
+  damage: number;
+  tick: number;
+  hit: Set<Prop>;
+}
+
+interface Swing {
+  dir: { x: number; y: number };
+  t: number;
+}
+
+interface Familiar {
+  x: number;
+  y: number;
+  damageMult: number;
+  cooldown: number;
+}
+
 interface Bomb {
   x: number;
   y: number;
@@ -130,7 +167,7 @@ export class Game {
   private assets: GameAssets | null = null;
   private params: GameParams = {
     speed: 1, fireDelay: 10, damage: 3.5, range: 6.5, shotSpeed: 1, tags: new Set(),
-    fireMode: "tears", shots: 1, homing: false, piercing: false, tint: null,
+    combat: DEFAULT_COMBAT,
   };
   private playerSheet: HTMLImageElement | null = null;
   private playerPortrait: HTMLImageElement | null = null;
@@ -150,6 +187,16 @@ export class Game {
   private beams: Beam[] = [];
   private knife: Knife | null = null;
   private brimCharge = 0; // 0..1 while holding fire in brimstone mode
+  private shotCharge = 0; // chocolate milk / tech-x hold-to-charge
+  private wasFiring = false;
+  private lastFireDir = { x: 0, y: 1 };
+  private explosions: Explosion[] = [];
+  private missile: Missile | null = null;
+  private rings: Ring[] = [];
+  private swing: Swing | null = null;
+  private familiars: Familiar[] = [];
+  private shieldUp = false;
+  private shieldTimer = 0;
   private bombs: Bomb[] = [];
   private texts: FloatText[] = [];
   private tintedSheet: HTMLCanvasElement | null = null;
@@ -172,6 +219,12 @@ export class Game {
   onRoomChange: (room: RoomId) => void = () => {};
   /** Supplies n random items (with sprites) for D6 rerolls. */
   itemProvider: (n: number) => Promise<{ slug: string; img: HTMLImageElement | null }[]> = async () => [];
+  /** Death Certificate opens the item picker. */
+  onOpenPicker: () => void = () => {};
+  /** R Key resets the run (loadout back to starting items). */
+  onResetRun: () => void = () => {};
+  /** Void absorbs pedestal items into the loadout. */
+  onAbsorb: (slugs: string[]) => void = () => {};
 
   constructor(private canvas: HTMLCanvasElement) {
     const ctx = canvas.getContext("2d");
@@ -281,6 +334,26 @@ export class Game {
       }
       this.shake = 4;
       this.toast("doubled!");
+    } else if (slug === "death-certificate") {
+      this.onOpenPicker();
+    } else if (slug === "r-key") {
+      for (const id of ["main", "shop"] as RoomId[]) {
+        this.rooms[id] = this.rooms[id].filter((q) => q.kind !== "pedestal");
+      }
+      this.rooms.main = makeMainRoom();
+      this.onResetRun();
+      this.toast("run reset!");
+    } else if (slug === "void" || slug === "abyss") {
+      if (pedestals.length === 0) return this.toast("nothing to absorb");
+      const absorbed = pedestals.map((q) => q.itemSlug!).filter(Boolean);
+      for (const q of pedestals) {
+        q.itemSlug = undefined;
+        q.itemImg = undefined;
+        q.anim = 0.3;
+      }
+      this.onAbsorb(absorbed);
+      this.shake = 6;
+      this.toast(`absorbed ${absorbed.length} item${absorbed.length === 1 ? "" : "s"}!`, "#b48ae0");
     } else if (slug === "kamikaze") {
       this.explode(this.px, this.py);
     } else if (slug === "the-poop") {
@@ -331,7 +404,7 @@ export class Game {
   private update(dt: number) {
     this.time += dt;
     const p = this.params;
-    const flight = p.tags.has("flight");
+    const flight = p.combat.flight;
 
     let dx = 0;
     let dy = 0;
@@ -367,44 +440,172 @@ export class Game {
     else if (this.keys.has("ArrowLeft")) fx = -1;
     else if (this.keys.has("ArrowRight")) fx = 1;
 
-    if (fx || fy) {
+    const cb = p.combat;
+    const firing = !!(fx || fy);
+    if (firing) {
       this.headDir = fy < 0 ? "Up" : fy > 0 ? "Down" : fx < 0 ? "Left" : "Right";
+      this.lastFireDir = { x: fx, y: fy };
       this.fireFlash = 0.1;
-      if (p.fireMode === "brimstone") {
+    }
+
+    if (cb.fireMode === "brimstone") {
+      if (firing) {
         // hold to charge, fires automatically when full (like holding in-game)
         this.brimCharge += dt / Math.max(0.35, (p.fireDelay + 1) / 30);
         if (this.brimCharge >= 1) {
           this.brimCharge = 0;
           this.fireBeam(fx, fy, p, 0.65, p.damage);
         }
-      } else if (this.fireCooldown <= 0) {
-        this.fireCooldown = (p.fireDelay + 1) / 30;
-        this.fireFlash = 0.12;
-        if (p.fireMode === "laser") {
+      } else {
+        this.brimCharge = Math.max(0, this.brimCharge - dt * 2);
+      }
+    } else if (cb.chargeShot !== "none") {
+      // Chocolate Milk / Tech X: hold to charge, RELEASE to fire
+      if (firing) {
+        this.shotCharge = Math.min(1, this.shotCharge + dt / Math.max(0.4, ((p.fireDelay + 1) / 30) * 2));
+      } else if (this.wasFiring && this.shotCharge > 0.1) {
+        const d = this.lastFireDir;
+        if (cb.chargeShot === "techx") {
+          const speed = 130 * p.shotSpeed;
+          this.rings.push({
+            x: this.px + d.x * 10, y: this.py - 14 + d.y * 10,
+            vx: d.x * speed, vy: d.y * speed,
+            radius: 8 + this.shotCharge * 22, traveled: 0,
+            max: p.range * G * 1.4, damage: p.damage, tick: 0, hit: new Set(),
+          });
+        } else {
+          this.fireTears(d.x, d.y, p, p.damage * (0.3 + this.shotCharge * 1.7), 1 + this.shotCharge);
+        }
+        this.shotCharge = 0;
+      } else {
+        this.shotCharge = 0;
+      }
+    } else if (firing && this.fireCooldown <= 0) {
+      this.fireCooldown = (p.fireDelay + 1) / 30;
+      this.fireFlash = 0.12;
+      switch (cb.fireMode) {
+        case "laser":
           this.fireBeam(fx, fy, p, 0.12, p.damage);
-        } else if (p.fireMode === "knife") {
+          break;
+        case "knife":
           if (this.knife && this.knife.state === "held") {
             this.knife.angle = { x: fx, y: fy };
             this.knife.state = "out";
             this.knife.damage = p.damage * 2;
             this.knife.hit.clear();
           }
-        } else {
-          this.fireTears(fx, fy, p);
+          break;
+        case "missile":
+          if (!this.missile) {
+            const mx = Math.max(WALL + 20, Math.min(VIEW_W - WALL - 20, this.px + fx * 90));
+            const my = Math.max(WALL + 20, Math.min(VIEW_H - WALL - 20, this.py + fy * 90));
+            this.missile = { x: mx, y: my, t: 1.0 };
+          }
+          break;
+        case "sword":
+          this.swing = { dir: { x: fx, y: fy }, t: 0.18 };
+          for (const prop of this.props()) {
+            if (prop.dead || prop.kind === "spike" || prop.kind === "pedestal") continue;
+            const cx = prop.x + prop.w / 2 - this.px;
+            const cy = prop.y + prop.h / 2 - (this.py - 8);
+            const dist = Math.hypot(cx, cy);
+            const toward = cx * fx + cy * fy;
+            if (dist < 42 && toward > 0) this.damageProp(prop, p.damage * 3, false);
+          }
+          break;
+        case "bombshot": {
+          const speed = 120 * p.shotSpeed;
+          this.tears.push({
+            x: this.px + fx * 9, y: this.py - 14 + fy * 9,
+            vx: fx * speed, vy: fy * speed,
+            traveled: 0, max: p.range * G, damage: p.damage, splash: -1, lob: true,
+          });
+          break;
         }
+        default:
+          this.fireTears(fx, fy, p);
       }
-    } else {
-      this.brimCharge = Math.max(0, this.brimCharge - dt * 2);
-      if (this.walking) {
-        this.headDir =
-          this.moveDir.y < 0 ? "Up" : this.moveDir.y > 0 ? "Down" : this.moveDir.x < 0 ? "Left" : "Right";
+    }
+    if (!firing && this.walking) {
+      this.headDir =
+        this.moveDir.y < 0 ? "Up" : this.moveDir.y > 0 ? "Down" : this.moveDir.x < 0 ? "Left" : "Right";
+    }
+    this.wasFiring = firing;
+
+    // guided missile steering (Epic Fetus): arrows move the crosshair
+    if (this.missile) {
+      if (firing) {
+        this.missile.x += fx * 140 * dt;
+        this.missile.y += fy * 140 * dt;
+      }
+      this.missile.t -= dt;
+      if (this.missile.t <= 0) {
+        this.explode(this.missile.x, this.missile.y, p.damage * 10);
+        this.missile = null;
       }
     }
 
+    // Tech X rings
+    for (const ring of this.rings) {
+      ring.x += ring.vx * dt;
+      ring.y += ring.vy * dt;
+      ring.traveled += Math.hypot(ring.vx, ring.vy) * dt;
+      ring.tick -= dt;
+      if (ring.tick <= 0) {
+        ring.tick = 1 / 15;
+        for (const prop of this.props()) {
+          if (prop.dead || prop.kind === "spike" || prop.kind === "pedestal") continue;
+          const d = Math.hypot(prop.x + prop.w / 2 - ring.x, prop.y + prop.h / 2 - ring.y);
+          if (Math.abs(d - ring.radius) < 12 || d < ring.radius) this.damageProp(prop, ring.damage, false);
+        }
+      }
+    }
+    this.rings = this.rings.filter((r) => r.traveled < r.max);
+
+    if (this.swing) {
+      this.swing.t -= dt;
+      if (this.swing.t <= 0) this.swing = null;
+    }
+
+    // shooter familiars trail the player and copy shots
+    while (this.familiars.length < cb.familiars.length) {
+      this.familiars.push({ x: this.px - 20, y: this.py + 10, damageMult: 1, cooldown: 0 });
+    }
+    if (this.familiars.length > cb.familiars.length) this.familiars.length = cb.familiars.length;
+    this.familiars.forEach((f, i) => {
+      f.damageMult = cb.familiars[i]?.damageMult ?? 0.75;
+      const tx = this.px - this.moveDir.x * 22 * (i + 1) - (i % 2 ? 14 : -14);
+      const ty = this.py - this.moveDir.y * 22 * (i + 1) + 6;
+      f.x += (tx - f.x) * Math.min(1, 6 * dt);
+      f.y += (ty - f.y) * Math.min(1, 6 * dt);
+      f.cooldown -= dt;
+      if (firing && f.cooldown <= 0 && cb.fireMode !== "sword" && cb.fireMode !== "knife") {
+        f.cooldown = (p.fireDelay + 1) / 30;
+        const speed = 150 * p.shotSpeed;
+        this.tears.push({
+          x: f.x + fx * 8, y: f.y - 6 + fy * 8,
+          vx: fx * speed, vy: fy * speed,
+          traveled: 0, max: p.range * G * 0.8,
+          damage: p.damage * f.damageMult, splash: -1,
+          hit: cb.piercing ? new Set() : undefined,
+        });
+      }
+    });
+
+    // Holy Mantle shield regeneration
+    if (cb.shield) {
+      if (!this.shieldUp) {
+        this.shieldTimer -= dt;
+        if (this.shieldTimer <= 0) this.shieldUp = true;
+      }
+    } else {
+      this.shieldUp = false;
+    }
+
     // knife lifecycle
-    if (p.fireMode === "knife" && !this.knife) {
+    if (cb.fireMode === "knife" && !this.knife) {
       this.knife = { angle: { x: 0, y: 1 }, dist: 0, state: "held", damage: p.damage * 2, hit: new Set() };
-    } else if (p.fireMode !== "knife") {
+    } else if (cb.fireMode !== "knife") {
       this.knife = null;
     }
     if (this.knife && this.knife.state !== "held") {
@@ -452,8 +653,16 @@ export class Game {
         t.splash += dt;
         continue;
       }
+      // Godhead aura: halo tick-damages anything near the tear in flight
+      if (cb.aura) {
+        for (const prop of this.props()) {
+          if (prop.dead || prop.kind === "spike" || prop.kind === "pedestal" || prop.kind !== "dummy") continue;
+          const d = Math.hypot(prop.x + prop.w / 2 - t.x, prop.y + prop.h / 2 - t.y);
+          if (d < 22 && Math.random() < dt * 8) this.damageProp(prop, t.damage * 0.33, false);
+        }
+      }
       // homing: steer toward the nearest damageable prop
-      if (p.homing) {
+      if (cb.homing) {
         let best: Prop | null = null;
         let bestD = 90;
         for (const prop of this.props()) {
@@ -481,12 +690,26 @@ export class Game {
       t.traveled += Math.hypot(t.vx, t.vy) * dt;
       const inWall =
         t.x < WALL + 4 || t.x > VIEW_W - WALL - 4 || t.y < WALL + 4 || t.y > VIEW_H - WALL - 4;
-      if (t.traveled >= t.max || inWall || this.tearHit(t, p.piercing)) {
+      if (t.traveled >= t.max || inWall || this.tearHit(t, cb.piercing)) {
         if (t.lob) this.explode(t.x, t.y);
+        // Haemolacria: burst into a ring of shrapnel tears at half damage
+        if (cb.burst && !t.lob && t.damage > p.damage * 0.4) {
+          for (let i = 0; i < 6; i++) {
+            const a = (i / 6) * Math.PI * 2;
+            this.tears.push({
+              x: t.x, y: t.y,
+              vx: Math.cos(a) * 90, vy: Math.sin(a) * 90,
+              traveled: 0, max: G * 2.2, damage: t.damage * 0.5, splash: -1,
+            });
+          }
+        }
         t.splash = 0;
       }
     }
     this.tears = this.tears.filter((t) => t.splash < 0.3);
+
+    for (const ex of this.explosions) ex.t += dt;
+    this.explosions = this.explosions.filter((ex) => ex.t < 0.5);
 
     for (const b of this.bombs) {
       b.fuse -= dt;
@@ -498,8 +721,15 @@ export class Game {
       for (const prop of this.props()) {
         if (prop.dead || (prop.kind !== "spike" && prop.kind !== "fire")) continue;
         if (this.overlap(this.px, this.py, 6, prop) && this.hurtFlash <= 0) {
-          this.hurtFlash = 0.5;
-          this.shake = 5;
+          if (this.shieldUp) {
+            // Holy Mantle eats the hit, then needs time to regenerate
+            this.shieldUp = false;
+            this.shieldTimer = 5;
+            this.toast("mantle!", "#9ecbff");
+          } else {
+            this.hurtFlash = 0.5;
+            this.shake = 5;
+          }
         }
       }
     }
@@ -563,24 +793,25 @@ export class Game {
     }
   }
 
-  private fireTears(fx: number, fy: number, p: GameParams) {
+  private fireTears(fx: number, fy: number, p: GameParams, damageOverride?: number, sizeMult = 1) {
     const speed = 150 * p.shotSpeed;
-    const isLob = p.fireMode === "lob";
+    const cb = p.combat;
+    const isLob = cb.fireMode === "lob";
     // multishot spread perpendicular to fire direction
     const spread = { x: fy !== 0 ? 1 : 0, y: fx !== 0 ? 1 : 0 };
-    for (let i = 0; i < p.shots; i++) {
-      const off = (i - (p.shots - 1) / 2) * 8;
+    for (let i = 0; i < cb.shots; i++) {
+      const off = (i - (cb.shots - 1) / 2) * 8;
       this.tears.push({
         x: this.px + fx * 9 + spread.x * off,
         y: this.py - 14 + fy * 9 + spread.y * off,
         vx: fx * speed * (isLob ? 0.75 : 1),
         vy: fy * speed * (isLob ? 0.75 : 1),
         traveled: 0,
-        max: p.range * G,
-        damage: p.damage,
+        max: p.range * G * sizeMult,
+        damage: damageOverride ?? p.damage,
         splash: -1,
         lob: isLob || undefined,
-        hit: p.piercing ? new Set() : undefined,
+        hit: cb.piercing ? new Set() : undefined,
       });
     }
   }
@@ -588,12 +819,14 @@ export class Game {
   private fireBeam(fx: number, fy: number, p: GameParams, duration: number, damage: number) {
     const x = this.px + fx * 10;
     const y = this.py - 14 + fy * 10;
+    const isBrim = p.combat.fireMode === "brimstone";
     const toWall =
       fx > 0 ? VIEW_W - WALL - x : fx < 0 ? x - WALL : fy > 0 ? VIEW_H - WALL - y : y - WALL;
     // Azazel's innate Brimstone is short-range; items give full-room beams
-    const len = Math.min(toWall, p.range < 5.5 && p.fireMode === "brimstone" ? p.range * G * 1.4 : toWall);
-    this.beams.push({ dir: { x: fx, y: fy }, x, y, len, t: 0, duration, damage, tick: 0 });
-    this.shake = Math.max(this.shake, p.fireMode === "brimstone" ? 5 : 2);
+    const len = Math.min(toWall, p.range < 5.5 && isBrim ? p.range * G * 1.4 : toWall);
+    // multishot brimstone fires parallel beams in sequence (simplified)
+    this.beams.push({ dir: { x: fx, y: fy }, x, y, len, t: 0, duration, damage: damage * (1 + (p.combat.shots - 1) * 0.35), tick: 0 });
+    this.shake = Math.max(this.shake, isBrim ? 5 : 2);
   }
 
   private tearHit(t: Tear, piercing: boolean): boolean {
@@ -641,15 +874,15 @@ export class Game {
     this.bombs.push({ x: this.px, y: this.py + 4, fuse: 1.5 });
   }
 
-  private explode(x: number, y: number) {
+  private explode(x: number, y: number, damage = 60) {
     this.shake = 9;
-    this.texts.push({ x, y: y - 6, text: "BOOM", age: 0, color: "#ff6a5e" });
+    this.explosions.push({ x, y, t: 0 });
     for (const p of this.props()) {
       if (p.dead) continue;
       const cx = p.x + p.w / 2;
       const cy = p.y + p.h / 2;
       if (Math.hypot(cx - x, cy - y) < 48) {
-        if (p.kind === "dummy") this.damageProp(p, 60, false);
+        if (p.kind === "dummy") this.damageProp(p, damage, false);
         else if (p.kind !== "pedestal" && p.kind !== "spike") {
           const wasTnt = p.kind === "tnt";
           p.dead = true;
@@ -658,7 +891,14 @@ export class Game {
         }
       }
     }
-    if (Math.hypot(this.px - x, this.py - y) < 48) this.hurtFlash = 0.5;
+    if (Math.hypot(this.px - x, this.py - y) < 48) {
+      if (this.shieldUp) {
+        this.shieldUp = false;
+        this.shieldTimer = 5;
+      } else {
+        this.hurtFlash = 0.5;
+      }
+    }
   }
 
   // ------------------------------------------------------------------ render
@@ -679,16 +919,23 @@ export class Game {
     for (const p of this.props()) drawables.push({ y: p.y + p.h, draw: () => this.drawProp(c, p) });
     for (const b of this.bombs) drawables.push({ y: b.y + 8, draw: () => this.drawBomb(c, b) });
     drawables.push({ y: this.py + 10, draw: () => this.drawPlayer(c) });
+    for (const f of this.familiars) drawables.push({ y: f.y + 8, draw: () => this.drawFamiliar(c, f) });
     drawables.sort((a, b) => a.y - b.y);
     for (const d of drawables) d.draw();
     for (const beam of this.beams) this.drawBeam(c, beam);
+    for (const ring of this.rings) this.drawRing(c, ring);
     if (this.knife) this.drawKnife(c, this.knife);
+    if (this.swing) this.drawSwing(c, this.swing);
     for (const t of this.tears) this.drawTear(c, t);
+    for (const ex of this.explosions) this.drawExplosion(c, ex);
+    if (this.missile) this.drawCrosshair(c, this.missile);
 
-    // brimstone charge dots orbiting the head
-    if (this.brimCharge > 0.05) {
-      const n = Math.ceil(this.brimCharge * 6);
-      c.fillStyle = this.brimCharge >= 0.95 ? "#ff5240" : "#a81b25";
+    // charge indicators orbiting the head (brimstone red / charge-shot white)
+    const chargeLevel = Math.max(this.brimCharge, this.shotCharge);
+    if (chargeLevel > 0.05) {
+      const n = Math.ceil(chargeLevel * 6);
+      const full = chargeLevel >= 0.95;
+      c.fillStyle = this.brimCharge > 0 ? (full ? "#ff5240" : "#a81b25") : full ? "#fff6d8" : "#9a917c";
       for (let i = 0; i < n; i++) {
         const a = this.time * 6 + (i * Math.PI * 2) / 6;
         c.fillRect(
@@ -938,31 +1185,136 @@ export class Game {
   }
 
   private drawBeam(c: CanvasRenderingContext2D, beam: Beam) {
-    const fade = 1 - beam.t / beam.duration;
     const isBrim = beam.duration > 0.3;
-    const width = isBrim ? 14 * Math.min(1, fade + 0.4) : 4;
+    const sheet = this.assets?.env.laser;
+    const brimAnim = this.assets?.brimAnim?.LargeRedLaser;
+
+    if (isBrim && sheet && brimAnim) {
+      // Real Brimstone: mouth cap ("tip") + tiled pillar ("laser" layer),
+      // animated with the game's own 4-frame loop, grow-in then fade-out.
+      const frameIdx = Math.floor(this.time * ANM_FPS) % 4;
+      const tipFrames = brimAnim.find((l) => l.layer === "tip")?.frames;
+      const bodyFrames = brimAnim.find((l) => l.layer === "laser")?.frames;
+      const tip = tipFrames?.[frameIdx % (tipFrames.length || 1)];
+      const body = bodyFrames?.[frameIdx % (bodyFrames.length || 1)];
+      if (tip && body) {
+        const growIn = Math.min(1, beam.t / 0.07); // pillar extends from the mouth
+        const fadeOut = beam.t > beam.duration - 0.15 ? (beam.duration - beam.t) / 0.15 : 1;
+        const len = beam.len * growIn;
+        c.save();
+        c.globalAlpha = Math.max(0, fadeOut);
+        c.translate(Math.round(beam.x), Math.round(beam.y));
+        // rotate so the beam's local +Y axis points along the fire direction
+        c.rotate(Math.atan2(beam.dir.y, beam.dir.x) - Math.PI / 2);
+        const pulse = 1 + Math.sin(this.time * 24) * 0.06;
+        const w = 32 * 1.35 * pulse; // thicker, rounder pillar
+        // tiled body segments (64px source slices)
+        for (let seg = 0; seg < len; seg += 60) {
+          const segH = Math.min(64, ((len - seg) / 60) * 64);
+          c.drawImage(sheet, body.x, body.y, body.w, (segH / 64) * body.h, -w / 2, seg, w, segH);
+        }
+        // mouth cap on top of the pillar start
+        c.drawImage(sheet, tip.x, tip.y, tip.w, tip.h, -w / 2, -10, w, 34);
+        // animated impact splat at the far end
+        const impact = this.assets?.brimImpact?.Loop?.[0]?.frames;
+        const impactSheet = this.assets?.env.laserimpact;
+        if (impact && impactSheet && growIn >= 1) {
+          const f = impact[frameIdx % impact.length];
+          c.drawImage(impactSheet, f.x, f.y, f.w, f.h, -f.w / 2 - 4, len - f.h / 2, f.w + 8, f.h);
+        }
+        c.restore();
+        return;
+      }
+    }
+
+    // fallback / technology laser: layered stroke beam
+    const fade = 1 - beam.t / beam.duration;
+    const width = isBrim ? 18 * Math.min(1, fade + 0.4) : 4;
     const pulse = Math.floor(this.time * 20) % 2 === 0 ? 1 : 0.85;
     const ex = beam.x + beam.dir.x * beam.len;
     const ey = beam.y + beam.dir.y * beam.len;
     c.save();
+    c.lineCap = "round";
     c.globalAlpha = Math.min(1, fade * 1.5);
-    // outer glow
     c.strokeStyle = isBrim ? "rgba(168,27,37,0.5)" : "rgba(120,180,255,0.4)";
     c.lineWidth = width + 6;
     c.beginPath(); c.moveTo(beam.x, beam.y); c.lineTo(ex, ey); c.stroke();
-    // core
     c.strokeStyle = isBrim ? `rgba(224,58,47,${pulse})` : `rgba(190,225,255,${pulse})`;
     c.lineWidth = width;
     c.beginPath(); c.moveTo(beam.x, beam.y); c.lineTo(ex, ey); c.stroke();
-    // inner highlight
     c.strokeStyle = isBrim ? "#ffb0a0" : "#ffffff";
     c.lineWidth = Math.max(1, width / 3);
     c.beginPath(); c.moveTo(beam.x, beam.y); c.lineTo(ex, ey); c.stroke();
-    // impact burst
     c.fillStyle = isBrim ? "#ff5240" : "#cfe6ff";
-    const r = isBrim ? 8 : 4;
-    c.beginPath(); c.arc(ex, ey, r * pulse, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(ex, ey, (isBrim ? 8 : 4) * pulse, 0, Math.PI * 2); c.fill();
     c.restore();
+  }
+
+  private drawExplosion(c: CanvasRenderingContext2D, ex: Explosion) {
+    const sheet = this.assets?.env.explosion;
+    const frames = this.assets?.explosionAnim?.Explosion?.[0]?.frames;
+    if (sheet && frames && frames.length > 0) {
+      const idx = Math.min(frames.length - 1, Math.floor((ex.t / 0.5) * frames.length));
+      const f = frames[idx];
+      c.drawImage(sheet, f.x, f.y, f.w, f.h, Math.round(ex.x - f.px), Math.round(ex.y - f.py), f.w, f.h);
+    } else {
+      const r = 14 + ex.t * 70;
+      c.globalAlpha = 1 - ex.t * 2;
+      c.fillStyle = "#f2b134";
+      c.beginPath(); c.arc(ex.x, ex.y, r, 0, Math.PI * 2); c.fill();
+      c.fillStyle = "#e04a3f";
+      c.beginPath(); c.arc(ex.x, ex.y, r * 0.6, 0, Math.PI * 2); c.fill();
+      c.globalAlpha = 1;
+    }
+  }
+
+  private drawRing(c: CanvasRenderingContext2D, ring: Ring) {
+    c.save();
+    c.strokeStyle = "rgba(190,225,255,0.9)";
+    c.lineWidth = 3;
+    c.beginPath(); c.arc(Math.round(ring.x), Math.round(ring.y), ring.radius, 0, Math.PI * 2); c.stroke();
+    c.strokeStyle = "rgba(120,180,255,0.4)";
+    c.lineWidth = 7;
+    c.beginPath(); c.arc(Math.round(ring.x), Math.round(ring.y), ring.radius, 0, Math.PI * 2); c.stroke();
+    c.restore();
+  }
+
+  private drawSwing(c: CanvasRenderingContext2D, s: Swing) {
+    const a0 = Math.atan2(s.dir.y, s.dir.x) - 0.9;
+    const a1 = Math.atan2(s.dir.y, s.dir.x) + 0.9;
+    c.save();
+    c.globalAlpha = s.t / 0.18;
+    c.strokeStyle = "#dfe6f0";
+    c.lineWidth = 5;
+    c.beginPath(); c.arc(this.px, this.py - 8, 34, a0, a1); c.stroke();
+    c.strokeStyle = "#9ecbff";
+    c.lineWidth = 2;
+    c.beginPath(); c.arc(this.px, this.py - 8, 38, a0, a1); c.stroke();
+    c.restore();
+  }
+
+  private drawCrosshair(c: CanvasRenderingContext2D, m: Missile) {
+    const blink = Math.floor(this.time * 8) % 2 === 0;
+    c.strokeStyle = blink ? "#ff4438" : "#c22026";
+    c.lineWidth = 2;
+    const r = 10 + m.t * 6;
+    c.beginPath(); c.arc(m.x, m.y, r, 0, Math.PI * 2); c.stroke();
+    c.beginPath(); c.moveTo(m.x - r - 5, m.y); c.lineTo(m.x + r + 5, m.y); c.stroke();
+    c.beginPath(); c.moveTo(m.x, m.y - r - 5); c.lineTo(m.x, m.y + r + 5); c.stroke();
+  }
+
+  private drawFamiliar(c: CanvasRenderingContext2D, f: Familiar) {
+    const img = this.assets?.env.incubus;
+    const x = Math.round(f.x);
+    const y = Math.round(f.y + Math.sin(this.time * 4) * 2);
+    c.fillStyle = "rgba(0,0,0,0.3)";
+    c.beginPath(); c.ellipse(x, Math.round(f.y) + 8, 7, 2, 0, 0, Math.PI * 2); c.fill();
+    if (img) {
+      c.drawImage(img, 0, 0, 32, 32, x - 16, y - 24, 32, 32);
+    } else {
+      c.fillStyle = "#3a2b4a";
+      c.fillRect(x - 6, y - 18, 12, 14);
+    }
   }
 
   private drawKnife(c: CanvasRenderingContext2D, k: Knife) {
@@ -1027,7 +1379,7 @@ export class Game {
   /** Costume-style tint (Brimstone turns Isaac blood-red, etc.), cached. */
   private tintSheet(): HTMLImageElement | HTMLCanvasElement | null {
     if (!this.playerSheet) return null;
-    const tint = this.params.tint;
+    const tint = this.params.combat.tint;
     if (!tint) return this.playerSheet;
     const key = `${this.playerSheet.src}|${tint}`;
     if (this.tintedKey === key && this.tintedSheet) return this.tintedSheet;
@@ -1047,9 +1399,9 @@ export class Game {
   }
 
   private drawPlayer(c: CanvasRenderingContext2D) {
-    const flight = this.params.tags.has("flight");
+    const flight = this.params.combat.flight;
     const lift = flight ? 4 + Math.round(Math.sin(this.time * 4)) : 0;
-    const scale = this.params.tags.has("size_up") ? 1.18 : 1;
+    const scale = this.params.combat.sizeUp ? 1.18 : 1;
     const x = Math.round(this.px);
     const y = Math.round(this.py - lift);
 
@@ -1091,6 +1443,18 @@ export class Game {
       c.fillRect(x - 8, y - 24, 16, 16);
       c.fillStyle = "#c9b8a0";
       c.fillRect(x - 5, y - 8, 10, 12);
+    }
+
+    // Holy Mantle shield bubble
+    if (this.shieldUp) {
+      c.save();
+      c.globalAlpha = 0.5 + Math.sin(this.time * 5) * 0.15;
+      c.strokeStyle = "#9ecbff";
+      c.lineWidth = 2;
+      c.beginPath();
+      c.ellipse(x, y - 10, 16 * scale, 20 * scale, 0, 0, Math.PI * 2);
+      c.stroke();
+      c.restore();
     }
 
     if (this.holdItem?.img) {

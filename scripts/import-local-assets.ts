@@ -163,6 +163,12 @@ const ENV: [string, RegExp[]][] = [
   ["punchingbag.png", [/.*punching.*\.png$/]],
   ["shopkeeper.png", [/shopkeeper.*\.png$/]],
   ["coins.png", [/items\/pick ups\/pickup_015_coin\.png$/, /pick.*coin.*\.png$/]],
+  ["laser.png", [/^effects\/effect_018_lasereffects\.png$/]],
+  ["laser_tech.png", [/^effects\/effect_018_technologylaser\.png$/]],
+  ["laserimpact.png", [/^effects\/effect_050_laserimpact\.png$/]],
+  ["explosion.png", [/^effects\/effect_029_explosion\.png$/]],
+  ["incubus.png", [/^familiar\/familiar_shooters_80_incubus\.png$/]],
+  ["knife2.png", [/^familiar\/familiar_knifepieces\.png$/]],
 ];
 ensure(path.join(OUT, "env"));
 const envManifest: Record<string, { w: number; h: number; src: string }> = {};
@@ -247,6 +253,9 @@ parseAnm2(
   /body|head/,
 );
 parseAnm2("002.000_tear.anm2", "tear.json", null, /./);
+parseAnm2("007.001_thick red laser.anm2", "brimstone.json", null, /tip|laser/);
+parseAnm2("1000.050_brimstoneimpact_static.anm2", "brimimpact.json", null, /./);
+parseAnm2("1000.001_bomb explosion.anm2", "explosion.json", null, /./);
 
 // ---------------------------------------------------------------- items.xml → scraper truth
 const itemsXml = LAYERS.map((l) => path.join(l, "items.xml")).filter(existsSync).pop();

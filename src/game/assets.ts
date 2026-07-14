@@ -23,6 +23,9 @@ export interface GameAssets {
   env: Partial<Record<EnvName, HTMLImageElement>>;
   playerAnim: Anm2Data | null;
   tearAnim: Anm2Data | null;
+  brimAnim: Anm2Data | null;
+  brimImpact: Anm2Data | null;
+  explosionAnim: Anm2Data | null;
 }
 
 export type EnvName =
@@ -41,12 +44,18 @@ export type EnvName =
   | "bomb"
   | "hearts"
   | "coins"
-  | "punchingbag";
+  | "punchingbag"
+  | "laser"
+  | "laserimpact"
+  | "explosion"
+  | "incubus"
+  | "knife2";
 
 const ENV_NAMES: EnvName[] = [
   "basement_walls", "basement_nfloor", "shop_walls", "shop_nfloor",
   "rocks", "poop", "spikes", "fireplace", "tnt", "props",
   "tears", "tearpoof", "bomb", "hearts", "coins", "punchingbag",
+  "laser", "laserimpact", "explosion", "incubus", "knife2",
 ];
 
 const BASE = import.meta.env.BASE_URL;
@@ -91,11 +100,14 @@ export function loadGameAssets(): Promise<GameAssets> {
         if (img) env[name] = img;
       }),
     );
-    const [playerAnim, tearAnim] = await Promise.all([
+    const [playerAnim, tearAnim, brimAnim, brimImpact, explosionAnim] = await Promise.all([
       loadJson<Anm2Data>(`${BASE}assets/anim/player.json`),
       loadJson<Anm2Data>(`${BASE}assets/anim/tear.json`),
+      loadJson<Anm2Data>(`${BASE}assets/anim/brimstone.json`),
+      loadJson<Anm2Data>(`${BASE}assets/anim/brimimpact.json`),
+      loadJson<Anm2Data>(`${BASE}assets/anim/explosion.json`),
     ]);
-    return { env, playerAnim, tearAnim };
+    return { env, playerAnim, tearAnim, brimAnim, brimImpact, explosionAnim };
   })();
   return cached;
 }

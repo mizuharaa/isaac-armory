@@ -1,40 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SpriteImg from "../components/SpriteImg";
+import { deriveCombat } from "../engine/combat";
 import { computeStats, type EquippedItem } from "../engine/stats";
 import { characterSheetUrl, loadFirst, loadGameAssets } from "../game/assets";
-import { Game, VIEW_H, VIEW_W, type FireMode, type RoomId } from "../game/engine";
+import { Game, VIEW_H, VIEW_W, type RoomId } from "../game/engine";
 import { characterPortraitCandidates, itemSpriteCandidates } from "../lib/assets";
 import { allItems, characterBySlug, itemBySlug, poolBySlug } from "../lib/data";
 import { fuzzyScore } from "../lib/fuzzy";
 import type { Item } from "../lib/types";
 import { useLoadout } from "../store/loadout";
-
-/** Item/innate → firing mode. Priority mirrors the game's weapon override order. */
-function deriveFireMode(slugs: Set<string>, innate: string[]): FireMode {
-  if (slugs.has("moms-knife")) return "knife";
-  if (slugs.has("brimstone") || slugs.has("sulfur") || innate.some((s) => /brimstone/i.test(s)))
-    return "brimstone";
-  if (slugs.has("technology") || slugs.has("technology-2") || slugs.has("tech-x")) return "laser";
-  if (slugs.has("ipecac") || slugs.has("bobs-brain")) return "lob";
-  return "tears";
-}
-
-function deriveShots(slugs: Set<string>, innate: string[]): number {
-  let shots = 1;
-  if (slugs.has("20-20")) shots = Math.max(shots, 2);
-  if (slugs.has("the-inner-eye") || innate.some((s) => /triple shot/i.test(s))) shots = Math.max(shots, 3);
-  if (slugs.has("mutant-spider")) shots = Math.max(shots, 4);
-  return shots;
-}
-
-/** Costume-style looks for iconic items (sprite tint, applied in-engine). */
-const TINTS: [string, string][] = [
-  ["brimstone", "#c96a5e"],
-  ["whore-of-babylon", "#8a8a9c"],
-  ["gnawed-leaf", "#9aa39a"],
-  ["the-virus", "#9cc98f"],
-  ["lunch", "#e8d8a8"],
-];
 
 function ItemPicker({
   title,
@@ -168,21 +142,12 @@ export default function Playground() {
     }
   }, [stats]);
 
-  const combat = useMemo(() => {
-    const slugs = new Set(equipped);
+  const { combat, tags } = useMemo(() => {
     const innate = character.innate ?? [];
-    const tags = new Set<string>();
-    for (const i of equippedItems) for (const tag of i.behaviorTags) tags.add(tag);
-    if (innate.some((s) => /flight/i.test(s))) tags.add("flight");
-    if (equippedItems.some((i) => (i.statModifiers.damageMult ?? 1) >= 1.5)) tags.add("size_up");
-    return {
-      tags,
-      fireMode: deriveFireMode(slugs, innate),
-      shots: deriveShots(slugs, innate),
-      homing: tags.has("homing"),
-      piercing: tags.has("piercing") || tags.has("spectral"),
-      tint: TINTS.find(([slug]) => slugs.has(slug))?.[1] ?? null,
-    };
+    const behaviorTags = new Set<string>();
+    for (const i of equippedItems) for (const tag of i.behaviorTags) behaviorTags.add(tag);
+    const maxMult = Math.max(1, ...equippedItems.map((i) => i.statModifiers.damageMult ?? 1));
+    return { combat: deriveCombat(equipped, behaviorTags, innate, maxMult), tags: behaviorTags };
   }, [equippedItems, equipped, character]);
 
   // ------- active item (SPACE) with charge meter -------
@@ -218,6 +183,15 @@ export default function Playground() {
     gameRef.current = game;
     game.onPickup = (slug) => equip(slug);
     game.onRoomChange = (r) => setRoom(r);
+    game.onOpenPicker = () => setDebugOpen(true);
+    game.onResetRun = () => {
+      const { characterSlug: cur, selectCharacter: sel } = useLoadout.getState();
+      sel(cur); // resets loadout to the character's starting items
+    };
+    game.onAbsorb = (slugs) => {
+      const { equip: eq } = useLoadout.getState();
+      for (const s of slugs) eq(s);
+    };
     game.itemProvider = async (n) => {
       const picks = [...allItems].filter((i) => i.type !== "trinket").sort(() => Math.random() - 0.5).slice(0, n);
       const imgs = await Promise.all(picks.map((i) => loadFirst(itemSpriteCandidates(i))));
@@ -252,14 +226,10 @@ export default function Playground() {
       damage: stats.damage,
       range: stats.range,
       shotSpeed: stats.shotSpeed,
-      tags: combat.tags,
-      fireMode: combat.fireMode,
-      shots: combat.shots,
-      homing: combat.homing,
-      piercing: combat.piercing,
-      tint: combat.tint,
+      tags,
+      combat,
     });
-  }, [stats, combat]);
+  }, [stats, combat, tags]);
 
   useEffect(() => {
     let alive = true;
@@ -443,8 +413,13 @@ export default function Playground() {
             {room === "main" ? "THE BASEMENT" : "THE SHOP"}
           </span>
           <span className="punch text-right font-pixelbody text-lg leading-tight text-[#bfb49b]">
-            WASD move · ARROWS shoot{combat.fireMode === "brimstone" ? " (hold to charge)" : ""} · SPACE
-            active · E bomb · B equip · ` spawn · F fullscreen
+            WASD move · ARROWS shoot
+            {combat.fireMode === "brimstone"
+              ? " (hold to charge)"
+              : combat.chargeShot !== "none"
+                ? " (hold, release to fire)"
+                : ""}{" "}
+            · SPACE active · E bomb · B equip · ` spawn · F fullscreen
           </span>
         </div>
 
