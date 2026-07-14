@@ -94,7 +94,7 @@ export default function Armory() {
   return (
     <div className="flex flex-col gap-4 p-4 md:flex-row">
       {/* Filter rail */}
-      <aside className="w-full shrink-0 space-y-4 md:w-56">
+      <aside className="panel h-fit w-full shrink-0 space-y-4 p-3 md:w-60">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -220,7 +220,7 @@ export default function Armory() {
         <p className="mb-2 text-sm text-muted">
           {filtered.length} of {allItems.length} entries
         </p>
-        <div className="grid grid-cols-2 gap-x-2 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
           {filtered.map((item) => (
             <ItemCard
               key={item.slug}

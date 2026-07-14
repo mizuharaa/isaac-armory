@@ -1,20 +1,24 @@
 /**
- * Playground engine: fixed-timestep (60 Hz) top-down sandbox in a 480×270
- * logical canvas, integer-scaled with imageSmoothingEnabled = false.
+ * Playground engine — fixed-timestep (60 Hz) top-down sandbox.
  *
- * Real art policy: the player and pedestal items draw the actual game
- * sprites hot-loaded from the wiki. Room tiles/props (rocks, poop, spikes,
- * fires, TNT, the punching-bag dummy) are original vector-pixel drawings in
- * the game's palette — the game's own tile sheets are not redistributable.
+ * Renders at the game's native 1x scale (26 px grid) into a 468×312 buffer
+ * (two mirrored 234×156 backdrop quadrants, exactly how the game composes a
+ * 1×1 room), then the page integer-scales it to fill the viewport.
+ *
+ * Art: when locally-imported game assets are present (public/assets/,
+ * gitignored) the room, props, tears and player render with the real
+ * sprites + real .anm2 frame data; otherwise every draw call falls back to
+ * the original hand-drawn pixel art so the deployed build still works.
  */
+import type { Anm2Data, Anm2Frame, GameAssets } from "./assets";
 
-export const VIEW_W = 480;
-export const VIEW_H = 270;
+export const VIEW_W = 468;
+export const VIEW_H = 312;
 const WALL = 26;
 const TICK = 1 / 60;
+const ANM_FPS = 30;
 
 export interface GameParams {
-  /** px/s at speed stat 1.0 is 90. */
   speed: number;
   fireDelay: number;
   damage: number;
@@ -32,8 +36,8 @@ export interface Prop {
   w: number;
   h: number;
   hp: number;
+  maxHp?: number;
   solid: boolean;
-  /** pedestal payload */
   itemSlug?: string;
   itemImg?: HTMLImageElement;
   price?: number;
@@ -49,7 +53,7 @@ interface Tear {
   traveled: number;
   max: number;
   damage: number;
-  splash: number; // -1 = flying, >=0 splash frame timer
+  splash: number;
 }
 
 interface Bomb {
@@ -68,42 +72,45 @@ interface FloatText {
 
 export type RoomId = "main" | "shop";
 
+const G = 26; // grid cell
+const cell = (cx: number, cy: number) => ({ x: WALL + cx * G, y: WALL + cy * G });
+
 function makeMainRoom(): Prop[] {
+  const at = (cx: number, cy: number, p: Omit<Prop, "x" | "y">): Prop => ({ ...cell(cx, cy), ...p });
   return [
-    { kind: "rock", x: 120, y: 70, w: 22, h: 22, hp: 1, solid: true },
-    { kind: "rock", x: 146, y: 70, w: 22, h: 22, hp: 1, solid: true },
-    { kind: "rock", x: 120, y: 96, w: 22, h: 22, hp: 1, solid: true },
-    { kind: "poop", x: 300, y: 80, w: 22, h: 22, hp: 3, solid: true },
-    { kind: "poop", x: 210, y: 190, w: 22, h: 22, hp: 3, solid: true },
-    { kind: "spike", x: 250, y: 120, w: 24, h: 24, hp: Infinity, solid: false },
-    { kind: "spike", x: 274, y: 120, w: 24, h: 24, hp: Infinity, solid: false },
-    { kind: "fire", x: 70, y: 190, w: 20, h: 22, hp: 2, solid: true },
-    { kind: "fire", x: 390, y: 60, w: 20, h: 22, hp: 2, solid: true },
-    { kind: "tnt", x: 340, y: 200, w: 20, h: 24, hp: 1, solid: true },
-    { kind: "dummy", x: 410, y: 130, w: 26, h: 40, hp: Infinity, solid: true },
+    at(3, 2, { kind: "rock", w: G, h: G, hp: 1, solid: true }),
+    at(4, 2, { kind: "rock", w: G, h: G, hp: 1, solid: true }),
+    at(3, 3, { kind: "rock", w: G, h: G, hp: 1, solid: true }),
+    at(10, 2, { kind: "poop", w: G, h: G, hp: 3, maxHp: 3, solid: true }),
+    at(6, 7, { kind: "poop", w: G, h: G, hp: 3, maxHp: 3, solid: true }),
+    at(8, 4, { kind: "spike", w: G, h: G, hp: Infinity, solid: false }),
+    at(9, 4, { kind: "spike", w: G, h: G, hp: Infinity, solid: false }),
+    at(1, 7, { kind: "fire", w: G, h: G, hp: 2, solid: true }),
+    at(13, 1, { kind: "fire", w: G, h: G, hp: 2, solid: true }),
+    at(12, 8, { kind: "tnt", w: G, h: G, hp: 1, solid: true }),
+    at(14, 5, { kind: "dummy", w: G, h: 40, hp: Infinity, solid: true }),
   ];
 }
 
 export class Game {
   private ctx: CanvasRenderingContext2D;
+  private assets: GameAssets | null = null;
   private params: GameParams = {
-    speed: 1,
-    fireDelay: 10,
-    damage: 3.5,
-    range: 6.5,
-    shotSpeed: 1,
-    tags: new Set(),
+    speed: 1, fireDelay: 10, damage: 3.5, range: 6.5, shotSpeed: 1, tags: new Set(),
   };
-  private playerImg: HTMLImageElement | null = null;
+  private playerSheet: HTMLImageElement | null = null;
+  private playerPortrait: HTMLImageElement | null = null;
 
-  // player state
   private px = VIEW_W / 2;
   private py = VIEW_H / 2 + 40;
-  private facing: 1 | -1 = 1;
+  private moveDir: { x: number; y: number } = { x: 0, y: 1 };
+  private headDir: "Down" | "Up" | "Left" | "Right" = "Down";
   private walking = false;
+  private walkTime = 0;
   private fireCooldown = 0;
+  private fireFlash = 0;
   private hurtFlash = 0;
-  private holdItem: { img: HTMLImageElement | null; name: string; t: number } | null = null;
+  private holdItem: { img: HTMLImageElement | null; t: number } | null = null;
 
   private tears: Tear[] = [];
   private bombs: Bomb[] = [];
@@ -119,7 +126,6 @@ export class Game {
   room: RoomId = "main";
   private rooms: Record<RoomId, Prop[]> = { main: makeMainRoom(), shop: [] };
 
-  /** rolling 3 s damage window on the dummy */
   private dummyHits: { t: number; dmg: number }[] = [];
   dummyDps = 0;
 
@@ -148,25 +154,27 @@ export class Game {
     window.removeEventListener("focus", this.onFocus);
   }
 
+  setAssets(a: GameAssets) {
+    this.assets = a;
+  }
   setParams(p: GameParams) {
     this.params = p;
   }
-  /** UI overlays pause the simulation (also happens on tab blur). */
   setPaused(paused: boolean) {
     this.paused = paused;
     if (!paused) this.last = performance.now();
     this.keys.clear();
   }
-  setPlayerImage(img: HTMLImageElement | null) {
-    this.playerImg = img;
+  setPlayerSheet(sheet: HTMLImageElement | null, portrait: HTMLImageElement | null) {
+    this.playerSheet = sheet;
+    this.playerPortrait = portrait;
   }
   setShopPedestals(pedestals: { slug: string; img: HTMLImageElement | null; price: number }[]) {
     this.rooms.shop = pedestals.map((p, i) => ({
       kind: "pedestal" as const,
-      x: 120 + i * 90,
-      y: 92,
-      w: 24,
-      h: 26,
+      ...cell(5 + i * 3, 3),
+      w: G,
+      h: G,
       hp: Infinity,
       solid: false,
       itemSlug: p.slug,
@@ -174,24 +182,19 @@ export class Game {
       price: p.price,
     }));
   }
-  /** Debug spawner: put an item pedestal into the current room near center. */
   spawnPedestal(slug: string, img: HTMLImageElement | null) {
     const props = this.rooms[this.room];
-    const n = props.filter((p) => p.kind === "pedestal" && !p.dead).length;
+    const n = props.filter((p) => p.kind === "pedestal").length;
     props.push({
       kind: "pedestal",
-      x: 150 + (n % 4) * 46,
-      y: 140 + Math.floor(n / 4) * 40,
-      w: 24,
-      h: 26,
+      ...cell(5 + (n % 4) * 2, 5 + Math.floor(n / 4) * 2),
+      w: G,
+      h: G,
       hp: Infinity,
       solid: false,
       itemSlug: slug,
       itemImg: img ?? undefined,
     });
-  }
-  kick() {
-    this.shake = Math.max(this.shake, 4);
   }
 
   private onKeyDown = (e: KeyboardEvent) => {
@@ -233,7 +236,6 @@ export class Game {
     const p = this.params;
     const flight = p.tags.has("flight");
 
-    // movement (8-directional)
     let dx = 0;
     let dy = 0;
     if (this.keys.has("w")) dy -= 1;
@@ -242,45 +244,53 @@ export class Game {
     if (this.keys.has("d")) dx += 1;
     this.walking = dx !== 0 || dy !== 0;
     if (this.walking) {
+      this.walkTime += dt;
+      this.moveDir = { x: dx, y: dy };
       const len = Math.hypot(dx, dy);
-      const v = (p.speed * 90) / len;
+      const v = (p.speed * 85) / len;
       const nx = this.px + dx * v * dt;
       const ny = this.py + dy * v * dt;
       if (!this.collides(nx, this.py, flight)) this.px = nx;
       if (!this.collides(this.px, ny, flight)) this.py = ny;
-      if (dx !== 0) this.facing = dx > 0 ? 1 : -1;
+    } else {
+      this.walkTime = 0;
     }
-    this.px = Math.max(WALL + 8, Math.min(VIEW_W - WALL - 8, this.px));
-    this.py = Math.max(WALL + 10, Math.min(VIEW_H - WALL - 10, this.py));
+    this.px = Math.max(WALL + 9, Math.min(VIEW_W - WALL - 9, this.px));
+    this.py = Math.max(WALL + 10, Math.min(VIEW_H - WALL - 6, this.py));
 
-    // doors
     this.checkDoors();
 
-    // firing (4-directional, arrow keys — the game's control scheme)
+    // firing — arrow keys, 4-directional
     this.fireCooldown -= dt;
+    this.fireFlash = Math.max(0, this.fireFlash - dt);
     let fx = 0;
     let fy = 0;
     if (this.keys.has("ArrowUp")) fy = -1;
     else if (this.keys.has("ArrowDown")) fy = 1;
     else if (this.keys.has("ArrowLeft")) fx = -1;
     else if (this.keys.has("ArrowRight")) fx = 1;
-    if ((fx || fy) && this.fireCooldown <= 0) {
-      this.fireCooldown = (p.fireDelay + 1) / 30;
-      const speed = 140 * p.shotSpeed;
-      this.tears.push({
-        x: this.px + fx * 8,
-        y: this.py - 6 + fy * 8,
-        vx: fx * speed + (this.walking ? 0 : 0),
-        vy: fy * speed,
-        traveled: 0,
-        max: p.range * 26,
-        damage: p.damage,
-        splash: -1,
-      });
-      if (fx !== 0) this.facing = fx > 0 ? 1 : -1;
+    if (fx || fy) {
+      this.headDir = fy < 0 ? "Up" : fy > 0 ? "Down" : fx < 0 ? "Left" : "Right";
+      if (this.fireCooldown <= 0) {
+        this.fireCooldown = (p.fireDelay + 1) / 30;
+        this.fireFlash = 0.12;
+        const speed = 150 * p.shotSpeed;
+        this.tears.push({
+          x: this.px + fx * 9,
+          y: this.py - 14 + fy * 9,
+          vx: fx * speed,
+          vy: fy * speed,
+          traveled: 0,
+          max: p.range * G,
+          damage: p.damage,
+          splash: -1,
+        });
+      }
+    } else if (this.walking) {
+      this.headDir =
+        this.moveDir.y < 0 ? "Up" : this.moveDir.y > 0 ? "Down" : this.moveDir.x < 0 ? "Left" : "Right";
     }
 
-    // tears
     for (const t of this.tears) {
       if (t.splash >= 0) {
         t.splash += dt;
@@ -289,18 +299,18 @@ export class Game {
       t.x += t.vx * dt;
       t.y += t.vy * dt;
       t.traveled += Math.hypot(t.vx, t.vy) * dt;
-      if (t.traveled >= t.max || this.tearHit(t)) t.splash = 0;
+      const inWall =
+        t.x < WALL + 4 || t.x > VIEW_W - WALL - 4 || t.y < WALL + 4 || t.y > VIEW_H - WALL - 4;
+      if (t.traveled >= t.max || inWall || this.tearHit(t)) t.splash = 0;
     }
-    this.tears = this.tears.filter((t) => t.splash < 0.24);
+    this.tears = this.tears.filter((t) => t.splash < 0.3);
 
-    // bombs
     for (const b of this.bombs) {
       b.fuse -= dt;
       if (b.fuse <= 0) this.explode(b.x, b.y);
     }
     this.bombs = this.bombs.filter((b) => b.fuse > 0);
 
-    // hazards under the player
     if (!flight) {
       for (const prop of this.props()) {
         if (prop.dead || (prop.kind !== "spike" && prop.kind !== "fire")) continue;
@@ -312,18 +322,17 @@ export class Game {
     }
     this.hurtFlash = Math.max(0, this.hurtFlash - dt);
 
-    // pedestals → pickup
     for (const prop of this.props()) {
       if (prop.dead || prop.kind !== "pedestal" || !prop.itemSlug) continue;
-      if (this.overlap(this.px, this.py, 8, prop)) {
-        this.holdItem = { img: prop.itemImg ?? null, name: prop.itemSlug, t: 0.5 };
+      if (this.overlap(this.px, this.py, 9, prop)) {
+        this.holdItem = { img: prop.itemImg ?? null, t: 0.6 };
         this.onPickup(prop.itemSlug);
         this.texts.push({
           x: prop.x + prop.w / 2,
           y: prop.y - 8,
-          text: prop.price ? `-${prop.price}¢` : "picked up!",
+          text: prop.price ? `-${prop.price}¢` : "+1",
           age: 0,
-          color: "#c9a227",
+          color: "#f2d75e",
         });
         prop.itemSlug = undefined;
         prop.itemImg = undefined;
@@ -335,7 +344,6 @@ export class Game {
       if (this.holdItem.t <= 0) this.holdItem = null;
     }
 
-    // floating texts, dummy dps window, shake decay
     for (const ft of this.texts) ft.age += dt;
     this.texts = this.texts.filter((ft) => ft.age < 0.9);
     this.dummyHits = this.dummyHits.filter((h) => this.time - h.t <= 3);
@@ -347,30 +355,27 @@ export class Game {
   private props(): Prop[] {
     return this.rooms[this.room];
   }
-
   private collides(x: number, y: number, flight: boolean): boolean {
     if (flight) return false;
     for (const p of this.props()) {
       if (p.dead || !p.solid) continue;
-      if (this.overlap(x, y, 7, p)) return true;
+      if (this.overlap(x, y, 8, p)) return true;
     }
     return false;
   }
-
   private overlap(x: number, y: number, r: number, p: Prop): boolean {
     return x + r > p.x && x - r < p.x + p.w && y + r > p.y && y - r < p.y + p.h;
   }
 
   private checkDoors() {
-    // main room: door in the top wall → shop; shop: bottom door → main
-    const doorX = Math.abs(this.px - VIEW_W / 2) < 18;
+    const doorX = Math.abs(this.px - VIEW_W / 2) < 20;
     if (this.room === "main" && doorX && this.py <= WALL + 11) {
       this.room = "shop";
-      this.py = VIEW_H - WALL - 16;
+      this.py = VIEW_H - WALL - 14;
       this.onRoomChange(this.room);
-    } else if (this.room === "shop" && doorX && this.py >= VIEW_H - WALL - 11) {
+    } else if (this.room === "shop" && doorX && this.py >= VIEW_H - WALL - 7) {
       this.room = "main";
-      this.py = WALL + 16;
+      this.py = WALL + 14;
       this.onRoomChange(this.room);
     }
   }
@@ -378,7 +383,7 @@ export class Game {
   private tearHit(t: Tear): boolean {
     for (const p of this.props()) {
       if (p.dead || p.kind === "spike" || p.kind === "pedestal") continue;
-      if (t.x > p.x && t.x < p.x + p.w && t.y > p.y && t.y < p.y + p.h) {
+      if (t.x > p.x && t.x < p.x + p.w && t.y > p.y - 8 && t.y < p.y + p.h) {
         this.damageProp(p, t.damage, true);
         return true;
       }
@@ -391,15 +396,15 @@ export class Game {
     if (p.kind === "dummy") {
       this.dummyHits.push({ t: this.time, dmg: damage });
       this.texts.push({
-        x: p.x + p.w / 2 + (Math.random() * 10 - 5),
+        x: p.x + p.w / 2 + (Math.random() * 12 - 6),
         y: p.y - 4,
         text: damage.toFixed(1),
         age: 0,
-        color: "#e8ddc4",
+        color: "#fff2cf",
       });
       return;
     }
-    if (p.kind === "rock" && fromTear) return; // rocks need bombs
+    if (p.kind === "rock" && fromTear) return;
     if (p.hp !== Infinity) {
       p.hp -= 1;
       if (p.hp <= 0) {
@@ -417,32 +422,29 @@ export class Game {
 
   private explode(x: number, y: number) {
     this.shake = 9;
-    this.texts.push({ x, y: y - 6, text: "BOOM", age: 0, color: "#d9534f" });
+    this.texts.push({ x, y: y - 6, text: "BOOM", age: 0, color: "#ff6a5e" });
     for (const p of this.props()) {
       if (p.dead) continue;
       const cx = p.x + p.w / 2;
       const cy = p.y + p.h / 2;
-      if (Math.hypot(cx - x, cy - y) < 46) {
+      if (Math.hypot(cx - x, cy - y) < 48) {
         if (p.kind === "dummy") this.damageProp(p, 60, false);
         else if (p.kind !== "pedestal" && p.kind !== "spike") {
-          if (p.kind === "tnt" && !p.dead) {
-            p.dead = true;
-            p.solid = false;
-            this.explode(cx, cy);
-          } else {
-            p.dead = true;
-            p.solid = false;
-          }
+          const wasTnt = p.kind === "tnt";
+          p.dead = true;
+          p.solid = false;
+          if (wasTnt) this.explode(cx, cy);
         }
       }
     }
-    if (Math.hypot(this.px - x, this.py - y) < 46) this.hurtFlash = 0.5;
+    if (Math.hypot(this.px - x, this.py - y) < 48) this.hurtFlash = 0.5;
   }
 
   // ------------------------------------------------------------------ render
   private render() {
     const c = this.ctx;
     c.save();
+    c.imageSmoothingEnabled = false;
     c.clearRect(0, 0, VIEW_W, VIEW_H);
     if (this.shake > 0) {
       c.translate(
@@ -452,255 +454,386 @@ export class Game {
     }
 
     this.drawRoom(c);
-    for (const p of this.props()) this.drawProp(c, p);
-    for (const b of this.bombs) this.drawBomb(c, b);
-    this.drawPlayer(c);
+    const drawables: { y: number; draw: () => void }[] = [];
+    for (const p of this.props()) drawables.push({ y: p.y + p.h, draw: () => this.drawProp(c, p) });
+    for (const b of this.bombs) drawables.push({ y: b.y + 8, draw: () => this.drawBomb(c, b) });
+    drawables.push({ y: this.py + 10, draw: () => this.drawPlayer(c) });
+    drawables.sort((a, b) => a.y - b.y);
+    for (const d of drawables) d.draw();
     for (const t of this.tears) this.drawTear(c, t);
 
-    // floating texts
-    c.font = "8px monospace";
+    c.font = "8px 'Press Start 2P', monospace";
     c.textAlign = "center";
     for (const ft of this.texts) {
-      c.fillStyle = ft.color;
       c.globalAlpha = 1 - ft.age;
+      c.fillStyle = "#000";
+      c.fillText(ft.text, Math.round(ft.x) + 1, Math.round(ft.y - ft.age * 14) + 1);
+      c.fillStyle = ft.color;
       c.fillText(ft.text, Math.round(ft.x), Math.round(ft.y - ft.age * 14));
       c.globalAlpha = 1;
     }
 
-    // dummy DPS readout
     if (this.room === "main") {
       const dummy = this.props().find((p) => p.kind === "dummy");
       if (dummy) {
-        c.fillStyle = "#c9a227";
-        c.fillText(`DPS ${this.dummyDps.toFixed(1)}`, dummy.x + dummy.w / 2, dummy.y - 12);
+        const label = `DPS ${this.dummyDps.toFixed(1)}`;
+        c.fillStyle = "#000";
+        c.fillText(label, dummy.x + dummy.w / 2 + 1, dummy.y - 13);
+        c.fillStyle = "#f2d75e";
+        c.fillText(label, dummy.x + dummy.w / 2, dummy.y - 14);
       }
-    }
-    if (this.room === "shop") {
-      c.fillStyle = "#9b8a72";
-      c.fillText("THE SHOP — walk over an item to take it", VIEW_W / 2, WALL + 14);
     }
 
     if (this.hurtFlash > 0) {
-      c.fillStyle = `rgba(179,32,42,${this.hurtFlash * 0.4})`;
+      c.fillStyle = `rgba(190,30,40,${this.hurtFlash * 0.45})`;
       c.fillRect(0, 0, VIEW_W, VIEW_H);
     }
     if (this.paused) {
-      c.fillStyle = "rgba(0,0,0,0.55)";
+      c.fillStyle = "rgba(0,0,0,0.6)";
       c.fillRect(0, 0, VIEW_W, VIEW_H);
       c.fillStyle = "#e8ddc4";
-      c.font = "10px monospace";
-      c.fillText("PAUSED — click to focus", VIEW_W / 2, VIEW_H / 2);
+      c.font = "10px 'Press Start 2P', monospace";
+      c.fillText("PAUSED", VIEW_W / 2, VIEW_H / 2);
     }
     c.restore();
   }
 
   private drawRoom(c: CanvasRenderingContext2D) {
-    // floor: two-tone stone checker
-    for (let ty = 0; ty < VIEW_H / 30 + 1; ty++) {
-      for (let tx = 0; tx < VIEW_W / 30 + 1; tx++) {
-        c.fillStyle = (tx + ty) % 2 === 0 ? "#2a1f18" : "#251b15";
-        c.fillRect(tx * 30, ty * 30, 30, 30);
+    const walls = this.assets?.env[this.room === "main" ? "basement_walls" : "shop_walls"];
+    const floor = this.assets?.env[this.room === "main" ? "basement_nfloor" : "shop_nfloor"];
+
+    if (walls) {
+      // interior floor underlay (texture stretched; interior of walls png is transparent)
+      c.fillStyle = this.room === "main" ? "#3b2f26" : "#2e2723";
+      c.fillRect(WALL - 6, WALL - 6, VIEW_W - 2 * WALL + 12, VIEW_H - 2 * WALL + 12);
+      if (floor) {
+        const q = Math.min(floor.width, 234);
+        const r = Math.min(floor.height, 156);
+        const hw = VIEW_W / 2;
+        const hh = VIEW_H / 2;
+        c.drawImage(floor, 0, 0, q, r, 0, 0, hw, hh);
+        c.save(); c.translate(VIEW_W, 0); c.scale(-1, 1);
+        c.drawImage(floor, 0, 0, q, r, 0, 0, hw, hh); c.restore();
+        c.save(); c.translate(0, VIEW_H); c.scale(1, -1);
+        c.drawImage(floor, 0, 0, q, r, 0, 0, hw, hh); c.restore();
+        c.save(); c.translate(VIEW_W, VIEW_H); c.scale(-1, -1);
+        c.drawImage(floor, 0, 0, q, r, 0, 0, hw, hh); c.restore();
+      }
+      // wall quadrants: the real game mirrors the 234x156 corner piece 4 ways
+      c.drawImage(walls, 0, 0, 234, 156, 0, 0, 234, 156);
+      c.save(); c.translate(VIEW_W, 0); c.scale(-1, 1);
+      c.drawImage(walls, 0, 0, 234, 156, 0, 0, 234, 156); c.restore();
+      c.save(); c.translate(0, VIEW_H); c.scale(1, -1);
+      c.drawImage(walls, 0, 0, 234, 156, 0, 0, 234, 156); c.restore();
+      c.save(); c.translate(VIEW_W, VIEW_H); c.scale(-1, -1);
+      c.drawImage(walls, 0, 0, 234, 156, 0, 0, 234, 156); c.restore();
+    } else {
+      // fallback: original drawn room
+      for (let ty = 0; ty < VIEW_H / 30 + 1; ty++) {
+        for (let tx = 0; tx < VIEW_W / 30 + 1; tx++) {
+          c.fillStyle = (tx + ty) % 2 === 0 ? "#2a1f18" : "#251b15";
+          c.fillRect(tx * 30, ty * 30, 30, 30);
+        }
+      }
+      c.fillStyle = "#171210";
+      c.fillRect(0, 0, VIEW_W, WALL);
+      c.fillRect(0, VIEW_H - WALL, VIEW_W, WALL);
+      c.fillRect(0, 0, WALL, VIEW_H);
+      c.fillRect(VIEW_W - WALL, 0, WALL, VIEW_H);
+      c.fillStyle = "#332620";
+      for (let x = 4; x < VIEW_W - 4; x += 24) {
+        c.fillRect(x, 4, 18, WALL - 10);
+        c.fillRect(x, VIEW_H - WALL + 6, 18, WALL - 10);
+      }
+      for (let y = 4; y < VIEW_H - 4; y += 24) {
+        c.fillRect(4, y, WALL - 10, 18);
+        c.fillRect(VIEW_W - WALL + 6, y, WALL - 10, 18);
       }
     }
-    // faint cracks
-    c.fillStyle = "rgba(0,0,0,0.25)";
-    c.fillRect(90, 150, 14, 2);
-    c.fillRect(320, 90, 2, 12);
-    // walls
-    c.fillStyle = "#171210";
-    c.fillRect(0, 0, VIEW_W, WALL);
-    c.fillRect(0, VIEW_H - WALL, VIEW_W, WALL);
-    c.fillRect(0, 0, WALL, VIEW_H);
-    c.fillRect(VIEW_W - WALL, 0, WALL, VIEW_H);
-    // wall stones
-    c.fillStyle = "#332620";
-    for (let x = 4; x < VIEW_W - 4; x += 24) {
-      c.fillRect(x, 4, 18, WALL - 10);
-      c.fillRect(x, VIEW_H - WALL + 6, 18, WALL - 10);
-    }
-    for (let y = 4; y < VIEW_H - 4; y += 24) {
-      c.fillRect(4, y, WALL - 10, 18);
-      c.fillRect(VIEW_W - WALL + 6, y, WALL - 10, 18);
-    }
-    // door
+
+    // door opening (top for main, bottom for shop)
     const doorY = this.room === "main" ? 0 : VIEW_H - WALL;
-    c.fillStyle = "#0d0a08";
-    c.fillRect(VIEW_W / 2 - 16, doorY, 32, WALL);
-    c.fillStyle = "#4a3628";
-    c.fillRect(VIEW_W / 2 - 18, doorY + (this.room === "main" ? WALL - 4 : 0), 36, 4);
+    c.fillStyle = "#0a0605";
+    c.fillRect(VIEW_W / 2 - 20, doorY, 40, WALL);
+    c.fillStyle = "#1c1210";
+    c.fillRect(VIEW_W / 2 - 16, doorY + (this.room === "main" ? 6 : 0), 32, WALL - 6);
+    c.fillStyle = "rgba(242,215,94,0.25)";
+    c.fillRect(VIEW_W / 2 - 12, doorY + (this.room === "main" ? WALL - 5 : 0), 24, 5);
+  }
+
+  /** Draw a 32px-grid sprite crop with drawn-art fallback. */
+  private sheetCrop(
+    c: CanvasRenderingContext2D,
+    img: HTMLImageElement | undefined,
+    sx: number,
+    sy: number,
+    sw: number,
+    sh: number,
+    dx: number,
+    dy: number,
+    fallback: () => void,
+  ) {
+    if (img) c.drawImage(img, sx, sy, sw, sh, Math.round(dx), Math.round(dy), sw, sh);
+    else fallback();
   }
 
   private drawProp(c: CanvasRenderingContext2D, p: Prop) {
+    const env = this.assets?.env ?? {};
     const jitter = p.anim ? Math.round(Math.sin(this.time * 60) * 1.5) : 0;
-    const x = Math.round(p.x + jitter);
-    const y = Math.round(p.y);
+    const x = Math.round(p.x + jitter) - 3; // 32px sprites on 26px cells
+    const y = Math.round(p.y) - 5;
+
     if (p.dead) {
       if (p.kind === "poop") {
-        c.fillStyle = "#4a3628";
-        c.fillRect(x + 2, y + p.h - 6, p.w - 4, 4);
+        this.sheetCrop(c, env.poop, 128, 0, 32, 32, x, y, () => {
+          c.fillStyle = "#4a3628";
+          c.fillRect(p.x + 2, p.y + p.h - 6, p.w - 4, 4);
+        });
       } else if (p.kind !== "pedestal") {
-        c.fillStyle = "#241a16";
-        c.fillRect(x + 3, y + p.h - 8, p.w - 6, 6);
+        c.fillStyle = "rgba(0,0,0,0.25)";
+        c.beginPath();
+        c.ellipse(p.x + p.w / 2, p.y + p.h - 4, p.w / 2 - 2, 3, 0, 0, Math.PI * 2);
+        c.fill();
       }
       return;
     }
+
     switch (p.kind) {
       case "rock":
-        c.fillStyle = "#5d5148";
-        c.fillRect(x, y + 3, p.w, p.h - 3);
-        c.fillStyle = "#77685c";
-        c.fillRect(x + 2, y, p.w - 4, p.h - 6);
-        c.fillStyle = "#493f38";
-        c.fillRect(x + 4, y + p.h - 8, p.w - 8, 4);
+        this.sheetCrop(c, env.rocks, 0, 0, 32, 32, x, y, () => {
+          c.fillStyle = "#5d5148";
+          c.fillRect(p.x, p.y + 3, p.w, p.h - 3);
+          c.fillStyle = "#77685c";
+          c.fillRect(p.x + 2, p.y, p.w - 4, p.h - 6);
+        });
         break;
       case "poop": {
-        const shade = p.hp >= 3 ? "#7a5230" : p.hp === 2 ? "#6a4629" : "#553a22";
-        c.fillStyle = shade;
-        c.fillRect(x + 2, y + p.h - 8, p.w - 4, 8);
-        if (p.hp >= 2) c.fillRect(x + 4, y + p.h - 14, p.w - 8, 7);
-        if (p.hp >= 3) c.fillRect(x + 7, y + p.h - 19, p.w - 14, 6);
+        const state = Math.min(3, (p.maxHp ?? 3) - p.hp);
+        this.sheetCrop(c, env.poop, state * 32, 0, 32, 32, x, y, () => {
+          const shade = p.hp >= 3 ? "#7a5230" : p.hp === 2 ? "#6a4629" : "#553a22";
+          c.fillStyle = shade;
+          c.fillRect(p.x + 2, p.y + p.h - 8, p.w - 4, 8);
+          if (p.hp >= 2) c.fillRect(p.x + 4, p.y + p.h - 14, p.w - 8, 7);
+          if (p.hp >= 3) c.fillRect(p.x + 7, p.y + p.h - 19, p.w - 14, 6);
+        });
         break;
       }
       case "spike":
-        c.fillStyle = "#3a3f45";
-        for (let i = 0; i < 3; i++) {
-          const sx = x + 2 + i * 8;
-          c.beginPath();
-          c.moveTo(sx, y + p.h - 2);
-          c.lineTo(sx + 3, y + 4);
-          c.lineTo(sx + 6, y + p.h - 2);
-          c.closePath();
-          c.fill();
-        }
+        this.sheetCrop(c, env.spikes, 0, 0, 32, 32, x, y, () => {
+          c.fillStyle = "#3a3f45";
+          for (let i = 0; i < 3; i++) {
+            const sx = p.x + 2 + i * 8;
+            c.beginPath();
+            c.moveTo(sx, p.y + p.h - 2);
+            c.lineTo(sx + 3, p.y + 4);
+            c.lineTo(sx + 6, p.y + p.h - 2);
+            c.closePath();
+            c.fill();
+          }
+        });
         break;
       case "fire": {
-        const f = Math.floor(this.time * 8) % 2;
-        c.fillStyle = "#3a2a20";
-        c.fillRect(x, y + p.h - 6, p.w, 6);
-        if (p.hp >= 1) {
-          c.fillStyle = f ? "#d9531e" : "#c9a227";
-          c.fillRect(x + 4, y + 6 - f * 2, p.w - 8, p.h - 12 + f * 2);
-          c.fillStyle = f ? "#f2b134" : "#d9531e";
-          c.fillRect(x + 7, y + 10 - f * 3, p.w - 14, p.h - 16 + f * 3);
-        }
-        if (p.hp === 1) c.globalAlpha = 1; // weakened fire drawn same, smaller inner flame handled above
+        const f = Math.floor(this.time * 8) % 4;
+        this.sheetCrop(c, env.fireplace, f * 32, 0, 32, 32, x, y, () => {
+          const fb = Math.floor(this.time * 8) % 2;
+          c.fillStyle = "#3a2a20";
+          c.fillRect(p.x, p.y + p.h - 6, p.w, 6);
+          c.fillStyle = fb ? "#d9531e" : "#c9a227";
+          c.fillRect(p.x + 4, p.y + 6 - fb * 2, p.w - 8, p.h - 12 + fb * 2);
+          c.fillStyle = fb ? "#f2b134" : "#d9531e";
+          c.fillRect(p.x + 7, p.y + 10 - fb * 3, p.w - 14, p.h - 16 + fb * 3);
+        });
         break;
       }
       case "tnt":
-        c.fillStyle = "#8c2f2b";
-        c.fillRect(x, y + 4, p.w, p.h - 4);
-        c.fillStyle = "#a83a35";
-        c.fillRect(x + 2, y + 6, p.w - 4, p.h - 10);
-        c.fillStyle = "#e8ddc4";
-        c.font = "8px monospace";
-        c.textAlign = "center";
-        c.fillText("TNT", x + p.w / 2, y + p.h - 8);
-        break;
-      case "dummy":
-        // punching bag on a stand
-        c.fillStyle = "#241a16";
-        c.fillRect(x + p.w / 2 - 2, y + p.h - 10, 4, 10);
-        c.fillStyle = "#6a4629";
-        c.fillRect(x + 6, y + p.h - 12, p.w - 12, 4);
-        c.fillStyle = "#7d7468";
-        c.fillRect(x + 3, y, p.w - 6, p.h - 12);
-        c.fillStyle = "#93887a";
-        c.fillRect(x + 5, y + 2, p.w - 10, 8);
-        c.fillStyle = "#5c0d10";
-        c.fillRect(x + 3, y + 14, p.w - 6, 3);
-        break;
-      case "pedestal":
-        c.fillStyle = "#5d5148";
-        c.fillRect(x + 2, y + p.h - 8, p.w - 4, 8);
-        c.fillStyle = "#77685c";
-        c.fillRect(x, y + p.h - 12, p.w, 5);
-        if (p.itemImg) {
-          const bob = Math.floor(this.time * 2) % 2;
-          c.drawImage(p.itemImg, x - 3, y - 18 + bob, 30, 30);
-        }
-        if (p.itemSlug && p.price) {
-          c.fillStyle = "#c9a227";
+        this.sheetCrop(c, env.tnt, 0, 0, 32, 40, x, y - 8, () => {
+          c.fillStyle = "#8c2f2b";
+          c.fillRect(p.x, p.y + 4, p.w, p.h - 4);
+          c.fillStyle = "#e8ddc4";
           c.font = "8px monospace";
           c.textAlign = "center";
-          c.fillText(`${p.price}¢`, x + p.w / 2, y + p.h + 9);
+          c.fillText("TNT", p.x + p.w / 2, p.y + p.h - 8);
+        });
+        break;
+      case "dummy": {
+        const img = env.punchingbag;
+        if (img) {
+          const s = 1.6; // punching bag reads better slightly enlarged
+          c.drawImage(img, 0, 0, 32, 32, Math.round(p.x + p.w / 2 - 16 * s) + jitter, Math.round(p.y + p.h - 32 * s), Math.round(32 * s), Math.round(32 * s));
+        } else {
+          c.fillStyle = "#241a16";
+          c.fillRect(p.x + p.w / 2 - 2, p.y + p.h - 10, 4, 10);
+          c.fillStyle = "#7d7468";
+          c.fillRect(p.x + 3, p.y, p.w - 6, p.h - 12);
+          c.fillStyle = "#5c0d10";
+          c.fillRect(p.x + 3, p.y + 14, p.w - 6, 3);
         }
         break;
+      }
+      case "pedestal": {
+        // stone pedestal (original art — no clean pedestal sprite in grid gfx)
+        c.fillStyle = "rgba(0,0,0,0.3)";
+        c.beginPath();
+        c.ellipse(p.x + p.w / 2, p.y + p.h - 2, 12, 4, 0, 0, Math.PI * 2);
+        c.fill();
+        c.fillStyle = "#57493d";
+        c.fillRect(p.x + 5, p.y + p.h - 12, p.w - 10, 8);
+        c.fillStyle = "#6e5f50";
+        c.fillRect(p.x + 3, p.y + p.h - 16, p.w - 6, 5);
+        c.fillStyle = "#7d6e5e";
+        c.fillRect(p.x + 4, p.y + p.h - 17, p.w - 8, 2);
+        if (p.itemImg) {
+          const bob = Math.floor(this.time * 2) % 2;
+          c.drawImage(p.itemImg, Math.round(p.x + p.w / 2 - 16), Math.round(p.y + p.h - 48 + bob), 32, 32);
+        }
+        if (p.itemSlug && p.price) {
+          const coin = env.coins;
+          if (coin) c.drawImage(coin, 0, 0, 32, 32, Math.round(p.x + p.w / 2 - 22), Math.round(p.y + p.h - 4), 16, 16);
+          c.fillStyle = "#f2d75e";
+          c.font = "8px 'Press Start 2P', monospace";
+          c.textAlign = "left";
+          c.fillText(`${p.price}`, p.x + p.w / 2 - 4, p.y + p.h + 8);
+          c.textAlign = "center";
+        }
+        break;
+      }
     }
   }
 
   private drawBomb(c: CanvasRenderingContext2D, b: Bomb) {
+    const img = this.assets?.env.bomb;
     const blink = b.fuse < 0.5 && Math.floor(this.time * 12) % 2 === 0;
-    c.fillStyle = blink ? "#d9534f" : "#2b2233";
-    c.beginPath();
-    c.arc(Math.round(b.x), Math.round(b.y), 7, 0, Math.PI * 2);
-    c.fill();
-    c.fillStyle = "#c9a227";
-    c.fillRect(Math.round(b.x) - 1, Math.round(b.y) - 11, 2, 5);
+    if (img && !blink) {
+      c.drawImage(img, 0, 0, 32, 32, Math.round(b.x - 16), Math.round(b.y - 24), 32, 32);
+    } else {
+      c.fillStyle = blink ? "#e04a3f" : "#2b2233";
+      c.beginPath();
+      c.arc(Math.round(b.x), Math.round(b.y - 6), 8, 0, Math.PI * 2);
+      c.fill();
+      c.fillStyle = "#c9a227";
+      c.fillRect(Math.round(b.x) - 1, Math.round(b.y) - 18, 2, 6);
+    }
+  }
+
+  // ---------------------------------------------------------------- player
+  private animFrame(anim: { layer: string; frames: Anm2Frame[] }[] | undefined, layer: string, t: number, freeze = false): Anm2Frame | null {
+    const la = anim?.find((l) => l.layer === layer) ?? anim?.[0];
+    if (!la || la.frames.length === 0) return null;
+    const total = la.frames.reduce((s, f) => s + f.delay, 0);
+    let tick = freeze ? 0 : Math.floor(t * ANM_FPS) % Math.max(1, total);
+    for (const f of la.frames) {
+      tick -= f.delay;
+      if (tick < 0) return f;
+    }
+    return la.frames[la.frames.length - 1];
+  }
+
+  private drawAnm2Frame(c: CanvasRenderingContext2D, sheet: HTMLImageElement, f: Anm2Frame, ox: number, oy: number, scale: number) {
+    c.save();
+    c.translate(Math.round(ox + f.ox * scale), Math.round(oy + f.oy * scale));
+    if (f.flipX) c.scale(-1, 1);
+    c.scale(scale, scale);
+    c.drawImage(f.x >= 0 ? sheet : sheet, f.x, f.y, f.w, f.h, -f.px, -f.py, f.w, f.h);
+    c.restore();
   }
 
   private drawPlayer(c: CanvasRenderingContext2D) {
-    const bob = this.walking
-      ? [0, 1, 0, -1][Math.floor(this.time * 10) % 4]
-      : [0, 0, 1, 1][Math.floor(this.time * 3) % 4];
-    const x = Math.round(this.px);
-    const y = Math.round(this.py + bob);
-
-    // shadow (bigger offset when flying)
     const flight = this.params.tags.has("flight");
+    const lift = flight ? 4 + Math.round(Math.sin(this.time * 4)) : 0;
+    const scale = this.params.tags.has("size_up") ? 1.18 : 1;
+    const x = Math.round(this.px);
+    const y = Math.round(this.py - lift);
+
     c.fillStyle = "rgba(0,0,0,0.35)";
     c.beginPath();
-    c.ellipse(x, y + 16, 10, 3, 0, 0, Math.PI * 2);
+    c.ellipse(x, Math.round(this.py) + 8, 10, 3, 0, 0, Math.PI * 2);
     c.fill();
 
-    const lift = flight ? 5 : 0;
-    if (this.playerImg) {
-      const img = this.playerImg;
-      const h = 38;
-      const w = Math.max(16, Math.round((img.width / img.height) * h));
+    const anim = this.assets?.playerAnim;
+    if (this.playerSheet && anim) {
+      // real .anm2 rendering: body layer + head layer
+      const walkDir =
+        Math.abs(this.moveDir.x) >= Math.abs(this.moveDir.y)
+          ? this.moveDir.x < 0 ? "Left" : "Right"
+          : this.moveDir.y < 0 ? "Up" : "Down";
+      const body = this.animFrame(anim[`Walk${walkDir}`], "body", this.walkTime, !this.walking);
+      const headAnim = anim[`Head${this.headDir}`];
+      const headFrames = headAnim?.find((l) => l.layer === "head")?.frames;
+      const head =
+        this.fireFlash > 0 && headFrames && headFrames.length > 1
+          ? headFrames[1]
+          : headFrames?.[0] ?? null;
+      if (body) this.drawAnm2Frame(c, this.playerSheet, body, x, y, scale);
+      if (head) this.drawAnm2Frame(c, this.playerSheet, head, x, y, scale);
+    } else if (this.playerPortrait) {
+      // fallback: portrait sprite with the old bob animation
+      const img = this.playerPortrait;
+      const bob = this.walking ? [0, 1, 0, -1][Math.floor(this.time * 10) % 4] : [0, 0, 1, 1][Math.floor(this.time * 3) % 4];
+      const h = 40;
+      const w = Math.max(18, Math.round((img.width / img.height) * h));
       c.save();
-      c.translate(x, y - lift);
-      if (this.facing === -1) c.scale(-1, 1);
-      // size-up costume cue for big damage multipliers
-      const grow = this.params.tags.has("size_up") ? 1.18 : 1;
-      c.drawImage(img, Math.round(-w / 2), Math.round(-h + 14), Math.round(w * grow), Math.round(h * grow));
+      c.translate(x, y + bob);
+      if (this.headDir === "Left" || this.moveDir.x < 0) c.scale(-1, 1);
+      c.drawImage(img, Math.round((-w / 2) * scale), Math.round((-h + 12) * scale), Math.round(w * scale), Math.round(h * scale));
       c.restore();
     } else {
       c.fillStyle = "#e8ddc4";
-      c.fillRect(x - 7, y - 20 - lift, 14, 14);
+      c.fillRect(x - 8, y - 24, 16, 16);
       c.fillStyle = "#c9b8a0";
-      c.fillRect(x - 4, y - 6 - lift, 8, 10);
+      c.fillRect(x - 5, y - 8, 10, 12);
     }
 
-    // hold-above-head pose after pickup
     if (this.holdItem?.img) {
-      c.drawImage(this.holdItem.img, x - 12, y - 52, 24, 24);
+      c.drawImage(this.holdItem.img, x - 16, y - 62, 32, 32);
     }
   }
 
   private drawTear(c: CanvasRenderingContext2D, t: Tear) {
+    const atlas = this.assets?.env.tears;
+    const tearAnim = this.assets?.tearAnim;
+    const poof = this.assets?.env.tearpoof;
     const x = Math.round(t.x);
-    const y = Math.round(t.y - Math.sin((t.traveled / t.max) * Math.PI) * 4);
+    const y = Math.round(t.y - Math.sin(Math.min(1, t.traveled / t.max) * Math.PI) * 5);
+
     if (t.splash >= 0) {
-      const frame = Math.floor(t.splash / 0.08);
-      c.fillStyle = "#9db4d8";
-      if (frame === 0) c.fillRect(x - 3, y - 3, 6, 6);
-      else if (frame === 1) {
-        c.fillRect(x - 5, y - 1, 3, 3);
-        c.fillRect(x + 2, y - 1, 3, 3);
-        c.fillRect(x - 1, y - 5, 3, 3);
-        c.fillRect(x - 1, y + 2, 3, 3);
+      const frame = Math.floor(t.splash / 0.075);
+      if (poof) {
+        const col = Math.min(3, frame);
+        c.drawImage(poof, col * 64, 0, 64, 64, x - 24, y - 24, 48, 48);
       } else {
-        c.fillRect(x - 6, y - 6, 2, 2);
-        c.fillRect(x + 4, y - 6, 2, 2);
-        c.fillRect(x - 6, y + 4, 2, 2);
-        c.fillRect(x + 4, y + 4, 2, 2);
+        c.fillStyle = "#9db4d8";
+        if (frame === 0) c.fillRect(x - 3, y - 3, 6, 6);
+        else if (frame === 1) {
+          c.fillRect(x - 5, y - 1, 3, 3);
+          c.fillRect(x + 2, y - 1, 3, 3);
+          c.fillRect(x - 1, y - 5, 3, 3);
+          c.fillRect(x - 1, y + 2, 3, 3);
+        } else {
+          c.fillRect(x - 6, y - 6, 2, 2);
+          c.fillRect(x + 4, y - 6, 2, 2);
+          c.fillRect(x - 6, y + 4, 2, 2);
+          c.fillRect(x + 4, y + 4, 2, 2);
+        }
       }
       return;
     }
+
+    if (atlas && tearAnim) {
+      // size variant from damage: the game scales tears with damage ups
+      const idx = this.params.tags.has("tiny_tears")
+        ? 3
+        : Math.max(4, Math.min(12, Math.round(4 + (t.damage - 3.5) * 0.6)));
+      const frames = tearAnim[`RegularTear${idx}`]?.[0]?.frames;
+      const f = frames?.[0];
+      if (f) {
+        c.drawImage(atlas, f.x, f.y, f.w, f.h, x - Math.round(f.w / 2), y - Math.round(f.h / 2), f.w, f.h);
+        return;
+      }
+    }
     const laser = this.params.tags.has("laser");
-    c.fillStyle = laser ? "#d9534f" : "#b9c6d8";
+    c.fillStyle = laser ? "#e04a3f" : "#b9c6d8";
     c.beginPath();
-    c.arc(x, y, this.params.tags.has("tiny_tears") ? 2 : 3.5, 0, Math.PI * 2);
+    c.arc(x, y, this.params.tags.has("tiny_tears") ? 2 : 4, 0, Math.PI * 2);
     c.fill();
     c.fillStyle = laser ? "#f2a09c" : "#e8f0fa";
     c.fillRect(x - 1, y - 2, 2, 2);

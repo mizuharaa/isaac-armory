@@ -894,7 +894,7 @@
     ],
     "quote": "Temporary Flight",
     "description": "Grants flight for the current room. Instantly kills Mom, Mom's Heart, and It Lives when activated, but kills Isaac when used on Satan.",
-    "recharge": 6,
+    "recharge": 4,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -955,7 +955,7 @@
     ],
     "quote": "Mass room damage",
     "description": "Deals 40 damage to every enemy in the room.",
-    "recharge": 6,
+    "recharge": 4,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -1084,7 +1084,7 @@
     ],
     "quote": "Become the bomb!",
     "description": "Creates an explosion around Isaac, damaging him and nearby enemies as well as destroying obstacles.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -1992,7 +1992,7 @@
     ],
     "quote": "Temporary badass",
     "description": "Gives invulnerability and +0.28 speed for six seconds, removing the ability to shoot tears and replacing it with the ability to deal contact damage to enemies.",
-    "recharge": 6,
+    "recharge": 4,
     "statModifiers": {
       "speed": 0.28
     },
@@ -2442,7 +2442,7 @@
     ],
     "quote": "Temporary Man-Pac",
     "description": "Turns Isaac into a Pac-Man-like creature for 6.5 seconds, granting invulnerability, inflicting fear on all enemies, and has a chance of replenishing a Half Red Heart every time an enemy is killed.",
-    "recharge": 6,
+    "recharge": 4,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -2844,7 +2844,7 @@
     ],
     "quote": "Cut and run",
     "description": "Separates Isaac's head from his body for the current room, granting flight and turning the body into a familiar that chases enemies.",
-    "recharge": 6,
+    "recharge": 4,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -3305,7 +3305,7 @@
     ],
     "quote": "Temporary buddy generator",
     "description": "Spawns a familiar from a specific selection for the current room. Spawns a familiar from a specific selection for the current floor.",
-    "recharge": 3,
+    "recharge": 6,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -3386,7 +3386,7 @@
     ],
     "quote": "Feel my pain",
     "description": "Takes one Red Heart of health and grants +1.2 damage for the current room. Repeated uses in the same room only take half a heart.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "statModifiers": {
       "damage": 1.2
     },
@@ -3416,7 +3416,7 @@
     ],
     "quote": "I don't remember...",
     "description": "Restarts the current floor with a new layout. Isaac loses Forget Me Now, but keeps other items and consumables picked up on the original floor.",
-    "recharge": "one_time",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -3492,7 +3492,7 @@
     "pools": [],
     "quote": "Flight + dash attack",
     "description": "Passively grants flight and increases speed to 1.5. Upon use, Isaac charges in the direction the pony is facing, giving invulnerability during the charge and dealing damage to enemies hit.",
-    "recharge": 4,
+    "recharge": 2,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -3631,7 +3631,7 @@
     ],
     "quote": "Portable blood bank",
     "description": "Damages Isaac and spawns a random amount of coins, similar to a Blood Donation Machine.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -3684,7 +3684,7 @@
     ],
     "quote": "Remote bomb detonation",
     "description": "Bombs placed by Isaac only explode when Remote Detonator is used. Gives 5 bombs.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -3951,7 +3951,7 @@
     "pools": [],
     "quote": "Rocks don't stand a chance",
     "description": "Isaac destroys obstacles and opens Secret Rooms by walking into them, but cannot shoot or pick up items until it's cancelled. Toggles between tears and the pickaxe, which can be swung to attack and break obstacles. Using it depletes the charge, and it can't be used until next floor once the charge runs out.",
-    "recharge": "unlimited",
+    "recharge": 64,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -3977,7 +3977,7 @@
     ],
     "quote": "Rocks don't stand a chance",
     "description": "Isaac destroys obstacles and opens Secret Rooms by walking into them, but cannot shoot or pick up items until it's cancelled Toggles between tears and the pickaxe, which can be swung to attack and break obstacles. Using it depletes the charge, and it can't be used until next floor once the charge runs out.",
-    "recharge": "unlimited",
+    "recharge": 64,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -4426,7 +4426,7 @@
     ],
     "quote": "Reusable flames",
     "description": "Throws out a flame that damages everything in its path, diminishing in size as it travels.",
-    "recharge": 4,
+    "recharge": 110,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -4774,7 +4774,7 @@
     ],
     "quote": "Gamble 24/7",
     "description": "Consumes 1 penny and has a chance to drop a random pickup, like a Slot Machine.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "shopPrice": 15,
     "statModifiers": {},
     "statModifiersSource": "none",
@@ -4872,7 +4872,7 @@
     "pools": [],
     "quote": "Flight + holy death",
     "description": "Passively grants flight and increases speed to 1.5. Upon use, Isaac charges in the direction the pony is facing, giving invulnerability during the charge while also creating damaging beams of light.",
-    "recharge": 6,
+    "recharge": 2,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -5017,7 +5017,7 @@
     ],
     "quote": "Mass enemy damage at a cost",
     "description": "Takes a full heart of health and deals 40 damage to all enemies in the room. Repeated uses in the same room only take half a heart.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -7039,7 +7039,7 @@
     ],
     "quote": "Rune mimic",
     "description": "Has the same effect as the rune or soul stone currently held by Isaac. The charge time is based on the power of the rune.",
-    "recharge": "timed",
+    "recharge": 4,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -7577,7 +7577,7 @@
     ],
     "quote": "It's time you learned how",
     "description": "Isaac jumps in the direction he is currently moving, allowing travel over obstacles and enemies.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -7656,7 +7656,7 @@
     ],
     "quote": "Reroll enemies",
     "description": "Re-rolls all monsters in the room. Replaces all monsters in the room with weaker monsters.",
-    "recharge": 1,
+    "recharge": 2,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -7762,7 +7762,7 @@
     ],
     "quote": "Flame on",
     "description": "Throws out a flame that damages everything in its path, diminishing in size as it hits enemies or blocks shots.",
-    "recharge": 4,
+    "recharge": 110,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -7786,7 +7786,7 @@
     ],
     "quote": "Save your life",
     "description": "When at full health, up to 4 extra Red Hearts can be stored in The Jar. Activating drops the stored hearts on the ground.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "shopPrice": 15,
     "statModifiers": {},
     "statModifiersSource": "none",
@@ -7812,7 +7812,7 @@
     ],
     "quote": "...",
     "description": "Turns all non-boss monsters in the room into poop. Instantly kills poop-themed bosses. Floods the current room.",
-    "recharge": 6,
+    "recharge": 4,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -7863,7 +7863,7 @@
     "pools": [],
     "quote": "Krampus rage",
     "description": "Fires a powerful Brimstone beam in four cardinal directions, much like Krampus shoots. Fires a powerful Brimstone beam in four cardinal directions, much like Krampus shoots, with a 50% chance to rotate all beams around Isaac 90 degrees.",
-    "recharge": 6,
+    "recharge": 3,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -7888,7 +7888,7 @@
     ],
     "quote": "Reusable knock-back",
     "description": "Isaac farts and knocks back nearby enemies and projectiles. Enemies pushed into walls or obstacles take 12 damage.",
-    "recharge": 3,
+    "recharge": 90,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -7913,7 +7913,7 @@
     ],
     "quote": "Pay to win",
     "description": "Uses 1 Penny to deal damage to all enemies in the room.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "shopPrice": 15,
     "statModifiers": {},
     "statModifiersSource": "none",
@@ -7937,7 +7937,7 @@
     ],
     "quote": "Convert your soul",
     "description": "Converts two Soul Hearts or Black Hearts into one filled Red Heart Container. Converts one Soul Heart or Black Heart into one filled Red Heart Container.",
-    "recharge": "unlimited",
+    "recharge": 3,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -8686,7 +8686,7 @@
     ],
     "quote": "Lose your head",
     "description": "Turns Isaac's head into a stationary familiar for the current room which fires tears automatically. Isaac's body also shoots a controllable fountain of blood shots for the room.",
-    "recharge": 6,
+    "recharge": 4,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -8712,7 +8712,7 @@
     ],
     "quote": "Invincibility at a cost",
     "description": "Grants a brief moment of invincibility when the charge bar hits zero. Isaac begins taking damage if the item is held any longer. Isaac creates beams of light when touching enemies while invulnerable, and creates a powerful 4-way beam if blocking damage exactly as the invincibility starts.",
-    "recharge": 6,
+    "recharge": 90,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -9041,7 +9041,7 @@
     ],
     "quote": "It will never leave you",
     "description": "Throws a boomerang which retrieves pickups, as well as damages and petrifies enemies hit for 2 seconds.",
-    "recharge": 2,
+    "recharge": 70,
     "shopPrice": 15,
     "statModifiers": {},
     "statModifiersSource": "none",
@@ -9283,7 +9283,7 @@
     ],
     "quote": "Double item vision",
     "description": "Duplicates all pickups and item pedestals in the room.",
-    "recharge": "one_time",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -9386,7 +9386,7 @@
     ],
     "quote": "Giga fart!",
     "description": "Petrifies all enemies in the current room for about 1.5 seconds, poisons any enemies near Isaac, and sends a rock wave across the room in the direction Isaac is facing.",
-    "recharge": 6,
+    "recharge": 3,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -9412,7 +9412,7 @@
     ],
     "quote": "Be gentle...",
     "description": "Fires a high-damage piercing spectral tear, but lowers Isaac's health to half a heart. Fires a high-damage piercing spectral tear. If Isaac takes damage while holding this, he takes extra damage and it becomes Broken Glass Cannon.",
-    "recharge": 4,
+    "recharge": 110,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -9546,7 +9546,7 @@
     ],
     "quote": "Double your friends",
     "description": "Duplicates all of Isaac's familiars for the current room. If Isaac has no familiars, spawns a Demon Baby for the room instead.",
-    "recharge": 4,
+    "recharge": 3,
     "shopPrice": 15,
     "statModifiers": {},
     "statModifiersSource": "none",
@@ -10217,7 +10217,7 @@
     ],
     "quote": "Gotta fetch 'em all!",
     "description": "Throwing the ball at a monster instantly kills and captures it. The captured enemy can later be released and will be friendly, fighting for Isaac and persisting between rooms.",
-    "recharge": 3,
+    "recharge": 2,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -10243,7 +10243,7 @@
     ],
     "quote": "Remote tear detonation!",
     "description": "Splits all of Isaac's tears that are currently in the air into 6 tears that fire in all directions, which retain their damage and shot speed.",
-    "recharge": 1,
+    "recharge": 450,
     "shopPrice": 15,
     "statModifiers": {},
     "statModifiersSource": "none",
@@ -11264,7 +11264,7 @@
     ],
     "quote": "Love toots!",
     "description": "Isaac farts, charming all nearby enemies.",
-    "recharge": 2,
+    "recharge": 1,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -11598,7 +11598,7 @@
     ],
     "quote": "Bug catcher",
     "description": "Killing an enemy adds a fly to the jar, up to a maximum of 20. On use, releases Blue Flies equal to the number of flies in the jar.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -12686,7 +12686,7 @@
     ],
     "quote": "My last resort",
     "description": "Kills all enemies in the room, then kills Isaac three seconds later.",
-    "recharge": "one_time",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -12738,7 +12738,7 @@
     ],
     "quote": "Consume",
     "description": "Consumes all pedestal items in the room. Active items will have their effects added to Void, and passive items will grant random stat upgrades.",
-    "recharge": 4,
+    "recharge": 6,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -12915,7 +12915,7 @@
     ],
     "quote": "I can't believe it's not butter bean!",
     "description": "Isaac farts, sending out a circular rock wave that destroys obstacles and hurts enemies.",
-    "recharge": 10,
+    "recharge": 300,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -13442,7 +13442,7 @@
     ],
     "quote": "Friendly fly",
     "description": "Spawns a stationary fly turret that lasts for the current room and fires tears at nearby enemies.",
-    "recharge": 8,
+    "recharge": 250,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -13520,7 +13520,7 @@
     ],
     "quote": "More blood!",
     "description": "Damages all enemies in the room. Has a chance to drop a half red heart or half soul heart if an enemy is hit. Damages all enemies in the room. Has a chance to drop a half red heart if an enemy is hit.",
-    "recharge": 10,
+    "recharge": 300,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -13915,7 +13915,7 @@
     ],
     "quote": "Power of the mind",
     "description": "Any enemy shots that come near Isaac for the next three seconds are held in place then fired back.",
-    "recharge": 3,
+    "recharge": 200,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -14280,7 +14280,7 @@
     ],
     "quote": "He demands a sacrifice",
     "description": "Sacrifices up to 2 familiars and spawns an item for each familiar sacrificed. Converts all friendly spiders and flies into coins.",
-    "recharge": "one_time",
+    "recharge": 0,
     "devilPrice": 2,
     "statModifiers": {},
     "statModifiersSource": "none",
@@ -14521,7 +14521,7 @@
     ],
     "quote": "Rise from the grave",
     "description": "Creates a friendly Bony, Black Bony, or an orbital bone for each enemy killed in the current room. Creates a friendly Bony, Black Bony, Bone Fly, Revenant, or an orbital bone for each enemy killed in the current room.",
-    "recharge": 4,
+    "recharge": 6,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -14749,7 +14749,7 @@
     ],
     "quote": "Pain from gain",
     "description": "Spends five Penny to increase Isaac's damage by 1.2 for the current room.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -15328,7 +15328,7 @@
     ],
     "quote": "A king's fortune... but at what cost?",
     "description": "Spawns a sword above Isaac's head, which doubles all item pedestals. After Isaac takes damage, the sword can randomly fall at any point, instantly killing him.",
-    "recharge": "one_time",
+    "recharge": 0,
     "devilPrice": 2,
     "statModifiers": {},
     "statModifiersSource": "none",
@@ -15464,7 +15464,7 @@
     ],
     "quote": "Tears up. A mind changing experience!",
     "description": "Increases fire rate, decreases speed, and distorts the screen. All effects become more pronounced with repeated use, and wear off by clearing rooms.",
-    "recharge": 0,
+    "recharge": 900,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -16450,7 +16450,7 @@
     ],
     "quote": "Open your enemies",
     "description": "Adds 5 keys on pickup. Allows Isaac to throw his keys to deal damage to enemies, destroy obstacles, and open doors.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -16578,7 +16578,7 @@
     ],
     "quote": "Where am I?",
     "description": "Takes Isaac to an abandoned and expanded version of Home, which has one copy of every item in the game. After taking an item, Isaac returns to the room he used Death Certificate in.",
-    "recharge": "one_time",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -16739,7 +16739,7 @@
     ],
     "quote": "Bait and switch",
     "description": "Passively spawns a familiar that moves in the direction Isaac shoots. On use, Isaac swaps places with the familiar.",
-    "recharge": 3,
+    "recharge": 90,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -16873,7 +16873,7 @@
     ],
     "quote": "Unleash their sorrow",
     "description": "Spews a stream of damaging flame. Gains Soul Charges each time an enemy dies, which are used to fuel the urn.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -17255,7 +17255,7 @@
     ],
     "quote": "Let it rip!",
     "description": "Gives +0.5 speed and greatly increases the rotation speed and damage of orbitals for 3 seconds. Passively gives Isaac a spinning top orbital that blocks enemy shots and deals contact damage.",
-    "recharge": 3,
+    "recharge": 90,
     "statModifiers": {
       "speed": 0.5
     },
@@ -18483,7 +18483,7 @@
     ],
     "quote": "Rip and tear",
     "description": "Isaac goes berserk for 5 seconds, greatly increasing his speed, tears, and damage, but restricting him to using a melee weapon instead of his tears. This item charges by dealing damage to enemies instead of clearing rooms.",
-    "recharge": "timed",
+    "recharge": 100000,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -18509,7 +18509,7 @@
     ],
     "quote": "One with the shadows",
     "description": "Briefly grants +1 speed and makes Isaac invulnerable and intangible. When the effect ends, destroys all projectiles and damages all enemies Isaac ran through.",
-    "recharge": 6,
+    "recharge": 180,
     "statModifiers": {
       "speed": 1
     },
@@ -18617,7 +18617,7 @@
     ],
     "quote": "Angel breaker",
     "description": "Isaac dashes forward and picks up the first enemy hit. After a moment, he slams them into the ground to deal damage and create a circular rock wave.",
-    "recharge": 7,
+    "recharge": 200,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -18724,7 +18724,7 @@
     ],
     "quote": "Blood to blood",
     "description": "Removes half a heart and creates a Clot familiar that mimics Isaac's movements and tear effects. As Tainted Eve, passively converts health into Clots while firing. Activating returns all Clots to health.",
-    "recharge": 10,
+    "recharge": 300,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -18747,7 +18747,7 @@
     "pools": [],
     "quote": "Come back",
     "description": "Retrieves the Forgotten's body from any distance. Only available as the Birthright effect for Tainted Forgotten.",
-    "recharge": 3,
+    "recharge": 90,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -18768,7 +18768,7 @@
     "pools": [],
     "quote": "Saved for later",
     "description": "Exclusive to Tainted ???. Allows him to save one poop bomb for later, allowing him to gather more over time.",
-    "recharge": "unlimited",
+    "recharge": 0,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -18930,7 +18930,7 @@
     ],
     "quote": "Repent",
     "description": "Chains down the nearest enemy for 5 seconds, preventing them from acting.",
-    "recharge": 15,
+    "recharge": 450,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [
@@ -19118,7 +19118,7 @@
     ],
     "quote": "Chuck away!",
     "description": "Throws Isaac's head, which is still able to fire tears at the spot it lands. Reactivating the item or stepping on the head reattaches it.",
-    "recharge": 4,
+    "recharge": 110,
     "statModifiers": {},
     "statModifiersSource": "none",
     "behaviorTags": [

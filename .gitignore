@@ -4,3 +4,7 @@ data/.cache/
 data/raw/
 *.local
 .DS_Store
+
+# Locally-extracted game assets — personal use only, NEVER commit or push.
+# (Nicalis asks that unpacked resources not be redistributed.)
+public/assets/

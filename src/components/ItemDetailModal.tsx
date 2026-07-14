@@ -1,7 +1,9 @@
 import { useEffect } from "react";
+import { itemSpriteCandidates } from "../lib/assets";
 import { poolBySlug } from "../lib/data";
 import { DLC_LABEL, type Item } from "../lib/types";
 import { useLoadout } from "../store/loadout";
+import SpriteImg from "./SpriteImg";
 import StatModList from "./StatModList";
 import TierBadge from "./TierBadge";
 
@@ -77,15 +79,11 @@ export default function ItemDetailModal({ item, onClose }: { item: Item; onClose
           </div>
 
           <div className="overflow-visible py-3">
-            {item.imageUrl ? (
-              <img
-                src={item.imageUrl}
-                alt={item.name}
-                className="sprite-zoom sprite-zoom-lg pixelated h-24 w-24 object-contain"
-              />
-            ) : (
-              <span className="text-muted">no sprite</span>
-            )}
+            <SpriteImg
+              candidates={itemSpriteCandidates(item)}
+              alt={item.name}
+              className="sprite-zoom sprite-zoom-lg pixelated h-24 w-24 object-contain"
+            />
           </div>
 
           <p className="italic text-muted">

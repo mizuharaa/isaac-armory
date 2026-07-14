@@ -1,27 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import StatBars from "../components/StatBars";
+import SpriteImg from "../components/SpriteImg";
 import { computeStats, type EquippedItem } from "../engine/stats";
+import { characterSheetUrl, loadFirst, loadGameAssets } from "../game/assets";
 import { Game, VIEW_H, VIEW_W, type RoomId } from "../game/engine";
+import { characterPortraitCandidates, itemSpriteCandidates } from "../lib/assets";
 import { allItems, characterBySlug, itemBySlug, poolBySlug } from "../lib/data";
 import { fuzzyScore } from "../lib/fuzzy";
 import type { Item } from "../lib/types";
 import { useLoadout } from "../store/loadout";
-
-const imageCache = new Map<string, HTMLImageElement>();
-function loadImage(url: string | null | undefined): Promise<HTMLImageElement | null> {
-  if (!url) return Promise.resolve(null);
-  const cached = imageCache.get(url);
-  if (cached) return Promise.resolve(cached);
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => {
-      imageCache.set(url, img);
-      resolve(img);
-    };
-    img.onerror = () => resolve(null);
-    img.src = url;
-  });
-}
 
 function ItemPicker({
   title,
@@ -40,39 +26,41 @@ function ItemPicker({
       .map((i) => ({ i, score: fuzzyScore(query, i.name) }))
       .filter((x) => x.score > 0)
       .sort((a, b) => b.score - a.score || a.i.name.localeCompare(b.i.name));
-    return scored.slice(0, 48).map((x) => x.i);
+    return scored.slice(0, 60).map((x) => x.i);
   }, [query]);
 
   return (
-    <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/70 p-4">
-      <div className="max-h-full w-full max-w-2xl overflow-hidden border-4 border-basement-border bg-basement-panel p-4">
+    <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/80 p-4">
+      <div className="panel max-h-full w-full max-w-3xl overflow-hidden p-4">
         <div className="flex items-center gap-3">
-          <h3 className="font-pixel text-xs text-gold">{title}</h3>
+          <h3 className="punch font-pixel text-sm text-gold">{title}</h3>
           <input
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search items…"
-            className="flex-1 border-2 border-basement-border bg-basement px-2 py-1 text-ink focus:border-gold focus:outline-none"
+            className="flex-1 border-2 border-basement-border bg-black/50 px-3 py-2 text-xl text-ink focus:border-gold focus:outline-none"
           />
-          <button onClick={onClose} className="border-2 border-basement-border px-2 text-muted hover:text-ink">
+          <button onClick={onClose} className="border-2 border-basement-border px-3 py-1 text-muted hover:text-ink">
             ✕
           </button>
         </div>
-        <div className="mt-3 grid max-h-72 grid-cols-4 gap-1.5 overflow-y-auto sm:grid-cols-6 md:grid-cols-8">
+        <div className="mt-3 grid max-h-96 grid-cols-4 gap-2 overflow-y-auto sm:grid-cols-6 md:grid-cols-8">
           {results.map((item) => (
             <button
               key={item.slug}
               onClick={() => onPick(item)}
               title={`${item.name} — ${item.description.slice(0, 120)}`}
-              className={`flex flex-col items-center border p-1.5 hover:bg-basement-raised ${
+              className={`flex flex-col items-center border-2 p-2 hover:bg-basement-raised ${
                 equipped?.includes(item.slug) ? "border-heal" : "border-basement-border"
               }`}
             >
-              {item.imageUrl && (
-                <img src={item.imageUrl} alt="" loading="lazy" className="pixelated h-10 w-10 object-contain" />
-              )}
-              <span className="w-full truncate text-center text-xs text-muted">{item.name}</span>
+              <SpriteImg
+                candidates={itemSpriteCandidates(item)}
+                alt=""
+                className="pixelated h-12 w-12 object-contain"
+              />
+              <span className="w-full truncate text-center text-sm text-muted">{item.name}</span>
             </button>
           ))}
         </div>
@@ -81,14 +69,40 @@ function ItemPicker({
   );
 }
 
+/** In-game style stat line for the overlay HUD. */
+function HudStat({ label, value, flash }: { label: string; value: string; flash?: "up" | "down" | null }) {
+  return (
+    <div className="flex items-center gap-2 leading-none">
+      <span className="punch w-7 font-pixel text-[11px] text-[#d5cdb7]">{label}</span>
+      <span className="punch font-pixelbody text-[22px] text-white">{value}</span>
+      {flash && (
+        <span className={`stat-flash punch font-pixel text-[11px] ${flash === "up" ? "text-heal" : "text-hurt"}`}>
+          {flash === "up" ? "▲" : "▼"}
+        </span>
+      )}
+    </div>
+  );
+}
+
+const STAT_KEYS = ["speed", "tearsPerSecond", "damage", "range", "shotSpeed", "luck"] as const;
+const STAT_ICON: Record<(typeof STAT_KEYS)[number], string> = {
+  speed: "SPD",
+  tearsPerSecond: "TRS",
+  damage: "DMG",
+  range: "RNG",
+  shotSpeed: "SHT",
+  luck: "LCK",
+};
+
 export default function Playground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const shellRef = useRef<HTMLDivElement>(null);
   const gameRef = useRef<Game | null>(null);
   const [scale, setScale] = useState(2);
   const [room, setRoom] = useState<RoomId>("main");
   const [debugOpen, setDebugOpen] = useState(false);
   const [equipOpen, setEquipOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const characterSlug = useLoadout((s) => s.characterSlug);
   const equipped = useLoadout((s) => s.equipped);
@@ -110,6 +124,23 @@ export default function Playground() {
     return computeStats(character.baseStats, inputs);
   }, [character, equippedItems]);
 
+  // stat flash bookkeeping
+  const prevStats = useRef(stats);
+  const [flashes, setFlashes] = useState<Partial<Record<(typeof STAT_KEYS)[number], "up" | "down">>>({});
+  useEffect(() => {
+    const next: typeof flashes = {};
+    for (const k of STAT_KEYS) {
+      if (stats[k] > prevStats.current[k] + 1e-9) next[k] = "up";
+      else if (stats[k] < prevStats.current[k] - 1e-9) next[k] = "down";
+    }
+    prevStats.current = stats;
+    if (Object.keys(next).length) {
+      setFlashes(next);
+      const t = setTimeout(() => setFlashes({}), 1800);
+      return () => clearTimeout(t);
+    }
+  }, [stats]);
+
   const tags = useMemo(() => {
     const t = new Set<string>();
     for (const i of equippedItems) for (const tag of i.behaviorTags) t.add(tag);
@@ -118,7 +149,6 @@ export default function Playground() {
     return t;
   }, [equippedItems, character]);
 
-  // create / destroy the game
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -126,8 +156,8 @@ export default function Playground() {
     gameRef.current = game;
     game.onPickup = (slug) => equip(slug);
     game.onRoomChange = (r) => setRoom(r);
+    loadGameAssets().then((a) => game.setAssets(a));
 
-    // shop stock: three random shop-pool items
     const shopPool = poolBySlug.get("shop");
     if (shopPool) {
       const stock = [...shopPool.items]
@@ -135,13 +165,9 @@ export default function Playground() {
         .slice(0, 3)
         .map((e) => itemBySlug.get(e.slug))
         .filter((i): i is Item => !!i);
-      Promise.all(stock.map((i) => loadImage(i.imageUrl))).then((imgs) => {
+      Promise.all(stock.map((i) => loadFirst(itemSpriteCandidates(i)))).then((imgs) => {
         game.setShopPedestals(
-          stock.map((item, idx) => ({
-            slug: item.slug,
-            img: imgs[idx],
-            price: item.shopPrice ?? 15,
-          })),
+          stock.map((item, idx) => ({ slug: item.slug, img: imgs[idx], price: item.shopPrice ?? 15 })),
         );
       });
     }
@@ -152,7 +178,6 @@ export default function Playground() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // live params from the stat engine
   useEffect(() => {
     gameRef.current?.setParams({
       speed: stats.speed,
@@ -164,24 +189,34 @@ export default function Playground() {
     });
   }, [stats, tags]);
 
-  // real character sprite
   useEffect(() => {
-    loadImage(character.imageUrl).then((img) => gameRef.current?.setPlayerImage(img));
+    let alive = true;
+    Promise.all([
+      loadFirst([characterSheetUrl(character.slug)]),
+      loadFirst(characterPortraitCandidates(character)),
+    ]).then(([sheet, portrait]) => {
+      if (alive) gameRef.current?.setPlayerSheet(sheet, portrait);
+    });
+    return () => {
+      alive = false;
+    };
   }, [character]);
 
-  // integer scaling
+  // integer scaling to fill the shell
   useEffect(() => {
-    const el = containerRef.current;
+    const el = shellRef.current;
     if (!el) return;
-    const fit = () =>
-      setScale(Math.max(1, Math.floor(Math.min(el.clientWidth / VIEW_W, (window.innerHeight - 220) / VIEW_H))));
+    const fit = () => {
+      const s = Math.max(1, Math.floor(Math.min(el.clientWidth / VIEW_W, el.clientHeight / VIEW_H)));
+      setScale(s);
+    };
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  // overlay hotkeys; overlays pause the sim
+  // hotkeys: overlays + fullscreen
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const typing = (e.target as HTMLElement)?.tagName === "INPUT";
@@ -189,94 +224,142 @@ export default function Playground() {
         setDebugOpen(false);
         setEquipOpen(false);
       } else if (typing) {
-        return; // don't toggle overlays while typing in a search box
+        return;
       } else if (e.key === "`") setDebugOpen((v) => !v);
       else if (e.key.toLowerCase() === "b" && !debugOpen) setEquipOpen((v) => !v);
+      else if (e.key.toLowerCase() === "f") toggleFullscreen();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debugOpen]);
   useEffect(() => {
     gameRef.current?.setPaused(debugOpen || equipOpen);
   }, [debugOpen, equipOpen]);
+  useEffect(() => {
+    const onFs = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onFs);
+    return () => document.removeEventListener("fullscreenchange", onFs);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) void document.exitFullscreen();
+    else void shellRef.current?.requestFullscreen();
+  };
 
   const spawnItem = (item: Item) => {
-    loadImage(item.imageUrl).then((img) => gameRef.current?.spawnPedestal(item.slug, img));
+    loadFirst(itemSpriteCandidates(item)).then((img) => gameRef.current?.spawnPedestal(item.slug, img));
     setDebugOpen(false);
   };
 
+  const hearts = useMemo(() => {
+    const h = character.health;
+    return {
+      red: h.red + stats.bonusHearts.red,
+      soul: h.soul + stats.bonusHearts.soul,
+      black: h.black + stats.bonusHearts.black,
+      bone: h.bone ?? 0,
+      coin: h.coin ?? 0,
+    };
+  }, [character, stats]);
+
   return (
-    <div className="flex flex-col gap-3 p-4 lg:flex-row">
-      {/* Left HUD — like the in-game stats HUD */}
-      <aside className="w-full shrink-0 space-y-3 lg:w-72">
-        <div className="border-4 border-basement-border bg-basement-panel p-3">
-          <div className="mb-2 flex items-center gap-2">
-            {character.imageUrl && (
-              <img src={character.imageUrl} alt="" className="pixelated h-10 w-10 object-contain" />
+    <div
+      ref={shellRef}
+      className="relative flex items-center justify-center overflow-hidden bg-black"
+      style={{ height: isFullscreen ? "100vh" : "calc(100vh - 64px)" }}
+    >
+      {/* game canvas, integer-scaled */}
+      <canvas
+        ref={canvasRef}
+        width={VIEW_W}
+        height={VIEW_H}
+        className="pixelated"
+        style={{ width: VIEW_W * scale, height: VIEW_H * scale, imageRendering: "pixelated" }}
+      />
+
+      {/* ------- overlay HUD (in-game style) ------- */}
+      <div className="pointer-events-none absolute inset-0">
+        {/* hearts + stats, top-left */}
+        <div className="absolute left-3 top-2 space-y-0.5">
+          <div className="mb-1 flex flex-wrap gap-0.5">
+            {Array.from({ length: hearts.red }, (_, i) => (
+              <span key={`r${i}`} className="punch text-xl leading-none text-[#e02b2b]">♥</span>
+            ))}
+            {Array.from({ length: hearts.soul }, (_, i) => (
+              <span key={`s${i}`} className="punch text-xl leading-none text-[#aebfd8]">♥</span>
+            ))}
+            {Array.from({ length: hearts.black }, (_, i) => (
+              <span key={`b${i}`} className="punch text-xl leading-none text-[#3a2b4a]">♥</span>
+            ))}
+            {Array.from({ length: hearts.bone }, (_, i) => (
+              <span key={`n${i}`} className="punch text-xl leading-none text-[#d8c9a3]">♥</span>
+            ))}
+            {Array.from({ length: hearts.coin }, (_, i) => (
+              <span key={`c${i}`} className="punch text-xl leading-none text-[#f2d75e]">♥</span>
+            ))}
+            {hearts.red + hearts.soul + hearts.black + hearts.bone + hearts.coin === 0 && (
+              <span className="punch font-pixel text-[10px] text-muted">NO HEALTH</span>
             )}
-            <div>
-              <p className="font-pixel text-[10px] text-gold">{character.name}</p>
-              <p className="text-sm text-muted">DPS {stats.dps.toFixed(2)}</p>
-            </div>
           </div>
-          <StatBars stats={stats} />
+          {STAT_KEYS.map((k) => (
+            <HudStat key={k} label={STAT_ICON[k]} value={stats[k].toFixed(2)} flash={flashes[k]} />
+          ))}
+          <div className="pt-1">
+            <HudStat label="DPS" value={stats.dps.toFixed(2)} />
+          </div>
         </div>
 
-        <div className="border-4 border-basement-border bg-basement-panel p-3 text-sm text-muted">
-          <p className="font-pixel text-[9px] text-ink">CONTROLS</p>
-          <p className="mt-1">WASD — move · Arrows — fire tears</p>
-          <p>E — bomb · B — equip menu · ` — item spawner</p>
-          <p>Top door leads to the SHOP. Hit the punching bag to see your DPS.</p>
-        </div>
-      </aside>
-
-      {/* Canvas + top item strip */}
-      <div className="min-w-0 flex-1">
-        <div className="mb-2 flex min-h-10 flex-wrap items-center gap-1 border-2 border-basement-border bg-basement-panel p-1.5">
-          <span className="mr-1 font-pixel text-[9px] text-muted">LOADOUT</span>
+        {/* loadout strip, top-right (item-tracker style) */}
+        <div className="pointer-events-auto absolute right-3 top-2 flex max-w-[40%] flex-wrap justify-end gap-1">
           {equippedItems.map((i) => (
             <button
               key={i.slug}
               onClick={() => unequip(i.slug)}
               title={`${i.name} (click to unequip)`}
-              className="border border-basement-border p-0.5 hover:border-hurt"
+              className="border border-white/10 bg-black/40 p-0.5 hover:border-hurt"
             >
-              {i.imageUrl && <img src={i.imageUrl} alt={i.name} className="pixelated h-7 w-7 object-contain" />}
+              <SpriteImg candidates={itemSpriteCandidates(i)} alt={i.name} className="pixelated h-8 w-8 object-contain" />
             </button>
           ))}
-          {equippedItems.length === 0 && <span className="text-sm text-muted">empty — press B</span>}
           {equippedItems.length > 0 && (
-            <button onClick={clearLoadout} className="ml-auto border border-basement-border px-2 py-0.5 text-xs text-muted hover:text-hurt">
-              clear
+            <button
+              onClick={clearLoadout}
+              className="punch border border-white/10 bg-black/40 px-2 font-pixel text-[9px] text-muted hover:text-hurt"
+            >
+              CLEAR
             </button>
           )}
         </div>
 
-        <div ref={containerRef} className="relative flex justify-center bg-black/60 py-3">
-          <canvas
-            ref={canvasRef}
-            width={VIEW_W}
-            height={VIEW_H}
-            className="pixelated border-4 border-basement-border"
-            style={{ width: VIEW_W * scale, height: VIEW_H * scale, imageRendering: "pixelated" }}
-          />
-          <span className="absolute left-2 top-1 font-pixel text-[9px] text-muted">
+        {/* room title + controls, bottom */}
+        <div className="absolute bottom-2 left-0 right-0 flex items-end justify-between px-3">
+          <span className="punch font-pixel text-[11px] text-[#d5cdb7]">
             {room === "main" ? "THE BASEMENT" : "THE SHOP"}
           </span>
-
-          {debugOpen && (
-            <ItemPicker title="SPAWN ITEM" onPick={spawnItem} onClose={() => setDebugOpen(false)} />
-          )}
-          {equipOpen && (
-            <ItemPicker
-              title="EQUIP"
-              equipped={equipped}
-              onPick={(item) => (equipped.includes(item.slug) ? unequip(item.slug) : equip(item.slug))}
-              onClose={() => setEquipOpen(false)}
-            />
-          )}
+          <span className="punch text-right font-pixelbody text-lg leading-tight text-[#bfb49b]">
+            WASD move · ARROWS shoot · E bomb · B equip · ` spawn · F fullscreen
+          </span>
         </div>
+
+        {/* fullscreen button */}
+        <button
+          onClick={toggleFullscreen}
+          className="punch pointer-events-auto absolute right-3 bottom-10 border-2 border-white/15 bg-black/40 px-3 py-2 font-pixel text-[10px] text-[#d5cdb7] hover:border-gold hover:text-gold"
+        >
+          {isFullscreen ? "EXIT [F]" : "FULLSCREEN [F]"}
+        </button>
       </div>
+
+      {debugOpen && <ItemPicker title="SPAWN ITEM" onPick={spawnItem} onClose={() => setDebugOpen(false)} />}
+      {equipOpen && (
+        <ItemPicker
+          title="EQUIP"
+          equipped={equipped}
+          onPick={(item) => (equipped.includes(item.slug) ? unequip(item.slug) : equip(item.slug))}
+          onClose={() => setEquipOpen(false)}
+        />
+      )}
     </div>
   );
 }

@@ -285,14 +285,32 @@ async function applyItemsXml(items: Item[]): Promise<void> {
   for (const tag of xml.matchAll(/<(passive|active|familiar|trinket)\b([^>]*?)\/?>/g)) {
     const attrs: Record<string, string> = { _tag: tag[1] };
     for (const a of tag[2].matchAll(/(\w+)="([^"]*)"/g)) attrs[a[1]] = a[2];
-    if (attrs.name) byName.set(nameKey(attrs.name), attrs);
+    if (!attrs.name) continue;
+    // Repentance items.xml uses localization keys: "#THE_SAD_ONION_NAME"
+    const name = attrs.name.startsWith("#")
+      ? attrs.name.replace(/^#/, "").replace(/_NAME$/, "").replace(/_/g, " ")
+      : attrs.name;
+    // Variant entries (Damocles passive #656, Birthright Book of Belial #59)
+    // reuse the base item's name — keep the first (base) occurrence.
+    const key = nameKey(name) + (attrs._tag === "trinket" ? " t" : "");
+    if (!byName.has(key)) byName.set(key, attrs);
   }
   let matched = 0;
+  let idMismatches = 0;
   for (const item of items) {
-    const attrs = byName.get(nameKey(item.name)) ?? byName.get(nameKey(item.wikiTitle));
+    // trinket IDs share numbers with collectibles — separate key namespace
+    const suffix = item.type === "trinket" ? " t" : "";
+    const attrs = byName.get(nameKey(item.name) + suffix) ?? byName.get(nameKey(item.wikiTitle) + suffix);
     if (!attrs) continue;
     matched++;
-    if (attrs.id) item.id = parseInt(attrs.id, 10);
+    if (attrs.id) {
+      const gameId = parseInt(attrs.id, 10);
+      if (item.id !== null && item.id !== gameId) {
+        idMismatches++;
+        report.parseWarnings.push(`items.xml ID mismatch for "${item.name}": wiki ${item.id} vs game ${gameId} (took game)`);
+      }
+      item.id = gameId;
+    }
     if (attrs.quality) item.quality = parseInt(attrs.quality, 10) as Item["quality"];
     if (attrs.maxcharges && item.type === "active") item.recharge = parseInt(attrs.maxcharges, 10);
   }

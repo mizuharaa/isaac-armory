@@ -1,5 +1,7 @@
 import { memo } from "react";
+import { itemSpriteCandidates } from "../lib/assets";
 import type { Item } from "../lib/types";
+import SpriteImg from "./SpriteImg";
 import TierBadge from "./TierBadge";
 
 const QUALITY_EDGE: Record<string, string> = {
@@ -23,36 +25,31 @@ export default memo(function ItemCard({
   return (
     <button
       onClick={onClick}
-      className={`hover-wiggle group relative flex flex-col items-center gap-1 border-2 bg-basement-panel p-2 pt-3 text-center hover:bg-basement-raised ${
+      className={`hover-wiggle group panel relative flex flex-col items-center gap-1.5 border-2 p-3 pt-4 text-center hover:bg-basement-raised ${
         QUALITY_EDGE[String(item.quality)]
       }`}
       title={item.quote || item.name}
     >
       {/* isaacguru-style ID pill */}
-      <span className="absolute -top-2 left-1/2 -translate-x-1/2 border border-[#8a63d2] bg-[#5b3fa8] px-1.5 text-[10px] leading-4 text-white">
+      <span className="punch absolute -top-2.5 left-1/2 -translate-x-1/2 border-2 border-[#8a63d2] bg-[#5b3fa8] px-2 font-pixel text-[10px] leading-5 text-white">
         {item.type === "trinket" ? "T" : ""}#{item.id ?? "?"}
       </span>
-      <span className="absolute left-1 top-1">
+      <span className="absolute left-1.5 top-1.5">
         <TierBadge tier={item.tier} source={item.tierSource} />
       </span>
       {equipped && (
-        <span className="absolute right-1 top-1 h-2 w-2 bg-heal" title="In loadout" />
+        <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 bg-heal" title="In loadout" />
       )}
-      <div className="overflow-visible">
-        {item.imageUrl ? (
-          <img
-            src={item.imageUrl}
-            alt={item.name}
-            loading="lazy"
-            width={64}
-            height={64}
-            className="sprite-zoom pixelated h-16 w-16 object-contain"
-          />
-        ) : (
-          <span className="flex h-16 w-16 items-center justify-center text-muted">?</span>
-        )}
+      <div className="overflow-visible py-1">
+        <SpriteImg
+          candidates={itemSpriteCandidates(item)}
+          alt={item.name}
+          width={96}
+          height={96}
+          className="sprite-zoom pixelated h-24 w-24 object-contain"
+        />
       </div>
-      <span className="w-full truncate text-sm leading-tight text-ink group-hover:text-gold">
+      <span className="punch w-full truncate text-lg leading-tight text-ink group-hover:text-gold">
         {item.name}
       </span>
     </button>

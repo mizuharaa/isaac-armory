@@ -2,7 +2,7 @@
 
 Counts: **720 items**, **189 trinkets**, **34 characters**, **29 pools**.
 
-> data/raw/items.xml not present — wiki is the source of truth for IDs/qualities.
+> items.xml found: 807/909 records overridden with game data (IDs, qualities, charges).
 
 ## Pages skipped (no recognized infobox) (4)
 

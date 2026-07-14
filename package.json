@@ -11,6 +11,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "scrape": "tsx scripts/scrape.ts",
+    "import-assets": "tsx scripts/import-local-assets.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

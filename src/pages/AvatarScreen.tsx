@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Hearts from "../components/Hearts";
+import SpriteImg from "../components/SpriteImg";
 import StatBars from "../components/StatBars";
 import { computeStats } from "../engine/stats";
+import { characterPortraitCandidates, itemSpriteCandidates } from "../lib/assets";
 import { characterBySlug, itemBySlug, regularCharacters } from "../lib/data";
 import { DLC_LABEL } from "../lib/types";
 import { useLoadout } from "../store/loadout";
@@ -92,22 +94,18 @@ export default function AvatarScreen() {
                 {center && (
                   <div className="absolute -inset-x-8 -top-6 bottom-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(201,162,39,0.18),transparent_70%)]" />
                 )}
-                {c.imageUrl ? (
-                  <img
-                    src={c.imageUrl}
-                    alt={c.name}
-                    className={`pixelated object-contain ${center ? "idle-bob h-40 w-40" : "h-20 w-20"}`}
-                  />
-                ) : (
-                  <span className="text-muted">?</span>
-                )}
+                <SpriteImg
+                  candidates={characterPortraitCandidates(c)}
+                  alt={c.name}
+                  className={`pixelated object-contain ${center ? "idle-bob h-56 w-56" : "h-24 w-24"}`}
+                />
               </div>
               {/* pedestal */}
               <div
-                className={`${center ? "h-4 w-36" : "h-2 w-16"} rounded-[50%] border-2 border-basement-border bg-basement-raised shadow-[0_4px_0_rgba(0,0,0,0.5)]`}
+                className={`${center ? "h-5 w-44" : "h-2 w-20"} rounded-[50%] border-2 border-[#1a100a] bg-black/50 shadow-[0_5px_0_rgba(0,0,0,0.5)]`}
               />
               {center && (
-                <h1 className="mt-3 text-center font-pixel text-sm text-gold">{c.name}</h1>
+                <h1 className="punch-lg mt-4 text-center font-pixel text-xl text-gold">{c.name}</h1>
               )}
             </div>
           );
@@ -123,7 +121,7 @@ export default function AvatarScreen() {
       </p>
 
       {/* Details */}
-      <div className="grid w-full gap-6 border-4 border-basement-border bg-basement-panel p-5 md:grid-cols-2">
+      <div className="panel grid w-full gap-6 p-6 md:grid-cols-2">
         <div>
           <div className="mb-3 flex items-center gap-3">
             <span className="border border-basement-border px-1.5 py-0.5 text-sm text-muted">
@@ -148,16 +146,14 @@ export default function AvatarScreen() {
               return item ? (
                 <span
                   key={slug}
-                  className="flex items-center gap-1.5 border border-basement-border bg-basement px-2 py-1"
+                  className="flex items-center gap-2 border-2 border-[#1a100a] bg-black/40 px-2 py-1"
                   title={item.description}
                 >
-                  {item.imageUrl && (
-                    <img src={item.imageUrl} alt="" className="pixelated h-8 w-8 object-contain" />
-                  )}
-                  <span className="text-sm">{item.name}</span>
+                  <SpriteImg candidates={itemSpriteCandidates(item)} alt="" className="pixelated h-10 w-10 object-contain" />
+                  <span className="punch text-lg">{item.name}</span>
                 </span>
               ) : (
-                <span key={slug} className="text-sm text-muted">
+                <span key={slug} className="text-lg text-muted">
                   {slug}
                 </span>
               );
@@ -183,7 +179,7 @@ export default function AvatarScreen() {
 
       <button
         onClick={enterBasement}
-        className="border-4 border-blood bg-basement-panel px-6 py-3 font-pixel text-xs text-blood hover:bg-blood hover:text-ink"
+        className="punch-lg border-4 border-blood bg-black/50 px-8 py-4 font-pixel text-base text-blood hover:bg-blood hover:text-white"
       >
         ENTER THE BASEMENT →
       </button>

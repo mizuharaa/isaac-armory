@@ -6,14 +6,45 @@
   color-scheme: dark;
 }
 
+/* ------------------------------------------------------------------ theme */
+/* Wood-plank basement wall (original CSS art, styled after the game's
+   pause/menu backdrop): horizontal planks, seams, nail shadows, vignette. */
 body {
-  @apply bg-basement text-ink font-pixelbody;
-  font-size: 19px;
-  /* subtle grunge vignette, original CSS — evokes the basement without game assets */
+  @apply text-ink font-pixelbody;
+  font-size: 21px;
+  background-color: #35200f;
   background-image:
-    radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.55) 100%),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.012) 0 2px, transparent 2px 4px);
+    /* vignette */
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.6) 100%),
+    /* plank end joints, offset per row */
+    repeating-linear-gradient(90deg, transparent 0 317px, rgba(0, 0, 0, 0.28) 317px 320px, transparent 320px 640px),
+    /* horizontal plank seams */
+    repeating-linear-gradient(
+      180deg,
+      #4b2f1a 0px, #452a17 22px, #4b301c 47px, #422818 70px,
+      rgba(0, 0, 0, 0.45) 70px, rgba(0, 0, 0, 0.45) 73px,
+      #472c19 73px, #503420 96px, #452a16 120px, #4a2f1c 141px,
+      rgba(0, 0, 0, 0.45) 141px, rgba(0, 0, 0, 0.45) 144px
+    ),
+    /* subtle grain */
+    repeating-linear-gradient(88deg, rgba(0, 0, 0, 0.07) 0 2px, transparent 2px 7px);
   min-height: 100vh;
+}
+
+/* chunky game-style panel */
+.panel {
+  background: rgba(20, 12, 8, 0.92);
+  border: 3px solid #1a100a;
+  outline: 2px solid rgba(216, 201, 163, 0.14);
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.45), inset 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+/* punched-out text: hard pixel drop shadow, no blur */
+.punch {
+  text-shadow: 2px 2px 0 #000, 1px 1px 0 #000;
+}
+.punch-lg {
+  text-shadow: 3px 3px 0 #000, 1px 1px 0 #000;
 }
 
 /* Every sprite in the app is pixel art — never smooth it. */
@@ -34,7 +65,7 @@ body {
   animation: wiggle 0.22s steps(1, end) infinite alternate;
 }
 
-/* isaacguru-style sprite zoom on hover — instant integer-ish steps, no easing */
+/* isaacguru-style sprite zoom on hover — instant steps, no easing */
 .sprite-zoom {
   transition: none;
 }
@@ -104,13 +135,13 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
 }
 ::-webkit-scrollbar-track {
-  background: #16100e;
+  background: #1a100a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #4a3628;
-  border: 2px solid #16100e;
+  background: #5a3d26;
+  border: 3px solid #1a100a;
 }
